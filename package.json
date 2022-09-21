@@ -1,0 +1,29 @@
+{
+  "name": "passwordless",
+  "version": "0.0.1",
+  "description": "A small wrapper around the webauthn protocol to make one's life easier.",
+  "source": "src/passwordless.ts",
+  "module": "dist/module.js",
+  "optimize": true,
+  "scripts": {
+    "build": "parcel build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dagnelies/passwordless-js.git"
+  },
+  "keywords": [
+    "passwordless",
+    "webauthn"
+  ],
+  "author": "Arnaud Dagnelies",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dagnelies/passwordless-js/issues"
+  },
+  "homepage": "https://github.com/dagnelies/passwordless-js#readme",
+  "devDependencies": {
+    "typescript": "^4.8.3"
+  }
+}
