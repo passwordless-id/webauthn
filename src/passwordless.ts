@@ -263,6 +263,7 @@ type VerifyParams = {
     clientData :string,
     signature :string
 }
+
 // https://w3c.github.io/webauthn/#sctn-verifying-assertion
 export async function verify({algorithm, publicKey, authenticatorData, clientData, signature} :VerifyParams) {
     let cryptoKey = await window.crypto.subtle.importKey(
