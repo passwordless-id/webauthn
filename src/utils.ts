@@ -10,6 +10,7 @@ export function parseBuffer(buffer :ArrayBuffer) :string {
     return String.fromCharCode(...new Uint8Array(buffer))
 }
 
+
 export function toBase64(buffer :ArrayBuffer) :string {
     return btoa(parseBuffer(buffer))
 }
@@ -22,6 +23,7 @@ export function parseBase64url(txt :string) :ArrayBuffer {
     return parseBase64(txt.replace(/-/g, '+').replace(/_/g, '/'))
 }
 
+
 export async function sha256(buffer :ArrayBuffer) :Promise<ArrayBuffer> {
     return await window.crypto.subtle.digest('SHA-256', buffer)
 }
@@ -31,3 +33,11 @@ export function bufferToHex (buffer :ArrayBuffer) :string {
         .map (b => b.toString (16).padStart (2, "0"))
         .join ("");
 }
+
+
+export function concatenateBuffers(buffer1 :ArrayBuffer, buffer2  :ArrayBuffer) {
+    var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
+    tmp.set(new Uint8Array(buffer1), 0);
+    tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
+    return tmp;
+  };

@@ -1,7 +1,6 @@
-import * as authenticatorMetadata from './authenticatorMetadata.json'
 import * as utils from './utils'
+import * as authenticators from './authenticators'
 
-console.debug(authenticatorMetadata)
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
  */
@@ -18,87 +17,8 @@ export async function isLocalAuthenticator() :Promise<boolean> {
 
 
 
-function parseAuthenticatorDataBase64(authData :string) {
-    return parseAuthenticatorData(utils.parseBase64(authData))
-}
-
-function parseAuthenticatorData(authData :ArrayBuffer) {
-    console.debug(authData)
-    let flags = new DataView(authData.slice(32,33)).getUint8(0)
-    console.debug(flags)
-
-    // https://w3c.github.io/webauthn/#sctn-authenticator-data
-    let parsed :any = {
-        rpIdHash: utils.toBase64(authData.slice(0,32)),
-            flags: {
-                 userPresent: !!(flags & 1),
-                 //reserved1: !!(flags & 2),
-                 userVerified: !!(flags &  4),
-                 backupEligibility: !!(flags & 8),
-                 backupState: !!(flags & 16),
-                 //reserved2: !!(flags & 32),
-                 attestedData: !!(flags & 64),
-                 extensionsIncluded: !!(flags & 128)
-            },
-            counter: new DataView(authData.slice(33,37)).getUint32(0, false),  // Big-Endian!
-    }
-
-    if(authData.byteLength > 37) {
-        // https://w3c.github.io/webauthn/#attested-credential-data
-        let credentialLength = new DataView(authData.slice(53,55)).getUint16(0, false) // Big-Endian!
-        parsed = {
-            ...parsed,
-            aaguid: extractAaguid(authData),
-            credentialId: utils.toBase64(authData.slice(55, 55+credentialLength)),
-            publicKey: utils.toBase64(authData.slice(55+credentialLength, authData.byteLength)) // probably breaks if extensions are invoked
-        }
-    }
-
-    return parsed
-}
-
-function extractAaguid(authData :ArrayBuffer) :string {
-    return formatAaguid(authData.slice(37, 53))
-}
-
-function formatAaguid(buffer :ArrayBuffer) :string {
-    let aaguid = utils.bufferToHex(buffer)
-    aaguid = aaguid.substring(0,8) + '-' + aaguid.substring(8,12) + '-' + aaguid.substring(12,16) + '-' + aaguid.substring(16,20) + '-' + aaguid.substring(20,24)
-    return aaguid // example: "d41f5a69-b817-4144-a13c-9ebd6d9254d6"
-}
-
-function resolveAuthenticatorName(authData :ArrayBuffer) :string {
-    const aaguid = extractAaguid(authData)
-    const aaguidMetadata = updatedAuthenticatorMetadata ?? authenticatorMetadata //await getAaguidMetadata()
-    return aaguidMetadata[aaguid]?.name
-}
-
-let updatedAuthenticatorMetadata :any = null
-
-// List of AAGUIDs are encoded as JWT here: https://mds.fidoalliance.org/
-export async function updateDevicesMetadata() {
-    // this function is rather resource intensive and time consuming
-    // therefore, the result is cached in local storage
-    const jwt = await (await fetch("https://mds.fidoalliance.org")).text()
-
-    // the response is a JWT including all AAGUIDs and their metadata
-    console.debug(jwt)
-
-    // let us ignore the JWT verification, since this is solely for descriptive purposes, not signed data
-    const payload = jwt.split('.')[1].replaceAll('-', '+').replaceAll('_', '/')
-    const json = JSON.parse(atob(payload))
-    console.debug(json)
-
-    let aaguidMetadata :any = {}
-    for(const e of json.entries) {
-        if(!e.aaguid || !e.metadataStatement)
-            continue
-
-        aaguidMetadata[e.aaguid] = {name: e.metadataStatement.description}
-    }
-
-    console.debug(aaguidMetadata)
-    updatedAuthenticatorMetadata = aaguidMetadata
+export function parseAuthenticatorData(authData :string) {
+    return authenticators.parseAuthData(utils.parseBase64(authData))
 }
 
 type AuthType = 'auto' | 'local' | 'extern' | 'both'
@@ -125,14 +45,18 @@ async function getAuthAttachment(authType :AuthType) :Promise<AuthenticatorAttac
 }
 
 
-function getAlgoName(num :number) :string {
+type NumAlgo = -7 | -257
+type NamedAlgo = 'RS256' | 'ES256'
+
+function getAlgoName(num :NumAlgo) :NamedAlgo {
     switch(num) {
         case -7: return "ES256"
         // case -8 ignored to to its rarity
         case -257: return "RS256"
-        default: return "unknown"
+        default: throw new Error(`Unknown algorithm code: ${num}`)
     }
 }
+
 
 /**
  * Creates a cryptographic key pair, in order to register the public key for later passwordless authentication.
@@ -195,8 +119,8 @@ export async function register(username :string, challenge :string, options :any
         authenticator: {
             isLocal: (credential.authenticatorAttachment === "platform"),
             //transport: response.getTransports()[0], // In the RFC but not implemented by browsers
-            aaguid: extractAaguid(response.getAuthenticatorData()),
-            name: await resolveAuthenticatorName(response.getAuthenticatorData()),
+            aaguid: authenticators.extractAaguid(response.getAuthenticatorData()),
+            name: authenticators.resolveAuthenticatorName(response.getAuthenticatorData()),
             attestation: options.attestation ? utils.toBase64(response.attestationObject) : null,
             clientData: options.attestation ? utils.toBase64(response.clientDataJSON) : null,
         }
@@ -241,31 +165,26 @@ export async function login(credentialIds :string[], challenge :string, options 
         clientJson: JSON.parse(utils.parseBuffer(response.clientDataJSON)),
         clientData: utils.toBase64(response.clientDataJSON),
         signature: utils.toBase64(response.signature),
-        authenticatorJson: parseAuthenticatorData(response.authenticatorData),
+        authenticatorJson: authenticators.parseAuthData(response.authenticatorData),
         authenticatorData: utils.toBase64(response.authenticatorData)
     }
 }
 
 
 
-function concatenateBuffers(buffer1 :ArrayBuffer, buffer2  :ArrayBuffer) {
-  var tmp = new Uint8Array(buffer1.byteLength + buffer2.byteLength);
-  tmp.set(new Uint8Array(buffer1), 0);
-  tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
-  return tmp;
-};
+
 
 
 type VerifyParams = {
-    algorithm :string,
-    publicKey :string,
-    authenticatorData :string,
-    clientData :string,
-    signature :string
+    algorithm :'RS256' | 'ES256',
+    publicKey :string, // Base64 encoded
+    authenticatorData :string, // Base64 encoded
+    clientData :string, // Base64 encoded
+    signature :string, // Base64 encoded
 }
 
 // https://w3c.github.io/webauthn/#sctn-verifying-assertion
-export async function verify({algorithm, publicKey, authenticatorData, clientData, signature} :VerifyParams) {
+export async function verify({algorithm, publicKey, authenticatorData, clientData, signature} :VerifyParams) :Promise<boolean> {
     let cryptoKey = await window.crypto.subtle.importKey(
         'spki', utils.parseBase64(publicKey), {name:'RSASSA-PKCS1-v1_5', hash:'SHA-256'}, false, ['verify'])
     console.debug(cryptoKey)
@@ -275,7 +194,7 @@ export async function verify({algorithm, publicKey, authenticatorData, clientDat
 
 
     //let comboBuffer = concatenateBuffers(parseBase64(authenticatorData), parseBase64(clientData)) // clientHash)
-    let comboBuffer = concatenateBuffers(utils.parseBase64(authenticatorData), clientHash)
+    let comboBuffer = utils.concatenateBuffers(utils.parseBase64(authenticatorData), clientHash)
     console.debug(comboBuffer)
 
     console.debug(utils.parseBase64(signature))
