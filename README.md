@@ -1,5 +1,5 @@
-Passwordless.ID/webauthn
-========================
+Passwordless.ID / webauthn
+==========================
 
 A greatly simplified and opiniated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conviniently. 
 
