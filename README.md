@@ -5,16 +5,26 @@ A greatly simplified and opiniated wrapper to invoke the [webauthn protocol](htt
 
 Check out the demo at https://passwordless.id/playground.html
 
-Installation/usage
-------------------
+Installation / Usage
+--------------------
 
 NPM:
 
-    npm install @passwordless-id/webauthn
+```bash
+npm install @passwordless-id/webauthn
+```
+
+```js
+import * as passwordless from '@passwordless-id/webauthn'
+```
 
 Browser:
 
-    <script src="https://unpkg.com/@passwordless-id/webauthn@0.0.1/dist/passwordless-id.min.js"></script>
+```js
+<script type="module">
+  import * as passwordless from 'https://unpkg.com/@passwordless-id/webauthn@latest/dist/passwordless.min.js'
+</script>
+```
 
 
 Registration
@@ -71,9 +81,9 @@ Options
 Notes
 -----
 
-Unlike the webauthn protocol, there are some significant differences.
+Unlike the [webauthn protocol](), there are some significant differences.
 
-First, some defaults are also different. Most notably:
+First, some defaults are different:
 
 - The `timeout` is one minute by default.
 - If the device can act as authenticator itself, it is preffered instead of asking which authenticator type to use.
