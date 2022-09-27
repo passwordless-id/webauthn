@@ -142,18 +142,9 @@ Options
 Notes
 -----
 
-Unlike the [webauthn protocol](), there are some significant differences.
-
-First, some defaults are different:
+Unlike the [webauthn protocol](), some defaults are different:
 
 - The `timeout` is one minute by default.
 - If the device can act as authenticator itself, it is preffered instead of asking which authenticator type to use.
 - The `userVerification` is required by default.
 
-
-Then, the response is also different, as plain JSON with values encoded in **Base64**. It does not use *Base64url* that the webauthn protocol favors. This was chosen for two reasons:
-
-- These values should never appear in URLs anyway for both privacy and security reasons, so let's not encourage/suggest it.
-- Many server framework have middleware to decode base64 values out-of-the box as byte arrays while base64url frequently requires some form of pre-processing.
-
-Please also note that swapping the encoding from *base64* to *base64url* is the matter of replacing two characters in the string.
