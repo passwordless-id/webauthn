@@ -15,30 +15,52 @@ npm install @passwordless-id/webauthn
 ```
 
 ```js
-import * as passwordless from '@passwordless-id/webauthn'
+import * as webauthn from '@passwordless-id/webauthn'
 ```
 
 Browser:
 
 ```js
 <script type="module">
-  import * as passwordless from 'https://unpkg.com/@passwordless-id/webauthn@latest/dist/passwordless.min.js'
+  import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn@latest/dist/passwordless.min.js'
 </script>
 ```
+
 
 
 Registration
 ------------
 
-Example:
+Example call:
 
 ```js
-passwordless.register("Arnaud", "random-server-challenge", {
+webauthn.register("Arnaud", "random-server-challenge", {
   "authenticatorType": "auto",
   "userVerification": "required",
   "timeout": 60000,
   "attestation": false
 })
+```
+
+Example response:
+
+```json
+{
+  "username": "Arnaud",
+  "challenge": "random-server-challenge",
+  "credential": {
+    "id": "RufE-HKYK2...",
+    "publicKey": "MIIBIjANBg...",
+    "algorithm": "RS256"
+  },
+  "authenticator": {
+    "isLocal": true,
+    "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
+    "name": "Windows Hello Hardware Authenticator",
+    "attestation": "o2NmbXRjdH...",
+    "clientData": "eyJ0eXBlIj..."
+  }
+}
 ```
 
 Parameters:
@@ -47,23 +69,55 @@ Parameters:
 - `challenge`: A server-side randomly generated string.
 - `options`: See below.
 
+
+
 Authentication
 --------------
 
-Example:
+Example call:
 
 ```js
-passwordless.login(["credentialIdBase64encoded"], "random-server-challenge", {
+webauthn.login(["credentialIdBase64encoded"], "random-server-challenge", {
   "authenticatorType": "auto",
   "userVerification": "required",
   "timeout": 60000
 })
 ```
 
+Example response:
+
+```json
+{
+  "credentialId": "c8VC7q_TY0NvKIhcS_rafPLEvdw8GwePABH81QRNt4Y",
+  "userHash": "awopRTWFXAQrBPRAbEPFg3WUd4forBvMho7Ie4sxabE=",
+  "clientJson": {
+    "type": "webauthn.get",
+    "challenge": "ZTEyNGE0ZTAtNjg4NS00YzhlLWFhODktNTZkMjJhZDUxNGYz",
+    "origin": "http://localhost:8080",
+    "crossOrigin": false
+  },
+  "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiWlRFeU5HRTBaVEF0TmpnNE5TMDBZemhsTFdGaE9Ea3ROVFprTWpKaFpEVXhOR1l6Iiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ==",
+  "signature": "J8PbSE9ZgC2JME9r2SYGY7WMDUKVDFby8WPXxSpXYfLpmfjimGed8oEqvUtD4UhvshjKV9FOlS0Dc8N8ILvIDL77gmUPeY6oZbTqrw9+2NgeXONM9hNDnxIjOUxekC8a3LY1HFq7aWy4v9I/gu1vD5NGSouvlzxJXPHcC30Bxu70EMcTwtz3EnRmQ3UGuZXjYO2xd2l2BsUgyI87c/wpquaCThrOPEf1PlzS4Larv5lE/Lfh4gQ2O/1TvmBcjtT/oSFkkb6hAgJp51/QbrUbnzdAtTtbGnSTOukM/HZ6yFY5i4oy3l+cJbwAGxEqFUU7yAdPrmTJdLeLmzimve58RA==",
+  "authenticatorJson": {
+    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2M=",
+    "flags": {
+      "userPresent": true,
+      "userVerified": true,
+      "backupEligibility": false,
+      "backupState": false,
+      "attestedData": false,
+      "extensionsIncluded": false
+    },
+    "counter": 1
+  },
+  "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2MFAAAAAQ=="
+}
+```
+
 Parameters:
 
 - `credentialIds`: The list of credential IDs that can be used for signing.
-- `challenge`: A server-side randomly generated string, the base64 encoded version will be signed.
+- `challenge`: A server-side randomly generated string, the base64url encoded version will be signed.
 - `options`: See below
 
 Options

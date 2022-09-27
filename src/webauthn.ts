@@ -16,9 +16,9 @@ export async function isLocalAuthenticator() :Promise<boolean> {
 }
 
 
-
+// Used mainly for the playground
 export function parseAuthenticatorData(authData :string) {
-    return authenticators.parseAuthData(utils.parseBase64(authData))
+    return authenticators.parseAuthData(utils.parseBase64url(authData))
 }
 
 type AuthType = 'auto' | 'local' | 'extern' | 'both'
@@ -71,13 +71,16 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  *          'local': use the local device (using TouchID, FaceID, Windows Hello or PIN)
  *          'extern': use an external device (security key or connected phone)
  *          'both': prompt the user to choose between local or external device. The UI and user interaction in this case is platform specific.
- * @param {boolean} [attestation=false] If enabled, the device attestation and clientData will be provided as base64 encoded binary data.
+ * @param {boolean} [attestation=false] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data.
  *                                Note that this is not available on some platforms.
  */
 //
 export async function register(username :string, challenge :string, options :any) {
     if(!options)
         options = {}
+
+    if(!utils.isBase64url(challenge))
+        throw new Error('Provided challenge is not properly encoded in Base64url')
 
     const creationOptions :PublicKeyCredentialCreationOptions = {
         challenge: utils.parseBase64url(challenge),
@@ -107,13 +110,13 @@ export async function register(username :string, challenge :string, options :any
     console.debug(credential)
    
     const response = credential.response as any //AuthenticatorAttestationResponse
-
+    
     return {
         username: username,
         challenge: challenge,
         credential: {
             id: credential.id,
-            publicKey: utils.toBase64(response.getPublicKey()),
+            publicKey: utils.toBase64url(response.getPublicKey()),
             algorithm: getAlgoName(credential.response.getPublicKeyAlgorithm())
         },
         authenticator: {
@@ -121,9 +124,29 @@ export async function register(username :string, challenge :string, options :any
             //transport: response.getTransports()[0], // In the RFC but not implemented by browsers
             aaguid: authenticators.extractAaguid(response.getAuthenticatorData()),
             name: authenticators.resolveAuthenticatorName(response.getAuthenticatorData()),
-            attestation: options.attestation ? utils.toBase64(response.attestationObject) : null,
-            clientData: options.attestation ? utils.toBase64(response.clientDataJSON) : null,
+            attestation: options.attestation ? utils.toBase64url(response.attestationObject) : null,
+            clientData: options.attestation ? utils.toBase64url(response.clientDataJSON) : null,
         }
+    }
+}
+
+
+async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport[]> {
+    if(authType === "local")
+        return ['internal']
+    if(authType === "extern")
+        return ['usb', 'ble', 'nfc']
+    if(authType === "both")
+        return ['internal', 'usb', 'ble', 'nfc']
+
+    // the default case: "auto", depending on device capabilities
+    try {
+        if(await isLocalAuthenticator())
+            return ['internal']
+        else
+            return ['usb', 'ble', 'nfc']
+    } catch(e) {
+        return ['internal', 'usb', 'ble', 'nfc']
     }
 }
 
@@ -141,13 +164,18 @@ export async function login(credentialIds :string[], challenge :string, options 
     if(!options)
         options = {}
 
+    if(!utils.isBase64url(challenge))
+        throw new Error('Provided challenge is not properly encoded in Base64url')
+
+    const transports = await getTransports(options.authenticatorType ?? "auto");
+
     let authOptions :PublicKeyCredentialRequestOptions = {
         challenge: utils.parseBase64url(challenge),
         rpId: window.location.hostname,
         allowCredentials: credentialIds.map(id => { return {
             id: utils.parseBase64url(id),
             type: 'public-key',
-            //transports: ['internal', 'usb', 'ble', 'nfc'],
+            transports: transports,
         }}),
         userVerification: options.userVerification ?? "required",
         timeout: options.timeout ?? 60000,
@@ -158,15 +186,15 @@ export async function login(credentialIds :string[], challenge :string, options 
     console.debug(auth)
 
     const response = auth.response as AuthenticatorAssertionResponse
-
+    
     return {
         credentialId: auth.id,
-        //userHash: utils.toBase64(response.userHandle), // unreliable, optional for authenticators
+        //userHash: utils.toBase64url(response.userHandle), // unreliable, optional for authenticators
         clientJson: JSON.parse(utils.parseBuffer(response.clientDataJSON)),
-        clientData: utils.toBase64(response.clientDataJSON),
-        signature: utils.toBase64(response.signature),
+        clientData: utils.toBase64url(response.clientDataJSON),
+        signature: utils.toBase64url(response.signature),
         authenticatorJson: authenticators.parseAuthData(response.authenticatorData),
-        authenticatorData: utils.toBase64(response.authenticatorData)
+        authenticatorData: utils.toBase64url(response.authenticatorData)
     }
 }
 
@@ -177,30 +205,29 @@ export async function login(credentialIds :string[], challenge :string, options 
 
 type VerifyParams = {
     algorithm :'RS256' | 'ES256',
-    publicKey :string, // Base64 encoded
-    authenticatorData :string, // Base64 encoded
-    clientData :string, // Base64 encoded
-    signature :string, // Base64 encoded
+    publicKey :string, // Base64url encoded
+    authenticatorData :string, // Base64url encoded
+    clientData :string, // Base64url encoded
+    signature :string, // Base64url encoded
 }
 
 // https://w3c.github.io/webauthn/#sctn-verifying-assertion
-export async function verify({algorithm, publicKey, authenticatorData, clientData, signature} :VerifyParams) :Promise<boolean> {
+export async function verify({algorithm :NamedAlgo, publicKey, authenticatorData, clientData, signature} :VerifyParams) :Promise<boolean> {
     let cryptoKey = await window.crypto.subtle.importKey(
-        'spki', utils.parseBase64(publicKey), {name:'RSASSA-PKCS1-v1_5', hash:'SHA-256'}, false, ['verify'])
+        'spki', utils.parseBase64url(publicKey), {name:'RSASSA-PKCS1-v1_5', hash:'SHA-256'}, false, ['verify'])
     console.debug(cryptoKey)
 
-    let clientHash = await utils.sha256( utils.parseBase64(clientData) );
+    let clientHash = await utils.sha256( utils.parseBase64url(clientData) );
     console.debug(clientHash)
 
 
-    //let comboBuffer = concatenateBuffers(parseBase64(authenticatorData), parseBase64(clientData)) // clientHash)
-    let comboBuffer = utils.concatenateBuffers(utils.parseBase64(authenticatorData), clientHash)
+    let comboBuffer = utils.concatenateBuffers(utils.parseBase64url(authenticatorData), clientHash)
     console.debug(comboBuffer)
 
-    console.debug(utils.parseBase64(signature))
+    console.debug(utils.parseBase64url(signature))
 
     // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify
-    let validity = await window.crypto.subtle.verify({name:'RSASSA-PKCS1-v1_5', hash:'SHA-256'}, cryptoKey, utils.parseBase64(signature), comboBuffer)
+    let validity = await window.crypto.subtle.verify({name:'RSASSA-PKCS1-v1_5', hash:'SHA-256'}, cryptoKey, utils.parseBase64url(signature), comboBuffer)
 
     return validity
 }

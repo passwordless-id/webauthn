@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<button onclick="register()">Register</button>
+<button onclick="login()">Login</button>
+
+
+<script type="module">
+import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn@0.0.5/dist/webauthn.min.js'
+
+window.register = async function() {
+	console.log('Registering...')
+	let res = webauthn.register('MyUsername', 'random-challenge-base64-encoded')
+	console.log(res)
+}
+
+window.login = async function() {
+	console.log('Login...')
+	let res = webauthn.login([], 'random-challenge-base64-encoded')
+	console.log(res)
+}
+
+</script>
+</body>
+</html>

@@ -11,16 +11,18 @@ export function parseBuffer(buffer :ArrayBuffer) :string {
 }
 
 
-export function toBase64(buffer :ArrayBuffer) :string {
-    return btoa(parseBuffer(buffer))
+export function isBase64url(txt :string) :boolean {
+    return txt.match(/^[a-zA-Z0-9\-_]+=*$/) !== null
 }
 
-export function parseBase64(txt :string) :ArrayBuffer {
-    return toBuffer(atob(txt))
+export function toBase64url(buffer :ArrayBuffer) :string {
+    const txt = btoa(parseBuffer(buffer)) // base64
+    return txt.replaceAll('+', '-').replaceAll('/', '_')
 }
 
 export function parseBase64url(txt :string) :ArrayBuffer {
-    return parseBase64(txt.replace(/-/g, '+').replace(/_/g, '/'))
+    txt = txt.replaceAll('-', '+').replaceAll('_', '/') // base64url -> base64
+    return toBuffer(atob(txt))
 }
 
 

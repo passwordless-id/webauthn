@@ -1,8 +1,7 @@
 import * as authenticatorMetadata from './authenticatorMetadata.json'
 import * as utils from './utils'
 
-console.debug(authenticatorMetadata)
-
+//console.debug(authenticatorMetadata)
 
 export function parseAuthData(authData :ArrayBuffer) {
     console.debug(authData)
@@ -11,7 +10,7 @@ export function parseAuthData(authData :ArrayBuffer) {
 
     // https://w3c.github.io/webauthn/#sctn-authenticator-data
     let parsed :any = {
-        rpIdHash: utils.toBase64(authData.slice(0,32)),
+        rpIdHash: utils.toBase64url(authData.slice(0,32)),
             flags: {
                  userPresent: !!(flags & 1),
                  //reserved1: !!(flags & 2),
@@ -31,8 +30,8 @@ export function parseAuthData(authData :ArrayBuffer) {
         parsed = {
             ...parsed,
             aaguid: extractAaguid(authData),
-            credentialId: utils.toBase64(authData.slice(55, 55+credentialLength)),
-            publicKey: utils.toBase64(authData.slice(55+credentialLength, authData.byteLength)) // probably breaks if extensions are invoked
+            credentialId: utils.toBase64url(authData.slice(55, 55+credentialLength)),
+            publicKey: utils.toBase64url(authData.slice(55+credentialLength, authData.byteLength)) // probably breaks if extensions are invoked
         }
     }
 
