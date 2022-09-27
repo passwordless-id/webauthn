@@ -3,7 +3,14 @@ Passwordless.ID / webauthn
 
 A greatly simplified and opiniated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conviniently. 
 
-Check out the demo at https://passwordless.id/playground.html
+<img src="demos/img/banner-biometric-auth.svg" />
+
+Check out the demos:
+
+- [Basic Demo](demos/basic.html)
+- [Minimal Example (CDN)](demos/example-cdn.html)
+- [Minimal Example (repository)](demos/example-raw.html)
+- [Testing Playground](demos/playground.html)
 
 Installation / Usage
 --------------------
