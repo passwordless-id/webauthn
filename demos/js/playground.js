@@ -1,4 +1,4 @@
-import * as webauthn from '/dist/webauthn.min.js'
+import * as webauthn from '../../dist/webauthn.min.js'
 
  const app = new Vue({
     el: '#app',
