@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+  <style>
+    main.container {
+      max-width: 640px !important;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+<main id="app" class="section container">
+  <img src="img/banner-biometric-auth.svg" />
+  <b-tag>Please note: this is a demo. Nothing is stored server side.</b-tag>
+  <br/>
+  <br/>
+  <template v-if="!isAuthenticated">
+    <b-field>
+      <b-input v-model="username" placeholder="Username or E-Mail" @input="checkIsRegistered()"></b-input>
+    </b-field>
+    <b-field>
+      <b-checkbox v-model="isExternal">Use extern authenticator</b-checkbox>
+    </b-field>
+    <div>
+      <b-button type="is-primary" @click="register()" :disabled="!username">Register device</b-button>
+      <b-button type="is-primary" @click="login()" :disabled="!isRegistered">Authenticate</b-button>
+    </div>
+  </template>
+  <template v-if="isAuthenticated">
+    <p>{{'Hello ' + username + '!'}}</p>
+    <hr/>
+    <div>
+      <b-button type="is-primary" @click="logout()">Sign Out</b-button>
+    </div>
+  </template>
+</main>
+
+<script src="https://unpkg.com/vue@2"></script>
+<script src="https://unpkg.com/buefy/dist/buefy.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script type="module" src="js/demo.js"></script>
+</body>
+</html>
