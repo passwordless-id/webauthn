@@ -62,7 +62,8 @@ webauthn.register("Arnaud", "random-server-challenge", {
   "authenticatorType": "auto",
   "userVerification": "required",
   "timeout": 60000,
-  "attestation": false
+  "attestation": false,
+  "debug": false
 })
 ```
 
@@ -71,19 +72,14 @@ Example response:
 ```json
 {
   "username": "Arnaud",
-  "challenge": "random-server-challenge",
   "credential": {
-    "id": "RufE-HKYK2...",
-    "publicKey": "MIIBIjANBg...",
+    "id": "tIbwHucpNqA5KXeb_7_fXHAZYm5yPiYK1KrTgbie3ZQ",
+    "publicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApVXqTTd7edPEN5E71jta6iE8LlOWDySooLC3qRg31SAJc_FYceD7q_PNVh9UPuedr2OX5DP1GzCP262vp8rJuCqLtR7xPle7iu_rdmQHxPketGtx2O8XkAqwNRO74sNU0J2VJ0Cq3cCPpk53FUZczyhP-gJaOogZh_w05BJtnpM8FtLBFcdWlimveRtZ1QQZhX-bd92mmwA9bFWkbauEdklrg3TdJFmBPyj_6ybqs3ocHqxH4hAsdVFvjp77x0O4oqcupkcKUPfXO3GyNEoMlrVo30oj34r_6ny4F_PeZESyDWCG3i4MR3OrKi8zfCqxjBRtMOdcWKDq2FDEDG4PVQIDAQAB",
     "algorithm": "RS256"
   },
-  "authenticator": {
-    "isLocal": true,
-    "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
-    "name": "Windows Hello Hardware Authenticator",
-    "attestation": "o2NmbXRjdH...",
-    "clientData": "eyJ0eXBlIj..."
-  }
+  "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiYcFjK3EuBtuEw3lDcvpYAILSG8B7nKTagOSl3m_-_31xwGWJucj4mCtSq04G4nt2UpAEDAzkBACBZAQClVepNN3t508Q3kTvWO1rqITwuU5YPJKigsLepGDfVIAlz8Vhx4Pur881WH1Q-552vY5fkM_UbMI_bra-nysm4Kou1HvE-V7uK7-t2ZAfE-R60a3HY7xeQCrA1E7viw1TQnZUnQKrdwI-mTncVRlzPKE_6Alo6iBmH_DTkEm2ekzwW0sEVx1aWKa95G1nVBBmFf5t33aabAD1sVaRtq4R2SWuDdN0kWYE_KP_rJuqzehwerEfiECx1UW-OnvvHQ7iipy6mRwpQ99c7cbI0SgyWtWjfSiPfiv_qfLgX895kRLINYIbeLgxHc6sqLzN8KrGMFG0w51xYoOrYUMQMbg9VIUMBAAE=",
+  "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiTXpJd1pEQXpNelF0TkRoak55MDBOMk5oTFRnek5qa3RPVE01TkRjMFl6ZzFaamRpIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ==",
+  "attestationData": null
 }
 ```
 
@@ -112,29 +108,10 @@ Example response:
 
 ```json
 {
-  "credentialId": "c8VC7q_TY0NvKIhcS_rafPLEvdw8GwePABH81QRNt4Y",
-  "userHash": "awopRTWFXAQrBPRAbEPFg3WUd4forBvMho7Ie4sxabE=",
-  "clientJson": {
-    "type": "webauthn.get",
-    "challenge": "ZTEyNGE0ZTAtNjg4NS00YzhlLWFhODktNTZkMjJhZDUxNGYz",
-    "origin": "http://localhost:8080",
-    "crossOrigin": false
-  },
-  "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiWlRFeU5HRTBaVEF0TmpnNE5TMDBZemhsTFdGaE9Ea3ROVFprTWpKaFpEVXhOR1l6Iiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ==",
-  "signature": "J8PbSE9ZgC2JME9r2SYGY7WMDUKVDFby8WPXxSpXYfLpmfjimGed8oEqvUtD4UhvshjKV9FOlS0Dc8N8ILvIDL77gmUPeY6oZbTqrw9+2NgeXONM9hNDnxIjOUxekC8a3LY1HFq7aWy4v9I/gu1vD5NGSouvlzxJXPHcC30Bxu70EMcTwtz3EnRmQ3UGuZXjYO2xd2l2BsUgyI87c/wpquaCThrOPEf1PlzS4Larv5lE/Lfh4gQ2O/1TvmBcjtT/oSFkkb6hAgJp51/QbrUbnzdAtTtbGnSTOukM/HZ6yFY5i4oy3l+cJbwAGxEqFUU7yAdPrmTJdLeLmzimve58RA==",
-  "authenticatorJson": {
-    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2M=",
-    "flags": {
-      "userPresent": true,
-      "userVerified": true,
-      "backupEligibility": false,
-      "backupState": false,
-      "attestedData": false,
-      "extensionsIncluded": false
-    },
-    "counter": 1
-  },
-  "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4/krrmihjLHmVzzuoMdl2MFAAAAAQ=="
+  "credentialId": "tIbwHucpNqA5KXeb_7_fXHAZYm5yPiYK1KrTgbie3ZQ",
+  "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAQ==",
+  "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiTnpGbVlUY3dORGN0TUdVeVpTMDBabVZqTFdFMU5HUXRNR1JpTkdVNU5HUmxObVUxIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ==",
+  "signature": "aoOiX2zxBCvEzebefHZY8GNudCeERuyly4TiSE5eUDyw3iPOnPBFoj0WniN3nuKwhIw8gmPnGhPTArI0apYxoX2mJQaHtAhMS-AxkTKHR63ysArR0Cpd9XMeJicuOGuY5c_zo_hMq91qioI-Ksr0SUTAMS_lWH2Tebe29iKwcT10l0L7ccueKW3G7U5yYxZq3InAuPA5_aJXHeX2neAvng3CFba8we0eQsD5JKh2otAK6Kgy-nT2EHIsBDtXtACn3Q6GfjFWSaeWPa9vngXKuKbLsnpCQjYvlwHt4PrnkvC5WBzGhEoBCF1L9NcxZbRDw_ksWJFYvJcMNcq9DYhxVg=="
 }
 ```
 
@@ -157,6 +134,53 @@ Options
     - `'extern'`: use an external device (security key or connected phone)
     - `'both'`: prompt the user to choose between local or external device. The UI and user interaction in this case is platform specific.
 - `attestation`: (Only for registration) If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this is not available on some platforms. *(Default: false)*
+- `debug`: If enabled, parses the "data" objects and provide it in a "debug" properties.
+
+
+
+Parsing data
+------------
+
+**`clientData`**
+```js
+webauthn.parseAuthenticatorData('eyJ0eXBlIjoid2...')
+```
+
+```json
+{
+  "type": "webauthn.create",
+  "challenge": "MzIwZDAzMzQtNDhjNy00N2NhLTgzNjktOTM5NDc0Yzg1Zjdi",
+  "origin": "http://localhost:8080",
+  "crossOrigin": false
+}
+```
+
+
+
+**`authenticatorData`**
+
+```js
+webauthn.parseAuthenticatorData('SZYN5YgOjGh0NB...')
+```
+
+```json
+{
+  "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
+  "flags": {
+    "userPresent": true,
+    "userVerified": true,
+    "backupEligibility": false,
+    "backupState": false,
+    "attestedData": true,
+    "extensionsIncluded": false
+  },
+  "counter": 0,
+  "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
+  "name": "Windows Hello Hardware Authenticator"
+}
+```
+
+Please note that `aaguid` and `name` are only available during registration.
 
 
 
