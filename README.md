@@ -1,7 +1,7 @@
 Passwordless.ID / webauthn
 ==========================
 
-A greatly simplified and opiniated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conviniently. 
+A greatly simplified and opiniated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conviniently.
 
 <img src="demos/img/banner-biometric-auth.svg" />
 
@@ -157,6 +157,8 @@ Options
     - `'extern'`: use an external device (security key or connected phone)
     - `'both'`: prompt the user to choose between local or external device. The UI and user interaction in this case is platform specific.
 - `attestation`: (Only for registration) If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this is not available on some platforms. *(Default: false)*
+
+
 
 Notes
 -----

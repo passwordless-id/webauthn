@@ -66,6 +66,10 @@
             <div class="hint">Whether to prompt for biometric/PIN check or not.</div>
         </b-field>
 
+        <b-field label="debug" horizontal>
+            <b-checkbox v-model="registration.options.debug" expanded></b-checkbox>
+        </b-field>
+
         <b-field label="attestation" horizontal>
             <b-checkbox v-model="registration.options.attestation" expanded></b-checkbox>
             <div class="hint">
@@ -92,12 +96,12 @@
         <h2 class="title">Authentication</h2>
     </header>
 
-    <b-field label="Credential ID" horizontal custom-class="required">
+    <b-field label="credentialId" horizontal custom-class="required">
         <b-input v-model="authentication.credentialId" placeholder="Credential ID"></b-input>
         <div></div>
     </b-field>
 
-    <b-field label="Challenge" horizontal custom-class="required">
+    <b-field label="challenge" horizontal custom-class="required">
         <b-field>
             <b-input v-model="authentication.challenge" placeholder="Challenge" expanded></b-input>
             <p class="control">
@@ -117,18 +121,22 @@
         <div class="hint">Which device to use as authenticator.</div>
     </b-field>
 
-    <b-field label="Timeout" horizontal>
+    <b-field label="timeout" horizontal>
         <b-input v-model="authentication.options.timeout" placeholder="60000" expanded></b-input>
         <div class="hint">Number of milliseconds the user has to respond to the biometric/PIN check.</div>
     </b-field>
 
-    <b-field label="UserVerification" horizontal>
+    <b-field label="userVerification" horizontal>
         <b-select v-model="authentication.options.userVerification" expanded>
             <option>required</option>
             <option>preferred</option>
             <option>discouraged</option>
         </b-select>
         <div class="hint">Whether to prompt for biometric/PIN check or not.</div>
+    </b-field>
+
+    <b-field label="debug" horizontal>
+        <b-checkbox v-model="authentication.options.debug" expanded></b-checkbox>
     </b-field>
 
     <pre>webauthn.login(["{{authentication.credentialId}}"], "{{authentication.challenge}}", {{authentication.options}})</pre>
@@ -178,15 +186,16 @@
     </b-field>
 
     <b-field horizontal>
-        <b-button @click="verifySignature()">Verify</b-button>
-    </b-field>
-
-    <div class="message" :class="{'is-success': verification.isValid, 'is-danger': !verification.isValid}"
+        <b-button type="is-primary" @click="verifySignature()">Verify</b-button>
+        <div class="hint message" :class="{'is-success': verification.isValid, 'is-danger': !verification.isValid}"
          v-if="verification.isValid !== null">
         <div class="message-body">
             Signature is {{verification.isValid ? 'valid' : 'invalid'}}
         </div>
     </div>
+    </b-field>
+
+    
 </section>
 
 </main>

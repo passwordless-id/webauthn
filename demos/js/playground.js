@@ -86,10 +86,10 @@ import * as webauthn from '../../dist/webauthn.min.js'
             }
         },
         parseAuthData(authData) {
-            return webauthn.parseAuthenticatorData(authData)
+            return webauthn.parseAuthenticatorBase64(authData)
         },
         parseClientData(clientData) {
-            return JSON.parse(window.atob(clientData))
+            return webauthn.parseClientBase64(clientData)
         }
     }
  })

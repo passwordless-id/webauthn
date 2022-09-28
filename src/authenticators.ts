@@ -1,7 +1,6 @@
-import * as authenticatorMetadata from './authenticatorMetadata.json'
+import authenticatorMetadata from './authenticatorMetadata.json'
 import * as utils from './utils'
 
-//console.debug(authenticatorMetadata)
 
 export function parseAuthData(authData :ArrayBuffer) {
     console.debug(authData)
@@ -25,13 +24,20 @@ export function parseAuthData(authData :ArrayBuffer) {
     }
 
     if(authData.byteLength > 37) {
+        // registration contains additional data
+
+        const aaguid = extractAaguid(authData)
         // https://w3c.github.io/webauthn/#attested-credential-data
-        let credentialLength = new DataView(authData.slice(53,55)).getUint16(0, false) // Big-Endian!
+        //let credentialLength = new DataView(authData.slice(53,55)).getUint16(0, false) // Big-Endian!
+        
         parsed = {
             ...parsed,
-            aaguid: extractAaguid(authData),
-            credentialId: utils.toBase64url(authData.slice(55, 55+credentialLength)),
-            publicKey: utils.toBase64url(authData.slice(55+credentialLength, authData.byteLength)) // probably breaks if extensions are invoked
+            aaguid, // bytes 37->53
+            name: resolveAuthenticatorName(aaguid)
+            // credentialBytes, // bytes 53->55: credential length
+            // credentialId: utils.toBase64url(authData.slice(55, 55+credentialLength)),
+            //publicKey: until where? ...and it's encoded using a strange format, let's better avoid it
+            //extensions: starting where?
         }
     }
 
@@ -39,17 +45,16 @@ export function parseAuthData(authData :ArrayBuffer) {
 }
 
 export function extractAaguid(authData :ArrayBuffer) :string {
-    return formatAaguid(authData.slice(37, 53))
+    return formatAaguid(authData.slice(37, 53)) // 16 bytes
 }
 
 function formatAaguid(buffer :ArrayBuffer) :string {
     let aaguid = utils.bufferToHex(buffer)
-    aaguid = aaguid.substring(0,8) + '-' + aaguid.substring(8,12) + '-' + aaguid.substring(12,16) + '-' + aaguid.substring(16,20) + '-' + aaguid.substring(20,24)
+    aaguid = aaguid.substring(0,8) + '-' + aaguid.substring(8,12) + '-' + aaguid.substring(12,16) + '-' + aaguid.substring(16,20) + '-' + aaguid.substring(20,32)
     return aaguid // example: "d41f5a69-b817-4144-a13c-9ebd6d9254d6"
 }
 
-export function resolveAuthenticatorName(authData :ArrayBuffer) :string {
-    const aaguid = extractAaguid(authData)
+export function resolveAuthenticatorName(aaguid :string) :string {
     const aaguidMetadata = updatedAuthenticatorMetadata ?? authenticatorMetadata //await getAaguidMetadata()
     return aaguidMetadata[aaguid]?.name
 }
