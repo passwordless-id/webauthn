@@ -7,10 +7,10 @@ A greatly simplified and opiniated wrapper to invoke the [webauthn protocol](htt
 
 Check out the demos:
 
-- [Basic Demo](demos/basic.html)
-- [Minimal Example (CDN)](demos/example-cdn.html)
-- [Minimal Example (repository)](demos/example-raw.html)
-- [Testing Playground](demos/playground.html)
+- [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
+- [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
+- [Minimal Example (repository)](https://webauthn.passwordless.id/demos/example-raw.html)
+- [Testing Playground](https://webauthn.passwordless.id/demos/playground.html)
 
 Installation / Usage
 --------------------
@@ -32,6 +32,23 @@ Browser:
   import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn@latest/dist/passwordless.min.js'
 </script>
 ```
+
+
+
+Utilities
+---------
+
+```js
+webauthn.isAvailable()
+```
+
+Returns `true` or `false` depending on whether the Webauthn protocol is available on this platform/browser.
+
+```js
+await webauthn.isLocalAuthenticator()
+```
+
+This promise returns `true` or `false` depending on whether the device itself can act as authenticator. Otherwise, an "extern" authenticator like a smartphone or usb security key can be used. This information is mainly used for information messages and user guidance.
 
 
 
@@ -74,7 +91,7 @@ Parameters:
 
 - `username`: The desired username.
 - `challenge`: A server-side randomly generated string.
-- `options`: See below.
+- `options`: See [below](#options).
 
 
 
@@ -125,7 +142,9 @@ Parameters:
 
 - `credentialIds`: The list of credential IDs that can be used for signing.
 - `challenge`: A server-side randomly generated string, the base64url encoded version will be signed.
-- `options`: See below
+- `options`: See [below](#options).
+
+
 
 Options
 -------

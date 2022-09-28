@@ -1,6 +1,6 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
   "main": "src/webauthn.ts",
   "scripts": {
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dagnelies/passwordless-js.git"
+    "url": "git+https://github.com/passwordless-id/webauthn.git"
   },
   "keywords": [
     "authentication",
@@ -20,9 +20,9 @@
   "author": "Arnaud Dagnelies",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dagnelies/passwordless-js/issues"
+    "url": "https://github.com/passwordless-id/webauthn/issues"
   },
-  "homepage": "https://github.com/dagnelies/passwordless-js#readme",
+  "homepage": "https://webauthn.passwordless.id",
   "devDependencies": {
     "esbuild": "^0.15.8",
     "http-server": "^14.1.1",
