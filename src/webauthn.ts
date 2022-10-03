@@ -1,5 +1,6 @@
 import * as utils from './utils'
 import * as parsers from './parsers'
+import { AuthType, LoginOptions, NamedAlgo, NumAlgo, RegisterOptions } from './types'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
@@ -16,12 +17,7 @@ export async function isLocalAuthenticator() :Promise<boolean> {
 }
 
 
-// Used mainly for the playground
-export function parseAuthenticatorData(authData :string) {
-    return parsers.parseAuthenticatorData(utils.parseBase64url(authData))
-}
 
-type AuthType = 'auto' | 'local' | 'extern' | 'both'
 
 async function getAuthAttachment(authType :AuthType) :Promise<AuthenticatorAttachment|undefined> {
     if(authType === "local")
@@ -45,10 +41,6 @@ async function getAuthAttachment(authType :AuthType) :Promise<AuthenticatorAttac
 }
 
 
-// TODO: although algo "-8" is currently only used optionally by a few security keys, 
-// it would not harm to support it for the sake of completeness
-type NumAlgo = -7 | -257
-type NamedAlgo = 'RS256' | 'ES256'
 
 function getAlgoName(num :NumAlgo) :NamedAlgo {
     switch(num) {
@@ -59,18 +51,6 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
     }
 }
 
-
-interface LoginOptions {
-    userVerification ?:UserVerificationRequirement,
-    authenticatorType ?:AuthType,
-    timeout ?:number,
-    debug ?:boolean
-} 
-
-
-interface RegisterOptions extends LoginOptions {
-    attestation?: boolean
-}
 
 
 /**
@@ -229,73 +209,3 @@ export async function login(credentialIds :string[], challenge :string, options?
     return loginResult
 }
 
-
-export function parseClientBase64(txt :string) {
-    return parsers.parseClientData( utils.parseBase64url(txt) )
-}
-
-
-export function parseAuthenticatorBase64(txt :string) {
-    return parsers.parseAuthenticatorData( utils.parseBase64url(txt) )
-}
-
-
-
-
-type VerifyParams = {
-    algorithm :NamedAlgo,
-    publicKey :string, // Base64url encoded
-    authenticatorData :string, // Base64url encoded
-    clientData :string, // Base64url encoded
-    signature :string, // Base64url encoded
-}
-
-
-function getAlgoParams(algorithm :NamedAlgo) :any {
-    switch (algorithm) {
-        case 'RS256':
-            return {
-                name:'RSASSA-PKCS1-v1_5', 
-                hash:'SHA-256'
-            };
-        case 'ES256':
-            return {
-                name: 'ECDSA',
-                namedCurve: 'P-256',
-                hash: 'SHA-256',
-            };
-        default:
-            throw new Error(`Unknown or unsupported crypto algorithm: ${algorithm}. Only 'RS256' and 'ES256' are supported.`)
-    }
-}
-
-type AlgoParams = AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm
-
-async function parseCryptoKey(algoParams :AlgoParams, publicKey :string) :Promise<CryptoKey> {
-    const buffer = utils.parseBase64url(publicKey)
-    return crypto.subtle.importKey('spki', buffer, algoParams, false, ['verify'])
-}
-
-async function verifySignature(algoParams :AlgoParams, cryptoKey :CryptoKey, signature :string, payload :ArrayBuffer) :Promise<boolean> {
-    const signatureBuffer = utils.parseBase64url(signature)
-    return crypto.subtle.verify(algoParams, cryptoKey, signatureBuffer, payload)
-}
-
-// https://w3c.github.io/webauthn/#sctn-verifying-assertion
-export async function verify({algorithm, publicKey, authenticatorData, clientData, signature} :VerifyParams) :Promise<boolean> {
-    const algoParams = getAlgoParams(algorithm)
-    let cryptoKey = await parseCryptoKey(algoParams, publicKey)
-    console.debug(cryptoKey)
-
-    let clientHash = await utils.sha256( utils.parseBase64url(clientData) );
-    console.debug(clientHash)
-
-    // during "login", the authenticatorData is exactly 37 bytes
-    let comboBuffer = utils.concatenateBuffers(utils.parseBase64url(authenticatorData), clientHash)
-    console.debug(comboBuffer)
-
-    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify
-    let validity = verifySignature(algoParams, cryptoKey, signature, comboBuffer)
-
-    return validity
-}

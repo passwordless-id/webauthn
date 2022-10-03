@@ -1,10 +1,10 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
-  "main": "src/webauthn.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "build": "esbuild src/webauthn.ts --platform=neutral --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
+    "build": "esbuild src/index.ts --platform=neutral --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
     "dev": "http-server"
   },
   "repository": {
