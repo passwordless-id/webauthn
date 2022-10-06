@@ -1,6 +1,6 @@
 import * as utils from './utils'
 import * as parsers from './parsers'
-import { AuthType, LoginOptions, NamedAlgo, NumAlgo, RegisterOptions } from './types'
+import { AuthType, LoginOptions, LoginResult, NamedAlgo, NumAlgo, RegisterOptions, RegisterResult } from './types'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
@@ -69,7 +69,7 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  * @param {boolean} [attestation=false] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data.
  *                                Note that this is not available on some platforms.
  */
-export async function register(username :string, challenge :string, options? :RegisterOptions) {
+export async function register(username :string, challenge :string, options? :RegisterOptions) :Promise<RegisterResult> {
     options = options ?? {}
 
     if(!utils.isBase64url(challenge))
@@ -108,7 +108,7 @@ export async function register(username :string, challenge :string, options? :Re
    
     const response = credential.response as any // AuthenticatorAttestationResponse
     
-    let registrationResponse :any = {
+    let registrationResponse :RegisterResult = {
         username: username,
         credential: {
             id: credential.id,
@@ -117,11 +117,14 @@ export async function register(username :string, challenge :string, options? :Re
         },
         authenticatorData: utils.toBase64url(response.getAuthenticatorData()),
         clientData: utils.toBase64url(response.clientDataJSON),
-        attestationData: options.attestation ? utils.toBase64url(response.attestationObject) : null,
+    }
+
+    if(options.attestation) {
+        registrationResponse.attestationData = utils.toBase64url(response.attestationObject)
     }
 
     if(options.debug) {
-        registrationResponse['debug'] = {
+        registrationResponse.debug = {
             client: parsers.parseClientData(response.clientDataJSON),
             authenticator: parsers.parseAuthenticatorData(response.getAuthenticatorData()),
             attestation: parsers.parseAttestationData(response.attestationObject)
@@ -191,7 +194,7 @@ export async function login(credentialIds :string[], challenge :string, options?
 
     const response = auth.response as AuthenticatorAssertionResponse
     
-    const loginResult :any = {
+    const loginResult :LoginResult = {
         credentialId: auth.id,
         //userHash: utils.toBase64url(response.userHandle), // unreliable, optional for authenticators
         authenticatorData: utils.toBase64url(response.authenticatorData),
@@ -200,7 +203,7 @@ export async function login(credentialIds :string[], challenge :string, options?
     }
 
     if(options.debug) {
-        loginResult['debug'] = {
+        loginResult.debug = {
             client: parsers.parseClientData(response.clientDataJSON),
             authenticator: parsers.parseAuthenticatorData(response.authenticatorData),
         }

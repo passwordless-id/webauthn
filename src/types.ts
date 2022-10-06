@@ -13,9 +13,33 @@ export interface LoginOptions {
     authenticatorType ?:AuthType,
     timeout ?:number,
     debug ?:boolean
-} 
+}
+
+
+export interface LoginResult {
+    credentialId: string,
+    //userHash: string, // unreliable, optional for authenticators
+    authenticatorData: string,
+    clientData: string,
+    signature: string,
+    debug?: object
+}
 
 
 export interface RegisterOptions extends LoginOptions {
     attestation?: boolean
+}
+
+
+export interface RegisterResult {
+    username: string,
+    credential: {
+        id: string,
+        publicKey: string,
+        algorithm: 'RS256' | 'ES256'
+    },
+    authenticatorData: string,
+    clientData: string,
+    attestationData?: string,
+    debug?: object
 }
