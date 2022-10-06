@@ -143,7 +143,7 @@ Parsing data
 
 **`clientData`**
 ```js
-webauthn.parseAuthenticatorData('eyJ0eXBlIjoid2...')
+webauthn.parseAuthenticator('eyJ0eXBlIjoid2...')
 ```
 
 ```json
@@ -160,7 +160,7 @@ webauthn.parseAuthenticatorData('eyJ0eXBlIjoid2...')
 **`authenticatorData`**
 
 ```js
-webauthn.parseAuthenticatorData('SZYN5YgOjGh0NB...')
+webauthn.parseAuthenticator('SZYN5YgOjGh0NB...')
 ```
 
 ```json

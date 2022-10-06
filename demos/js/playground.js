@@ -59,7 +59,8 @@ import * as webauthn from '../../dist/webauthn.min.js'
         },
         async login() {
             try {
-                let res = await webauthn.login([this.authentication.credentialId], this.authentication.challenge, this.authentication.options)
+                const credentialId = this.authentication.credentialId
+                let res = await webauthn.login(credentialId ? [credentialId] : [], this.authentication.challenge, this.authentication.options)
                 console.log(res)
                 this.authentication.result = res
             }
@@ -86,10 +87,10 @@ import * as webauthn from '../../dist/webauthn.min.js'
             }
         },
         parseAuthData(authData) {
-            return webauthn.parseAuthenticatorBase64(authData)
+            return webauthn.parseAuthenticator(authData)
         },
         parseClientData(clientData) {
-            return webauthn.parseClientBase64(clientData)
+            return webauthn.parseClient(clientData)
         }
     }
  })

@@ -28,7 +28,7 @@ import * as webauthn from '../../dist/webauthn.min.js'
       },
       async login() {
         let credentialId = window.localStorage.getItem(this.username)
-        let res = await webauthn.login([credentialId], window.crypto.randomUUID(), {isExternal: this.isExternal})
+        let res = await webauthn.login(credentialId ? [credentialId] : [], window.crypto.randomUUID(), {isExternal: this.isExternal})
         console.log(res)
 
         this.isAuthenticated = true;
