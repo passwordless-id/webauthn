@@ -125,9 +125,9 @@ export async function register(username :string, challenge :string, options? :Re
 
     if(options.debug) {
         registrationResponse.debug = {
-            client: parsers.parseClientData(response.clientDataJSON),
-            authenticator: parsers.parseAuthenticatorData(response.getAuthenticatorData()),
-            attestation: parsers.parseAttestationData(response.attestationObject)
+            client: parsers.parseClientBuffer(response.clientDataJSON),
+            authenticator: parsers.parseAuthenticatorBuffer(response.getAuthenticatorData()),
+            attestation: parsers.parseAttestationBuffer(response.attestationObject)
         }
     }
 
@@ -204,8 +204,8 @@ export async function login(credentialIds :string[], challenge :string, options?
 
     if(options.debug) {
         loginResult.debug = {
-            client: parsers.parseClientData(response.clientDataJSON),
-            authenticator: parsers.parseAuthenticatorData(response.authenticatorData),
+            client: parsers.parseClientBuffer(response.clientDataJSON),
+            authenticator: parsers.parseAuthenticatorBuffer(response.authenticatorData),
         }
     }
 

@@ -2,7 +2,7 @@ import authenticatorMetadata from './authenticatorMetadata.json'
 import * as utils from './utils'
 
 
-export function parseAuthData(authData :ArrayBuffer) {
+export function parseAuthBuffer(authData :ArrayBuffer) {
     console.debug(authData)
     let flags = new DataView(authData.slice(32,33)).getUint8(0)
     console.debug(flags)

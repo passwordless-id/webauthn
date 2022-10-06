@@ -1,6 +1,6 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
   "main": "src/index.ts",
   "scripts": {
