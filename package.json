@@ -5,6 +5,7 @@
   "main": "dist/webauthn.min.js",
   "scripts": {
     "build": "esbuild src/index.ts --platform=neutral --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
+    "build:tsc": "tsc",
     "dev": "http-server"
   },
   "repository": {
