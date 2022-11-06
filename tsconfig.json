@@ -10,7 +10,5 @@
     "rootDir": "src",
     "outDir": "dist/esm",
     "lib": ["DOM", "ES2022"],
-    "declaration": true,
-    "emitDeclarationOnly": true,
   }
 }
