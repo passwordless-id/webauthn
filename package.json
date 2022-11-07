@@ -1,6 +1,6 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
   "main": "dist/webauthn.min.js",
   "scripts": {

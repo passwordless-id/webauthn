@@ -139,18 +139,18 @@ async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport
     if(authType === "local")
         return ['internal']
     if(authType === "extern")
-        return ['usb', 'ble', 'nfc']
+        return ['hybrid', 'usb', 'ble', 'nfc']
     if(authType === "both")
-        return ['internal', 'usb', 'ble', 'nfc']
+        return ['internal', 'hybrid', 'usb', 'ble', 'nfc']
 
     // the default case: "auto", depending on device capabilities
     try {
         if(await isLocalAuthenticator())
             return ['internal']
         else
-            return ['usb', 'ble', 'nfc']
+            return ['hybrid', 'usb', 'ble', 'nfc']
     } catch(e) {
-        return ['internal', 'usb', 'ble', 'nfc']
+        return ['internal', 'hybrid', 'usb', 'ble', 'nfc']
     }
 }
 
