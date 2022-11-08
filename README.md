@@ -29,7 +29,7 @@ Browser:
 
 ```js
 <script type="module">
-  import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn@latest/dist/webauthn.min.js'
+  import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn'
 </script>
 ```
 
