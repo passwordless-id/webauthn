@@ -29,7 +29,7 @@ Browser:
 
 ```js
 <script type="module">
-  import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn@latest/dist/webauthn.min.js'
+  import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn'
 </script>
 ```
 
@@ -190,6 +190,6 @@ Notes
 Unlike the [webauthn protocol](), some defaults are different:
 
 - The `timeout` is one minute by default.
-- If the device can act as authenticator itself, it is preffered instead of asking which authenticator type to use.
+- If the device can act as authenticator itself, it is preferred instead of asking which authenticator type to use.
 - The `userVerification` is required by default.
 

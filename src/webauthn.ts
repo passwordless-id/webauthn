@@ -136,21 +136,27 @@ export async function register(username :string, challenge :string, options? :Re
 
 
 async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport[]> {
+    const local  :AuthenticatorTransport[] = ['internal']
+
+    // 'hybrid' was added mid-2022 in the specs and currently not yet available in the official dom types
+    // @ts-ignore
+    const extern :AuthenticatorTransport[] = ['hybrid', 'usb', 'ble', 'nfc']
+    
     if(authType === "local")
-        return ['internal']
+        return local
     if(authType === "extern")
-        return ['usb', 'ble', 'nfc']
+        return extern
     if(authType === "both")
-        return ['internal', 'usb', 'ble', 'nfc']
+        return [...local, ...extern]
 
     // the default case: "auto", depending on device capabilities
     try {
         if(await isLocalAuthenticator())
-            return ['internal']
+            return local
         else
-            return ['usb', 'ble', 'nfc']
+            return extern
     } catch(e) {
-        return ['internal', 'usb', 'ble', 'nfc']
+        return [...local, ...extern]
     }
 }
 

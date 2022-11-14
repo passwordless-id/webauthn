@@ -1,4 +1,4 @@
-import authenticatorMetadata from './authenticatorMetadata.json'
+import authenticatorMetadata from './authenticatorMetadata.json' assert {type: 'json'}
 import * as utils from './utils'
 
 
