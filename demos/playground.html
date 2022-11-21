@@ -166,7 +166,20 @@
 
         <p>And on the server side, verifying the authentication leads to:</p>
         
-        <pre>await server.verifyAuthentication(authentication, {challenge: "{{authentication.challenge}}", origin: "{{origin}}"})</pre>
+        <pre>
+const credentialKey = {
+    id: "{{registration?.parsed?.credential?.id ?? '...'}}",
+    publicKey: "{{registration?.parsed?.credential?.publicKey ?? '...'}}",
+    algorithm: "{{registration?.parsed?.credential?.algorithm ?? '...'}}"
+}
+
+const verified = await server.verifyAuthentication(res, credentialKey, {
+    challenge: "{{authentication?.challenge ?? '...'}}",
+    origin: "{{origin}}",
+    userVerified: {{authentication?.options?.userVerification === 'required'}},
+    counter: 0
+})
+        </pre>
 
         <p>Resulting into:</p>
         

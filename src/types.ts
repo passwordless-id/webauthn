@@ -28,7 +28,8 @@ export interface AuthenticationParsed {
   credentialId: string
   //userHash: string, // unreliable, optional for authenticators
   authenticator: AuthenticatorInfo
-  client: ClientInfo
+  client: ClientInfo,
+  signature: string
 }
 
 

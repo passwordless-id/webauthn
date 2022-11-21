@@ -41,6 +41,7 @@ export function parseAuthentication(authentication :AuthenticationEncoded) :Auth
     return {
         credentialId:  authentication.credentialId,
         client:        parseClient(authentication.clientData),
-        authenticator: parseAuthenticator(authentication.authenticatorData)
+        authenticator: parseAuthenticator(authentication.authenticatorData),
+        signature: authentication.signature
     }
 }

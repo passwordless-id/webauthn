@@ -24,7 +24,8 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
                 userVerification: 'required',
                 timeout: 60000,
             },
-            result: null
+            result: null,
+            parsed: null
         },
         verification: {
             publicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWyyMt1l16_1rzDP63Ayw9EFpn1VbSt4NSJ7BOsDzqed5Z3aTfQSvzPBPHb4uYQuuckOKRbdoH9S0fEnSvNxpRg==", // null, //"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzXUir6UgELFeM9il6id2vgZ1sWbZTk4C5JLIiMpg7lywwTRdp0i+lPP9rEdzcmwKwRLh5QT8DlPFQuKrUc8eXb9r+RPq/CvVOxVCqdK6A9fg0PDnvA3k7c5Ax5V5n/HcSw/uXVAzwstxQsbV5pOk0JDtys7rKiPjdO+XH5TbANNJE7PsS5j90zHLKNQaSybgF8V0v4Oz4I9u7IjVQKEz2V56E4Qfj/D7g0PCu63M5mNz5bGsmUzg5XwSRIaG3J3kDTuyTTGjPYhTnYFyWYXuMu1ZQ7JCe5FUv9m4oj3jH33VQEW3sorea7UOBjnSsLWp8MyE08M4tlY2xgyFL59obQIDAQAB",
@@ -66,9 +67,11 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
             }
         },
         async login() {
+            this.authentication.result = null
+            this.authentication.parsed = null
             try {
                 const credentialId = this.authentication.credentialId
-                let res = await client.authenticate(credentialId ? [credentialId] : [], this.authentication.challenge, this.authentication.options)
+                const res = await client.authenticate(credentialId ? [credentialId] : [], this.authentication.challenge, this.authentication.options)
                 console.log(res)
 
                 this.authentication.result = res
@@ -79,11 +82,14 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
                     algorithm: this.registration.parsed.credential.algorithm
                 }
                 
-                this.authentication.parsed = await server.verifyAuthentication(res, credentialKey, {
+                const parsed = await server.verifyAuthentication(res, credentialKey, {
                     challenge: this.authentication.challenge,
                     origin: this.origin,
-
+                    userVerified: this.authentication.userVerification === 'required',
+                    counter: 0
                 })
+                console.log(parsed)
+                this.authentication.parsed = parsed
             }
             catch(e) {
                 console.warn(e)
@@ -91,7 +97,6 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
                     message: e,
                     type: 'is-danger'
                 })
-                this.authentication.result = {}
             }
         },
         async verifySignature() {
