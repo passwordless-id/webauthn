@@ -8,7 +8,7 @@ export type NumAlgo = -7 | -257
 export type NamedAlgo = 'RS256' | 'ES256'
 
 
-export interface LoginOptions {
+export interface AuthenticateOptions {
     userVerification ?:UserVerificationRequirement
     authenticatorType ?:AuthType
     timeout ?:number
@@ -16,32 +16,52 @@ export interface LoginOptions {
 }
 
 
-export interface LoginResult {
+export interface AuthenticationEncoded {
     credentialId: string
     //userHash: string, // unreliable, optional for authenticators
     authenticatorData: string
     clientData: string
     signature: string
-    debug?: object
+}
+
+export interface AuthenticationParsed {
+  credentialId: string
+  //userHash: string, // unreliable, optional for authenticators
+  authenticator: AuthenticatorInfo
+  client: ClientInfo
 }
 
 
-export interface RegisterOptions extends LoginOptions {
+export interface RegisterOptions extends AuthenticateOptions {
     attestation?: boolean
 }
 
 
-export interface RegisterResult {
+export interface CredentialKey {
+  id: string
+  publicKey: string
+  algorithm: 'RS256' | 'ES256'
+}
+
+
+export interface RegistrationEncoded {
     username: string
-    credential: {
-        id: string
-        publicKey: string
-        algorithm: 'RS256' | 'ES256'
-    }
+    credential: CredentialKey
     authenticatorData: string
     clientData: string
     attestationData?: string
-    debug?: object
+}
+
+export interface RegistrationParsed {
+  username: string
+  credential: {
+      id: string
+      publicKey: string
+      algorithm: 'RS256' | 'ES256'
+  }
+  authenticator: AuthenticatorInfo
+  client: ClientInfo
+  attestation?: any
 }
 
 export interface ClientInfo {
@@ -53,7 +73,7 @@ export interface ClientInfo {
     id: string
     status: string
   }
-  // extensions?
+  extensions?: any
 }
 
 export interface AuthenticatorInfo {

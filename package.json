@@ -1,14 +1,15 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "0.0.12",
+  "version": "1.0.0",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
   
   "type": "module",
-  "main": "dist/webauthn.min.js",
-  "types": "dist/types/index.d.ts",
+  "main": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "unpkg": "dist/webauthn.min.js",
 
   "scripts": {
-    "build": "tsc && esbuild src/index.ts --platform=neutral --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
+    "build": "tsc && esbuild src/index.ts --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
     "dev": "http-server"
   },
   "repository": {

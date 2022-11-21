@@ -1,11 +1,10 @@
 import * as utils from './utils'
-import * as parsers from './parsers'
-import { AuthType, AuthenticateOptions, AuthenticationEncoded, NamedAlgo, NumAlgo, RegisterOptions, RegistrationEncoded } from './types'
+import { AuthenticateOptions, AuthenticationEncoded, AuthType, NamedAlgo, NumAlgo, RegisterOptions, RegistrationEncoded } from './types'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
  */
-export function isAvailable() :boolean {
+ export function isAvailable() :boolean {
     return !!window.PublicKeyCredential
 }
 
@@ -108,7 +107,7 @@ export async function register(username :string, challenge :string, options? :Re
    
     const response = credential.response as any // AuthenticatorAttestationResponse
     
-    let registrationResponse :RegistrationEncoded = {
+    let registration :RegistrationEncoded = {
         username: username,
         credential: {
             id: credential.id,
@@ -120,20 +119,10 @@ export async function register(username :string, challenge :string, options? :Re
     }
 
     if(options.attestation) {
-        registrationResponse.attestationData = utils.toBase64url(response.attestationObject)
+        registration.attestationData = utils.toBase64url(response.attestationObject)
     }
 
-    if(options.debug) {
-        /*
-        registrationResponse.debug = {
-            client: parsers.parseClient(response.clientDataJSON),
-            authenticator: parsers.parseAuthenticator(response.getAuthenticatorData()),
-            attestation: parsers.parseAttestation(response.attestationObject)
-        }
-        */
-    }
-
-    return registrationResponse
+    return registration
 }
 
 
@@ -172,7 +161,7 @@ async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport
  * @param {number} [options.timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
  * @param {'required'|'preferred'|'discouraged'} [options.userVerification='required'] Whether to prompt for biometric/PIN check or not.
  */
-export async function login(credentialIds :string[], challenge :string, options? :AuthenticateOptions) {
+export async function authenticate(credentialIds :string[], challenge :string, options? :AuthenticateOptions) :Promise<AuthenticationEncoded> {
     options = options ?? {}
 
     if(!utils.isBase64url(challenge))
@@ -202,7 +191,7 @@ export async function login(credentialIds :string[], challenge :string, options?
 
     const response = auth.response as AuthenticatorAssertionResponse
     
-    const AuthenticationEncoded :AuthenticationEncoded = {
+    const authentication :AuthenticationEncoded = {
         credentialId: auth.id,
         //userHash: utils.toBase64url(response.userHandle), // unreliable, optional for authenticators
         authenticatorData: utils.toBase64url(response.authenticatorData),
@@ -210,15 +199,6 @@ export async function login(credentialIds :string[], challenge :string, options?
         signature: utils.toBase64url(response.signature),
     }
 
-    /*
-    if(options.debug) {
-        AuthenticationEncoded.debug = {
-            client: parsers.parseClient(response.clientDataJSON),
-            authenticator: parsers.parseAuthenticator(response.authenticatorData),
-        }
-    }
-    */
-
-    return AuthenticationEncoded
+    return authentication
 }
 

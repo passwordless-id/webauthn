@@ -10,17 +10,17 @@
 
 
 <script type="module">
-import * as webauthn from '../dist/webauthn.min.js'
+import { client } from '../dist/webauthn.min.js'
 
 window.register = async function() {
 	console.log('Registering...')
-	let res = webauthn.register('MyUsername', 'random-challenge-base64-encoded')
+	let res = client.register('MyUsername', 'random-challenge-base64-encoded')
 	console.log(res)
 }
 
 window.login = async function() {
-	console.log('Login...')
-	let res = webauthn.login([], 'random-challenge-base64-encoded')
+	console.log('Authenticating...')
+	let res = client.authenticate([], 'random-challenge-base64-encoded')
 	console.log(res)
 }
 

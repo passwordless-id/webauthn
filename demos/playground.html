@@ -20,7 +20,14 @@
 
     <p class="mt-5 has-text-centered">This is a plaground for <a href="https://www.npmjs.com/package/@passwordless-id/webauthn">the webauthn wrapper library</a>. Nothing here is sent to any server, everything runs locally.</p>
 
-    <section>
+    <ul>
+        <li>Registration (browser part)</li>
+        <li>Registration (server part)</li>
+        <li>Authentication (browser part)</li>
+        <li>Authentication (server part)</li>
+    </ul>
+
+    <section id="register-browser">
         <header class="with-big-icon">
             <img src="img/icon_register.svg"/>
             <h2 class="title">Registration</h2>
@@ -78,125 +85,146 @@
             </div>
         </b-field>
 
-        <div class="block">
-            <pre>webauthn.register("{{registration.username}}", "{{registration.challenge}}", {{registration.options}})</pre>
-        </div>
+        <pre>await client.register("{{registration.username}}", "{{registration.challenge}}", {{registration.options}})</pre>
+        
+        <b-button class="my-3" type="is-primary" @click="register()">Register device</b-button>
 
-        <b-button type="is-primary" @click="register()">Register device</b-button>
+        <pre>{{registration.result ?? '...'}}</pre>
+        
+        <hr/>
 
-        <div v-if="registration.result" class="block">
-            <pre>{{registration.result}}</pre>
-        </div>
+        <p>And on the server side, verifying the registration leads to:</p>
+        
+        <pre>await server.verifyRegistration(registration, {challenge: "{{registration.challenge}}", origin: "{{origin}}"})</pre>
+
+        <p>Resulting into:</p>
+        
+        <pre>{{registration.parsed ?? '...'}}</pre>
+
+        
+        
+        
     </section>
 
 
     <section>
-    <header class="with-big-icon">
-        <img src="img/icon_authenticate.svg"/>
-        <h2 class="title">Authentication</h2>
-    </header>
+        <header class="with-big-icon">
+            <img src="img/icon_authenticate.svg"/>
+            <h2 class="title">Authentication</h2>
+        </header>
 
-    <b-field label="credentialId" horizontal custom-class="required">
-        <b-input v-model="authentication.credentialId" placeholder="Credential ID"></b-input>
-        <div></div>
-    </b-field>
-
-    <b-field label="challenge" horizontal custom-class="required">
-        <b-field>
-            <b-input v-model="authentication.challenge" placeholder="Challenge" expanded></b-input>
-            <p class="control">
-                <b-button type="is-primary" label="&#x21bb;" @click="authentication.challenge = newChallenge()"/>
-            </p>
+        <b-field label="credentialId" horizontal custom-class="required">
+            <b-input v-model="authentication.credentialId" placeholder="Credential ID"></b-input>
+            <div></div>
         </b-field>
-        <div class="hint">A server-side randomly generated nonce, base64url encoded.</div>
-    </b-field>
 
-    <b-field label="authenticatorType" horizontal>
-        <b-select v-model="authentication.options.authenticatorType" expanded>
-            <option>auto</option>
-            <option>local</option>
-            <option>extern</option>
-            <option>both</option>
-        </b-select>
-        <div class="hint">Which device to use as authenticator.</div>
-    </b-field>
+        <b-field label="challenge" horizontal custom-class="required">
+            <b-field>
+                <b-input v-model="authentication.challenge" placeholder="Challenge" expanded></b-input>
+                <p class="control">
+                    <b-button type="is-primary" label="&#x21bb;" @click="authentication.challenge = newChallenge()"/>
+                </p>
+            </b-field>
+            <div class="hint">A server-side randomly generated nonce, base64url encoded.</div>
+        </b-field>
 
-    <b-field label="timeout" horizontal>
-        <b-input v-model="authentication.options.timeout" placeholder="60000" expanded></b-input>
-        <div class="hint">Number of milliseconds the user has to respond to the biometric/PIN check.</div>
-    </b-field>
+        <b-field label="authenticatorType" horizontal>
+            <b-select v-model="authentication.options.authenticatorType" expanded>
+                <option>auto</option>
+                <option>local</option>
+                <option>extern</option>
+                <option>both</option>
+            </b-select>
+            <div class="hint">Which device to use as authenticator.</div>
+        </b-field>
 
-    <b-field label="userVerification" horizontal>
-        <b-select v-model="authentication.options.userVerification" expanded>
-            <option>required</option>
-            <option>preferred</option>
-            <option>discouraged</option>
-        </b-select>
-        <div class="hint">Whether a biometric/PIN check is required or not. This filters out security keys not having this capability.</div>
-    </b-field>
+        <b-field label="timeout" horizontal>
+            <b-input v-model="authentication.options.timeout" placeholder="60000" expanded></b-input>
+            <div class="hint">Number of milliseconds the user has to respond to the biometric/PIN check.</div>
+        </b-field>
 
-    <b-field label="debug" horizontal>
-        <b-checkbox v-model="authentication.options.debug" expanded></b-checkbox>
-    </b-field>
+        <b-field label="userVerification" horizontal>
+            <b-select v-model="authentication.options.userVerification" expanded>
+                <option>required</option>
+                <option>preferred</option>
+                <option>discouraged</option>
+            </b-select>
+            <div class="hint">Whether a biometric/PIN check is required or not. This filters out security keys not having this capability.</div>
+        </b-field>
 
-    <pre>webauthn.login(["{{authentication.credentialId}}"], "{{authentication.challenge}}", {{authentication.options}})</pre>
+        <b-field label="debug" horizontal>
+            <b-checkbox v-model="authentication.options.debug" expanded></b-checkbox>
+        </b-field>
 
-    <b-button type="is-primary" @click="login()">Login</b-button>
+        <pre>webauthn.authenticate(["{{authentication.credentialId}}"], "{{authentication.challenge}}", {{authentication.options}})</pre>
 
-    <pre>{{authentication.result}}</pre>
-</section>
+        <b-button type="is-primary" @click="login()">Login</b-button>
+
+        <pre>{{authentication.result ?? '...'}}</pre>
+        
+        <hr/>
+
+        <p>And on the server side, verifying the authentication leads to:</p>
+        
+        <pre>await server.verifyAuthentication(authentication, {challenge: "{{authentication.challenge}}", origin: "{{origin}}"})</pre>
+
+        <p>Resulting into:</p>
+        
+        <pre>{{authentication.parsed ?? '...'}}</pre>
+    </section>
 
 
-<section>
-    <header class="with-big-icon">
-      <img src="img/icon_validate.svg"/>
-      <h2 class="title">Validation</h2>
-    </header>
+    <section>
+        <header class="with-big-icon">
+            <img src="img/icon_validate.svg"/>
+            <h2 class="title">Signature validation</h2>
+        </header>
+        <p>For completeness purpose, here is how only the signature is verified.</p>
 
-    <b-field label="Algorithm" horizontal>
-        <b-select v-model="verification.algorithm" expanded>
-            <option>RS256</option>
-            <option>ES256</option>
-        </b-select>
-        <div class="hint">The algorithm used for the public key created during registration.</div>
-    </b-field>
+        <b-field label="Algorithm" horizontal>
+            <b-select v-model="verification.algorithm" expanded>
+                <option>RS256</option>
+                <option>ES256</option>
+            </b-select>
+            <div class="hint">The algorithm used for the public key created during registration.</div>
+        </b-field>
 
-    <b-field label="PublicKey" horizontal>
-        <b-input v-model="verification.publicKey" type="textarea"></b-input>
-        <div class="hint">The public key created during registration.</div>
-    </b-field>
+        <b-field label="PublicKey" horizontal>
+            <b-input v-model="verification.publicKey" type="textarea"></b-input>
+            <div class="hint">The public key created during registration.</div>
+        </b-field>
 
-    <hr/>
+        <hr/>
 
-    <b-field label="AuthenticatorData" horizontal>
-        <b-input v-model="verification.authenticatorData" type="textarea"></b-input>
-        <div class="hint"><pre v-if="verification.authenticatorData">{{parseAuthData(verification.authenticatorData)}}</pre></div>
-    </b-field>
+        <b-field label="AuthenticatorData" horizontal>
+            <b-input v-model="verification.authenticatorData" type="textarea"></b-input>
+            <div class="hint"><pre v-if="verification.authenticatorData">{{parseAuthData(verification.authenticatorData)}}</pre></div>
+        </b-field>
 
-    <b-field label="ClientData" horizontal>
-        <b-input v-model="verification.clientData" type="textarea"></b-input>
-        <div class="hint"><pre v-if="verification.clientData">{{parseClientData(verification.clientData)}}</pre></div>
-    </b-field>
+        <b-field label="ClientData" horizontal>
+            <b-input v-model="verification.clientData" type="textarea"></b-input>
+            <div class="hint"><pre v-if="verification.clientData">{{parseClientData(verification.clientData)}}</pre></div>
+        </b-field>
 
-    <b-field label="Signature" horizontal>
-        <b-input v-model="verification.signature" type="textarea"></b-input>
-        <div class="hint">
-            <p>signature = sign(algorithm, publicKey, authenticatorData + sha256(clientData))</p>
+        <b-field label="Signature" horizontal>
+            <b-input v-model="verification.signature" type="textarea"></b-input>
+            <div class="hint">
+                <p>signature = sign(algorithm, publicKey, authenticatorData + sha256(clientData))</p>
+            </div>
+        </b-field>
+
+        <b-field horizontal>
+            <b-button type="is-primary" @click="verifySignature()">Verify</b-button>
+            <div class="hint message" :class="{'is-success': verification.isValid, 'is-danger': !verification.isValid}"
+            v-if="verification.isValid !== null">
+            <div class="message-body">
+                Signature is {{verification.isValid ? 'valid' : 'invalid'}}
+            </div>
         </div>
-    </b-field>
+        </b-field>
 
-    <b-field horizontal>
-        <b-button type="is-primary" @click="verifySignature()">Verify</b-button>
-        <div class="hint message" :class="{'is-success': verification.isValid, 'is-danger': !verification.isValid}"
-         v-if="verification.isValid !== null">
-        <div class="message-body">
-            Signature is {{verification.isValid ? 'valid' : 'invalid'}}
-        </div>
-    </div>
-    </b-field>
-
-    
-</section>
+        
+    </section>
 
 </main>
 

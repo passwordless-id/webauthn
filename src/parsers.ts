@@ -1,6 +1,6 @@
 import * as authenticators from './authenticators'
 import * as utils from './utils'
-import { AuthenticatorInfo, ClientInfo } from './types'
+import { AuthenticatorInfo, ClientInfo, RegistrationEncoded, RegistrationParsed, AuthenticationEncoded, AuthenticationParsed } from './types'
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -26,3 +26,21 @@ export function parseAttestation(data :string|ArrayBuffer) :unknown {
 
 
 
+export function parseRegistration(registration :RegistrationEncoded) :RegistrationParsed {
+    return {
+        username: registration.username,
+        credential: registration.credential,
+
+        client:        parseClient(registration.clientData),
+        authenticator: parseAuthenticator(registration.authenticatorData),
+        attestation:   registration.attestationData ? parseAttestation(registration.attestationData) : null
+    }
+}
+
+export function parseAuthentication(authentication :AuthenticationEncoded) :AuthenticationParsed {
+    return {
+        credentialId:  authentication.credentialId,
+        client:        parseClient(authentication.clientData),
+        authenticator: parseAuthenticator(authentication.authenticatorData)
+    }
+}

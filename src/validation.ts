@@ -1,6 +1,6 @@
 import * as utils from './utils'
 import * as parsers from './parsers'
-import { NamedAlgo, RegisterResult, LoginResult } from './types'
+import { NamedAlgo, RegistrationEncoded, AuthenticationEncoded } from './types'
 
 
 
@@ -69,6 +69,6 @@ export async function verify({algorithm, publicKey, authenticatorData, clientDat
 export async function verifyRegistration(login :RegistrationResult, expectedChallenge, expectedOrigin) {
 }
 
-export async function verifyLogin(login :LoginResult, expectedChallenge, expectedOrigin, credential) {
+export async function verifyLogin(login :AuthenticationEncoded, expectedChallenge, expectedOrigin, credential) {
 }
 */
