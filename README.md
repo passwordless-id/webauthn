@@ -118,13 +118,12 @@ The `registration` object looks like this:
 {
   "username": "Arnaud",
   "credential": {
-    "id": "tIbwHucpNqA5KXeb_7_fXHAZYm5yPiYK1KrTgbie3ZQ",
-    "publicKey": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApVXqTTd7edPEN5E71jta6iE8LlOWDySooLC3qRg31SAJc_FYceD7q_PNVh9UPuedr2OX5DP1GzCP262vp8rJuCqLtR7xPle7iu_rdmQHxPketGtx2O8XkAqwNRO74sNU0J2VJ0Cq3cCPpk53FUZczyhP-gJaOogZh_w05BJtnpM8FtLBFcdWlimveRtZ1QQZhX-bd92mmwA9bFWkbauEdklrg3TdJFmBPyj_6ybqs3ocHqxH4hAsdVFvjp77x0O4oqcupkcKUPfXO3GyNEoMlrVo30oj34r_6ny4F_PeZESyDWCG3i4MR3OrKi8zfCqxjBRtMOdcWKDq2FDEDG4PVQIDAQAB",
-    "algorithm": "RS256"
+    "id": "EfDlefdOHjBOkRLsjtTTsNXf64-4d0Zb9zO_Ivj4eLI",
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER3xWhgyoePGH6iUDhr3ATVugwT6Vq9xg8HluGVHrqAJbUvWxtDlzQV0xe5l_dfzkaNkoPwzrxs_3wA8Jxr9RDA==",
+    "algorithm": "ES256"
   },
-  "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiYcFjK3EuBtuEw3lDcvpYAILSG8B7nKTagOSl3m_-_31xwGWJucj4mCtSq04G4nt2UpAEDAzkBACBZAQClVepNN3t508Q3kTvWO1rqITwuU5YPJKigsLepGDfVIAlz8Vhx4Pur881WH1Q-552vY5fkM_UbMI_bra-nysm4Kou1HvE-V7uK7-t2ZAfE-R60a3HY7xeQCrA1E7viw1TQnZUnQKrdwI-mTncVRlzPKE_6Alo6iBmH_DTkEm2ekzwW0sEVx1aWKa95G1nVBBmFf5t33aabAD1sVaRtq4R2SWuDdN0kWYE_KP_rJuqzehwerEfiECx1UW-OnvvHQ7iipy6mRwpQ99c7cbI0SgyWtWjfSiPfiv_qfLgX895kRLINYIbeLgxHc6sqLzN8KrGMFG0w51xYoOrYUMQMbg9VIUMBAAE=",
-  "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiTXpJd1pEQXpNelF0TkRoak55MDBOMk5oTFRnek5qa3RPVE01TkRjMFl6ZzFaamRpIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ==",
-  "attestationData": null
+  "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiYcFjK3EuBtuEw3lDcvpYAIBHw5Xn3Th4wTpES7I7U07DV3-uPuHdGW_czvyL4-HiypQECAyYgASFYIEd8VoYMqHjxh-olA4a9wE1boME-lavcYPB5bhlR66gCIlggW1L1sbQ5c0FdMXuZf3X85GjZKD8M68bP98APCca_UQw=",
+  "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiNGU4YjFiYWMtMmJiOC00YjIzLWI5YzAtZWY1NTk5MjU5OWY0Iiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ=="
 }
 ```
 
@@ -147,6 +146,35 @@ Either this operation fails and throws an Error, or the verification is successf
 Example result:
 
 ```json
+{
+  "username": "Arnaud",
+  "credential": {
+    "id": "EfDlefdOHjBOkRLsjtTTsNXf64-4d0Zb9zO_Ivj4eLI",
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAER3xWhgyoePGH6iUDhr3ATVugwT6Vq9xg8HluGVHrqAJbUvWxtDlzQV0xe5l_dfzkaNkoPwzrxs_3wA8Jxr9RDA==",
+    "algorithm": "ES256"
+  },
+  "client": {
+    "type": "webauthn.create",
+    "challenge": "4e8b1bac-2bb8-4b23-b9c0-ef55992599f4",
+    "origin": "http://localhost:8080",
+    "crossOrigin": false
+  },
+  "authenticator": {
+    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
+    "flags": {
+      "userPresent": true,
+      "userVerified": true,
+      "backupEligibility": false,
+      "backupState": false,
+      "attestedData": true,
+      "extensionsIncluded": false
+    },
+    "counter": 0,
+    "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
+    "name": "Windows Hello Hardware Authenticator"
+  },
+  "attestation": null
+}
 ```
 
 **NOTE:** Currently, the *attestation* which proves the exact model type of the authenticator is not verified. Do I need attestation?

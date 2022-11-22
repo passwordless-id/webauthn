@@ -1,4 +1,4 @@
-{
+export default {
   "9c835346-796b-4c27-8898-d6032f515cc5": {
     "name": "Cryptnox FIDO2"
   },

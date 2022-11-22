@@ -2,6 +2,19 @@
      Encoding/Decoding Utils
 ********************************/
 
+/*
+let webCrypto :any = null
+
+export async function getCrypto() {
+    if(!webCrypto) {
+        console.log(window?.crypto)
+        webCrypto = window?.crypto ?? (await import("crypto")).webcrypto
+        console.log(webCrypto)
+    }
+    return webCrypto
+}
+*/
+
 
 export function randomChallenge() {
     return crypto.randomUUID()

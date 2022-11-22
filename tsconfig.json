@@ -7,9 +7,17 @@
     "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
     
     "moduleResolution": "node",
-    "resolveJsonModule": true,
+    //"resolveJsonModule": true,
     
     "outDir": "dist/esm",
+    //"outFile": "dist/webauthn.js",
     "declaration": true,
-  }
+
+  },
+  "include": [
+    "./src/**/*.ts"
+  ],
+  "exclude": [
+    "./src/**/*.test.ts",
+  ]
 }
