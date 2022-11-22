@@ -15,6 +15,8 @@ Check out the demos:
 Installation / Usage
 --------------------
 
+**REQUIRES NODE v19+!!!** (because the `WebCrypto` is only available as `crypto` global starting from node 19!)
+
 NPM:
 
 ```bash

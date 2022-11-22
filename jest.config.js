@@ -4,7 +4,7 @@
 
 export default {
   preset: 'ts-jest',
-  testEnvironment: 'jsdom', //'node',
+  testEnvironment: 'node', // 'jsdom', //'node',
   /*
    globals: {
     crypto,
