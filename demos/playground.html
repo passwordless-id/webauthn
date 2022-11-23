@@ -102,7 +102,9 @@
         <pre>{{registration.parsed ?? '...'}}</pre>
 
         
-        
+        <div class="notification is-warning" v-if="registration.parsed">
+            <p>At this point, you should store the `credential` and associate it with the user account. You will need it later to verify authentication attempts.</p>
+        </div>
         
     </section>
 
@@ -173,17 +175,23 @@ const credentialKey = {
     algorithm: "{{registration?.parsed?.credential?.algorithm ?? '...'}}"
 }
 
-const verified = await server.verifyAuthentication(res, credentialKey, {
+const expected = {
     challenge: "{{authentication?.challenge ?? '...'}}",
     origin: "{{origin}}",
     userVerified: {{authentication?.options?.userVerification === 'required'}},
     counter: 0
-})
+}
+
+const verified = await server.verifyAuthentication(res, credentialKey, expected)
         </pre>
 
         <p>Resulting into:</p>
         
         <pre>{{authentication.parsed ?? '...'}}</pre>
+
+        <div class="notification is-success" v-if="authentication.parsed">
+            <p>Please note that the parsed result is returned for the sake of completeness. It is already verified, including the signature.</p>
+        </div>
     </section>
 
 
@@ -192,7 +200,9 @@ const verified = await server.verifyAuthentication(res, credentialKey, {
             <img src="img/icon_validate.svg"/>
             <h2 class="title">Signature validation</h2>
         </header>
-        <p>For completeness purpose, here is how only the signature is verified.</p>
+        <p>This part is mainly for debugging purposes or validation.</p>
+        <hr/>
+
 
         <b-field label="Algorithm" horizontal>
             <b-select v-model="verification.algorithm" expanded>

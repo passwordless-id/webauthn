@@ -45,8 +45,8 @@ export async function verifyAuthentication(authenticationRaw: AuthenticationEnco
         signature: authenticationRaw.signature
     })
 
-    //if(!isValidSignature)
-    //    throw new Error(`Invalid signature: ${authenticationRaw.signature}`)
+    if(!isValidSignature)
+        throw new Error(`Invalid signature: ${authenticationRaw.signature}`)
 
     const authentication = parseAuthentication(authenticationRaw)
 
