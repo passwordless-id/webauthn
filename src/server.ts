@@ -3,10 +3,27 @@ import { AuthenticationEncoded, AuthenticationParsed, CredentialKey, NamedAlgo, 
 import * as utils from './utils'
 
 
-interface RegistrationChecks {
-    challenge: string,
-    origin: string
+async function isValid(validator :any, value :any) :Promise<boolean> {
+   if(typeof validator === 'function') {
+        const res = validator(value)
+        if(res instanceof Promise)
+            return await res
+        else
+            return res
+    }
+    // the validator can be a single value too
+    return validator === value
 }
+
+async function isNotValid(validator :any, value :any) :Promise<boolean> {
+    return !(await isValid(validator, value))
+}
+
+interface RegistrationChecks {
+    challenge: string | Function,
+    origin: string | Function
+}
+
 
 export async function verifyRegistration(registrationRaw: RegistrationEncoded, expected: RegistrationChecks): Promise<RegistrationParsed> {
     const registration = parseRegistration(registrationRaw)
@@ -15,10 +32,10 @@ export async function verifyRegistration(registrationRaw: RegistrationEncoded, e
     if (registration.client.type !== "webauthn.create")
         throw new Error(`Unexpected ClientData type: ${registration.client.type}`)
 
-    if (registration.client.origin !== expected.origin)
+    if (await isNotValid(expected.origin, registration.client.origin))
         throw new Error(`Unexpected ClientData origin: ${registration.client.origin}`)
 
-    if (registration.client.challenge !== expected.challenge)
+    if (await isNotValid(expected.challenge, registration.client.challenge))
         throw new Error(`Unexpected ClientData challenge: ${registration.client.challenge}`)
 
     return registration
@@ -26,8 +43,8 @@ export async function verifyRegistration(registrationRaw: RegistrationEncoded, e
 
 
 interface AuthenticationChecks {
-    challenge: string,
-    origin: string,
+    challenge: string | Function,
+    origin: string | Function,
     userVerified: boolean,
     counter: number
 }
@@ -53,14 +70,14 @@ export async function verifyAuthentication(authenticationRaw: AuthenticationEnco
     if (authentication.client.type !== "webauthn.get")
         throw new Error(`Unexpected clientData type: ${authentication.client.type}`)
 
-    if (authentication.client.origin !== expected.origin)
-        throw new Error(`Unexpected clientData origin: ${authentication.client.origin}`)
+    if (await isNotValid(expected.origin, authentication.client.origin))
+        throw new Error(`Unexpected ClientData origin: ${authentication.client.origin}`)
 
-    if (authentication.client.challenge !== expected.challenge)
-        throw new Error(`Unexpected clientData challenge: ${authentication.client.challenge}`)
+    if (await isNotValid(expected.challenge, authentication.client.challenge))
+        throw new Error(`Unexpected ClientData challenge: ${authentication.client.challenge}`)
 
     // this only works because we consider `rp.origin` and `rp.id` to be the same during authentication/registration
-    const rpId = new URL(expected.origin).hostname
+    const rpId = new URL(authentication.client.origin).hostname
     const expectedRpIdHash = utils.toBase64url(await utils.sha256(utils.toBuffer(rpId)))
     if (authentication.authenticator.rpIdHash !== expectedRpIdHash)
         throw new Error(`Unexpected RpIdHash: ${authentication.authenticator.rpIdHash} vs ${expectedRpIdHash}`)
