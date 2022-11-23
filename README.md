@@ -15,9 +15,9 @@ Check out the demos:
 Installation / Usage
 --------------------
 
-**REQUIRES NODE v19+!!!** (because the `WebCrypto` is only available as `crypto` global starting from node 19!)
+### NPM / Node
 
-NPM:
+*REQUIRES NODE v19+!!!* (because the `WebCrypto` is only available as `crypto` global starting from node 19!)
 
 ```bash
 npm install @passwordless-id/webauthn
@@ -27,9 +27,10 @@ npm install @passwordless-id/webauthn
 import * as webauthn from '@passwordless-id/webauthn'
 ```
 
-Browser:
 
-```js
+### Browser
+
+```html
 <script type="module">
   import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn'
 </script>
