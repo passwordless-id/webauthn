@@ -127,6 +127,16 @@ type VerifyParams = {
 
 
 // https://w3c.github.io/webauthn/#sctn-verifying-assertion
+// https://w3c.github.io/webauthn/#sctn-signature-attestation-types
+/* Emphasis mine:
+
+6.5.6. Signature Formats for Packed Attestation, FIDO U2F Attestation, and **Assertion Signatures**
+
+[...] For COSEAlgorithmIdentifier -7 (ES256) [...] the sig value MUST be encoded as an ASN.1 [...]
+[...] For COSEAlgorithmIdentifier -257 (RS256) [...] The signature is not ASN.1 wrapped.
+[...] For COSEAlgorithmIdentifier -37 (PS256) [...] The signature is not ASN.1 wrapped.
+*/
+// see also https://gist.github.com/philholden/50120652bfe0498958fd5926694ba354
 export async function verifySignature({ algorithm, publicKey, authenticatorData, clientData, signature }: VerifyParams): Promise<boolean> {
     const algoParams = getAlgoParams(algorithm)
     let cryptoKey = await parseCryptoKey(algoParams, publicKey)
@@ -143,8 +153,22 @@ export async function verifySignature({ algorithm, publicKey, authenticatorData,
     console.debug('Signature: ' + signature)
 
     // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify
-    const signatureBuffer = utils.parseBase64url(signature)
+    let signatureBuffer = utils.parseBase64url(signature)
+    if(algorithm == 'ES256')
+        signatureBuffer = convertASN1toRaw(signatureBuffer)
+
     const isValid = await crypto.subtle.verify(algoParams, cryptoKey, signatureBuffer, comboBuffer)
 
     return isValid
+}
+
+function convertASN1toRaw(signatureBuffer :ArrayBuffer) {
+    // Convert signature from ASN.1 sequence to "raw" format
+    const usignature = new Uint8Array(signatureBuffer);
+    const rStart = usignature[4] === 0 ? 5 : 4;
+    const rEnd = rStart + 32;
+    const sStart = usignature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
+    const r = usignature.slice(rStart, rEnd);
+    const s = usignature.slice(sStart);
+    return new Uint8Array([...r, ...s]);
 }
