@@ -180,7 +180,7 @@ Example result:
 }
 ```
 
-**NOTE:** Currently, the *attestation* which proves the exact model type of the authenticator is not verified. Do I need attestation?
+**NOTE:** Currently, the *attestation* which proves the exact model type of the authenticator is *not verified*. [Do I need attestation?](https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651)
 
 
 Authentication
