@@ -77,7 +77,7 @@ The registration process occurs in four steps:
 
 1. The browser requests a challenge from the server
 2. The browser triggers `client.register(...)` and sends the result to the server
-3. The server parses and verifies the payload
+3. The server parses and verifies the registration payload
 4. The server stores the credential key of this device for the user account
 
 Note that unlike traditionnal authentication, the credential key is attached to the device. Therefore, it might make sense for a single user account to have multiple credential keys.
@@ -156,31 +156,30 @@ Example result:
     "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
     "algorithm": "ES256"
   },
-  "client": {
-    "type": "webauthn.create",
-    "challenge": "a7c61ef9-dc23-4806-b486-2428938a547e",
-    "origin": "http://localhost:8080",
-    "crossOrigin": false
-  },
   "authenticator": {
-    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
-    "flags": {
-      "userPresent": true,
-      "userVerified": true,
-      "backupEligibility": false,
-      "backupState": false,
-      "attestedData": true,
-      "extensionsIncluded": false
-    },
-    "counter": 0,
-    "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
+    ...
     "name": "Windows Hello Hardware Authenticator"
   },
-  "attestation": null
+  ...
 }
 ```
 
-**NOTE:** Currently, the *attestation* which proves the exact model type of the authenticator is *not verified*. [Do I need attestation?](https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651)
+> **NOTE:** Currently, the *attestation* which proves the exact model type of the authenticator is *not verified*. [Do I need attestation?](https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651)
+
+### 4. Store the credential key
+
+The credential key is the most important part and should be stored in a database for later since it will be used to verify the authentication signature.
+
+```json
+"credential": {
+  "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
+  "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
+  "algorithm": "ES256"
+},
+```
+
+Please note that unlike traditional systems, a user might have multiple credential keys, one per device.
+
 
 
 Authentication
@@ -197,10 +196,25 @@ Both have their pros & cons (TODO: article).
 
 The authentication procedure is similar to the procedure and divided in four steps.
 
-1. Request a challenge and possibly a list of allowed credential IDs
-2. Authenticate by 
+1. The browser requests a challenge from the server
+2. The browser triggers `client.authenticate(...)` and sends the result to the server
+3. The server loads the credential key used for authentication
+4. The server parses and verifies the authentication payload
 
-### Browser side
+
+
+
+### 1. Requesting challenge
+
+The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks.
+
+```
+const challenge = /* request it from server */
+```
+
+Remember it on the server side during a certain amount of time and "consume" it once used.
+
+### 2. Trigger authentication in browser
 
 Example call:
 
@@ -231,9 +245,8 @@ Parameters:
 - `challenge`: A server-side randomly generated string, the base64url encoded version will be signed.
 - `options`: See [below](#options).
 
-### Server side
 
-
+### 3. In the server, load the credential key
 
 ```js
 import { server } from '@passwordless-id/webauthn' 
@@ -250,47 +263,28 @@ const expected = {
     userVerified: true, // should be set if `userVerification` was set to `required` in the authentication options (default)
     counter: 0 // for enhanced security, you can store the number of times this authenticator was used and ensure it increases each time
 }
+```
 
-const expectedWithFunctions = {
+Often, it might also be more practical to use functions to verify challenge or origin. This is possible too:
+
+```js
+const expected = {
     challenge: async (challenge) => { /* async call to DB for example */ return true },
-    origin: (origin) => { return listOfAllowedOrigins.includes(origin)},
+    origin: (origin) => listOfAllowedOrigins.includes(origin),
     userVerified: true, // no function allowed here
     counter: 0  // no function allowed here
 }
+```
 
+### 4. Verify the authentication
+
+```js
 const authenticationParsed = await server.verifyAuthentication(authentication, credentialKey, expected)
 ```
 
-Either this operation fails and throws an Error, or the verification is successful and returns the parsed registration.
-Example result:
+Either this operation fails and throws an Error, or the verification is successful and returns the parsed authentication payload.
 
-```json
-{
-  "credentialId": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
-  "client": {
-    "type": "webauthn.get",
-    "challenge": "56535b13-5d93-4194-a282-f234c1c24500",
-    "origin": "http://localhost:8080",
-    "crossOrigin": false,
-    "other_keys_can_be_added_here": "do not compare clientDataJSON against a template. See https://goo.gl/yabPex"
-  },
-  "authenticator": {
-    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
-    "flags": {
-      "userPresent": true,
-      "userVerified": true,
-      "backupEligibility": false,
-      "backupState": false,
-      "attestedData": false,
-      "extensionsIncluded": false
-    },
-    "counter": 1
-  },
-  "signature": "MEUCIAqtFVRrn7q9HvJCAsOhE3oKJ-Hb4ISfjABu4lH70MKSAiEA666slmop_oCbmNZdc-QemTv2Rq4g_D7UvIhWT_vVp8M="
-}
-```
-
-Please note that the parsed result is returned for the sake of completeness. It is already verified, including the signature.
+Please note that this parsed result `authenticationParsed` has no real use. It is solely returned for the sake of completeness. The `verifyAuthentication` already verifies the payload, including the signature.
 
 
 Remarks
@@ -327,17 +321,6 @@ Unlike the [webauthn protocol](), some defaults are different:
 - The `username` is used for both the protocol level user "name" and "displayName"
 
 
-Parsing
--------
-
-If you want to parse the encoded registration or authentication without verifying it, it is possible using the `parsers` module.
-
-```js
-import { parsers } from 'webauthn'
-
-// TODO
-```
-
 Options
 -------
 
@@ -358,48 +341,141 @@ The following options are available for both `register` and `authenticate`.
 Parsing data
 ------------
 
-**`clientData`**
+If you want to parse the encoded registration, authentication or parts of it without verifying it, it is possible using the `parsers` module. This might be helpful when debugging.
+
+### Registration
+
 ```js
-webauthn.parseAuthenticator('eyJ0eXBlIjoid2...')
+import { parsers } from '@passwordless-id/webauthn'
+
+parsers.parseRegistration({
+      "username": "Arnaud",
+      "credential": {
+        "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
+        "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
+        "algorithm": "ES256"
+      },
+      "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiYcFjK3EuBtuEw3lDcvpYAIN_duB4SXSTMv7L51KME_HqF6zjjujSz_EivOatkT8XVpQECAyYgASFYIIMmKkJlAJg5_Se3UecZfh5cgANEdl1ebIEEZ0hl2y7fIlgg8QqxHQ9SFb75Mk5kQ9esvadwtjuD02dDhf2WA9iYE1Q=",
+      "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiYTdjNjFlZjktZGMyMy00ODA2LWI0ODYtMjQyODkzOGE1NDdlIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ=="
+    })
 ```
+
 
 ```json
 {
-  "type": "webauthn.create",
-  "challenge": "MzIwZDAzMzQtNDhjNy00N2NhLTgzNjktOTM5NDc0Yzg1Zjdi",
-  "origin": "http://localhost:8080",
-  "crossOrigin": false
-}
-```
-
-
-
-**`authenticatorData`**
-
-```js
-webauthn.parseAuthenticator('SZYN5YgOjGh0NB...')
-```
-
-```json
-{
-  "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
-  "flags": {
-    "userPresent": true,
-    "userVerified": true,
-    "backupEligibility": false,
-    "backupState": false,
-    "attestedData": true,
-    "extensionsIncluded": false
+  "username": "Arnaud",
+  "credential": {
+    "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
+    "algorithm": "ES256"
   },
-  "counter": 0,
-  "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
-  "name": "Windows Hello Hardware Authenticator"
+  "client": {
+    "type": "webauthn.create",
+    "challenge": "a7c61ef9-dc23-4806-b486-2428938a547e",
+    "origin": "http://localhost:8080",
+    "crossOrigin": false
+  },
+  "authenticator": {
+    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
+    "flags": {
+      "userPresent": true,
+      "userVerified": true,
+      "backupEligibility": false,
+      "backupState": false,
+      "attestedData": true,
+      "extensionsIncluded": false
+    },
+    "counter": 0,
+    "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
+    "name": "Windows Hello Hardware Authenticator"
+  },
+  "attestation": null
 }
+```
+
+
+### Authentication
+
+```js
+import { parsers } from '@passwordless-id/webauthn'
+
+parsers.parseAuthentication({
+      "credentialId": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
+      "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFAAAAAQ==",
+      "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiNTY1MzViMTMtNWQ5My00MTk0LWEyODItZjIzNGMxYzI0NTAwIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlLCJvdGhlcl9rZXlzX2Nhbl9iZV9hZGRlZF9oZXJlIjoiZG8gbm90IGNvbXBhcmUgY2xpZW50RGF0YUpTT04gYWdhaW5zdCBhIHRlbXBsYXRlLiBTZWUgaHR0cHM6Ly9nb28uZ2wveWFiUGV4In0=",
+      "signature": "MEUCIAqtFVRrn7q9HvJCAsOhE3oKJ-Hb4ISfjABu4lH70MKSAiEA666slmop_oCbmNZdc-QemTv2Rq4g_D7UvIhWT_vVp8M="
+    })
+```
+
+```json
+{
+  "credentialId": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
+  "client": {
+    "type": "webauthn.get",
+    "challenge": "56535b13-5d93-4194-a282-f234c1c24500",
+    "origin": "http://localhost:8080",
+    "crossOrigin": false,
+    "other_keys_can_be_added_here": "do not compare clientDataJSON against a template. See https://goo.gl/yabPex"
+  },
+  "authenticator": {
+    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
+    "flags": {
+      "userPresent": true,
+      "userVerified": true,
+      "backupEligibility": false,
+      "backupState": false,
+      "attestedData": false,
+      "extensionsIncluded": false
+    },
+    "counter": 1
+  },
+  "signature": "MEUCIAqtFVRrn7q9HvJCAsOhE3oKJ-Hb4ISfjABu4lH70MKSAiEA666slmop_oCbmNZdc-QemTv2Rq4g_D7UvIhWT_vVp8M="
+}
+```
+
+### `clientData`
+
+```js
+import { parsers } from '@passwordless-id/webauthn'
+
+parsers.parseClient("eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiYTdjNjFlZjktZGMyMy00ODA2LWI0ODYtMjQyODkzOGE1NDdlIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ==")
+```
+
+```json
+{
+    "type": "webauthn.create",
+    "challenge": "a7c61ef9-dc23-4806-b486-2428938a547e",
+    "origin": "http://localhost:8080",
+    "crossOrigin": false
+  }
+```
+
+
+
+### `authenticatorData`
+
+```js
+import { parsers } from '@passwordless-id/webauthn'
+
+parsers.parseAuthenticator("SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiYcFjK3EuBtuEw3lDcvpYAIN_duB4SXSTMv7L51KME_HqF6zjjujSz_EivOatkT8XVpQECAyYgASFYIIMmKkJlAJg5_Se3UecZfh5cgANEdl1ebIEEZ0hl2y7fIlgg8QqxHQ9SFb75Mk5kQ9esvadwtjuD02dDhf2WA9iYE1Q=")
+```
+
+```json
+{
+    "rpIdHash": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2M=",
+    "flags": {
+      "userPresent": true,
+      "userVerified": true,
+      "backupEligibility": false,
+      "backupState": false,
+      "attestedData": true,
+      "extensionsIncluded": false
+    },
+    "counter": 0,
+    "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
+    "name": "Windows Hello Hardware Authenticator"
+  }
 ```
 
 Please note that `aaguid` and `name` are only available during registration.
-
-
-
-
 
