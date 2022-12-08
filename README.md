@@ -15,9 +15,7 @@ Check out the demos:
 Installation / Usage
 --------------------
 
-### NPM / Node
-
-*REQUIRES NODE v19+!!!* (because the `WebCrypto` is only available as `crypto` global starting from node 19!)
+### NPM
 
 ```bash
 npm install @passwordless-id/webauthn
@@ -27,14 +25,14 @@ npm install @passwordless-id/webauthn
 import * as webauthn from '@passwordless-id/webauthn'
 ```
 
-
 ### Browser
 
 ```html
 <script type="module">
-  import * as webauthn from 'https://unpkg.com/@passwordless-id/webauthn'
+  import { client } from 'https://unpkg.com/@passwordless-id/webauthn'
 </script>
 ```
+### Import
 
 The `webauthn` module is basically a "bundle" composed of the following modules:
 
@@ -44,6 +42,15 @@ The `webauthn` module is basically a "bundle" composed of the following modules:
 - `utils`: various encoding, decoding, challenge generator and other utils
 
 It was designed that way so that you can import only the module(s) you need. That way, the size of your final js bundle is reduced even further. Importing all is dependency free and < 10kb anyway.
+
+So you might for example `import { client } from '@passwordless-id/webauthn'` for browser side stuff and `import { server } from '@passwordless-id/webauthn'` for server side stuff.
+
+### Runs in...
+
+- In Chrome, Edge, Safari (Firefox is still missing some pieces)
+- NodeJS **19+** (because the `WebCrypto` is only available as `crypto` global starting from node 19!)
+- Cloudflare Workers
+- Probably in most recent browsers/servers
 
 
 Utilities
