@@ -75,7 +75,7 @@ Particularly linux and "exotic" web browsers might not have support yet.
 await client.isLocalAuthenticator()
 ```
 
-This promise returns `true` or `false` depending on whether the device itself can act as authenticator. Otherwise, an "extern" authenticator like a smartphone or usb security key can be used. This information is mainly used for information messages and user guidance.
+This promise returns `true` or `false` depending on whether the device itself can act as authenticator. Otherwise, a "roaming" authenticator like a smartphone or usb security key can be used. This information is mainly used for information messages and user guidance.
 
 
 
@@ -340,10 +340,10 @@ The following options are available for both `register` and `authenticate`.
 - `timeout`: Number of milliseconds the user has to respond to the biometric/PIN check. *(Default: 60000)*
 - `userVerification`: Whether to prompt for biometric/PIN check or not. *(Default: "required")*
 - `authenticatorType`: Which device to use as authenticator. Possible values:
-    - `'auto'`: if the local device can be used as authenticator it will be preferred. Otherwise it will prompt for an external device. *(Default)*
+    - `'auto'`: if the local device can be used as authenticator it will be preferred. Otherwise it will prompt for a roaming device. *(Default)*
     - `'local'`: use the local device (using TouchID, FaceID, Windows Hello or PIN)
-    - `'extern'`: use an external device (security key or connected phone)
-    - `'both'`: prompt the user to choose between local or external device. The UI and user interaction in this case is platform specific.
+    - `'roaming'`: use a roaming device (security key or connected phone)
+    - `'both'`: prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
 - `attestation`: (Only for registration) If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this is not available on some platforms. *(Default: false)*
 - `debug`: If enabled, parses the "data" objects and provide it in a "debug" properties.
 

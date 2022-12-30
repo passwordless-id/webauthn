@@ -23,7 +23,7 @@
       <b-input v-model="username" placeholder="Username" @input="checkIsRegistered()" autocomplete="webauthn username"></b-input>
     </b-field>
     <b-field>
-      <b-checkbox v-model="isExternal">Use extern authenticator</b-checkbox>
+      <b-checkbox v-model="isRoaming">Use roaming authenticator (phone, usb key...)</b-checkbox>
     </b-field>
     <div>
       <b-button type="is-primary" @click="register()" :disabled="!username">Register device</b-button>
@@ -32,7 +32,16 @@
   </template>
   <template v-if="isAuthenticated">
     <p>{{'Hello ' + username + '!'}}</p>
-    <hr/>
+    <section v-if="registrationData && !authenticationData" style="text-align: left;">
+      <p><b>Credential ID:</b> {{registrationData.credential.id}}</p>
+      <p><b>Public Key:</b> {{registrationData.credential.publicKey.substring(0,32)}}...</p>
+      <p><b>Algorithm:</b> {{registrationData.credential.algorithm}}</p>
+      <p><b>Authenticator Name:</b> {{registrationData.authenticator.name}}</p>
+    </section>
+    <section v-if="authenticationData" style="text-align: left;">
+      <p><b>Credential ID:</b> {{authenticationData.credentialId}}</p>
+      <p><b>Signature:</b> {{authenticationData.signature.substring(0,32)}}...</p>
+    </section>
     <div>
       <b-button type="is-primary" @click="logout()">Sign Out</b-button>
     </div>

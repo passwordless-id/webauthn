@@ -21,7 +21,7 @@ export async function isLocalAuthenticator() :Promise<boolean> {
 async function getAuthAttachment(authType :AuthType) :Promise<AuthenticatorAttachment|undefined> {
     if(authType === "local")
         return "platform";
-    if(authType === "extern")
+    if(authType === "roaming" || authType === "extern")
         return "cross-platform";
     if(authType === "both")
         return undefined // The webauthn protocol considers `null` as invalid but `undefined` as "both"!
@@ -60,11 +60,11 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  * @param {Object} [options] Optional parameters.
  * @param {number} [options.timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
  * @param {'required'|'preferred'|'discouraged'} [options.userVerification='required'] Whether to prompt for biometric/PIN check or not.
- * @param {'auto'|'local'|'extern'|'both'}       [options.authenticatorType='auto'] Which device to use as authenticator.
- *          'auto': if the local device can be used as authenticator it will be preferred. Otherwise it will prompt for an external device.
+ * @param {'auto'|'local'|'roaming'|'both'}       [options.authenticatorType='auto'] Which device to use as authenticator.
+ *          'auto': if the local device can be used as authenticator it will be preferred. Otherwise it will prompt for a roaming device.
  *          'local': use the local device (using TouchID, FaceID, Windows Hello or PIN)
- *          'extern': use an external device (security key or connected phone)
- *          'both': prompt the user to choose between local or external device. The UI and user interaction in this case is platform specific.
+ *          'roaming': use a roaming device (security key or connected phone)
+ *          'both': prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
  * @param {boolean} [attestation=false] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data.
  *                                Note that this is not available on some platforms.
  */
@@ -131,23 +131,23 @@ async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport
 
     // 'hybrid' was added mid-2022 in the specs and currently not yet available in the official dom types
     // @ts-ignore
-    const extern :AuthenticatorTransport[] = ['hybrid', 'usb', 'ble', 'nfc']
+    const roaming :AuthenticatorTransport[] = ['hybrid', 'usb', 'ble', 'nfc']
     
     if(authType === "local")
         return local
-    if(authType === "extern")
-        return extern
+    if(authType == "roaming" || authType === "extern")
+        return roaming
     if(authType === "both")
-        return [...local, ...extern]
+        return [...local, ...roaming]
 
     // the default case: "auto", depending on device capabilities
     try {
         if(await isLocalAuthenticator())
             return local
         else
-            return extern
+            return roaming
     } catch(e) {
-        return [...local, ...extern]
+        return [...local, ...roaming]
     }
 }
 

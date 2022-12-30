@@ -1,5 +1,5 @@
-
-export type AuthType = 'auto' | 'local' | 'extern' | 'both'
+// 'extern' is deprecated in favor of 'roaming' but kept for compatibility purposes
+export type AuthType = 'auto' | 'local' | 'extern' | 'roaming' | 'both'
 
 
 // TODO: although algo "-8" is currently only used optionally by a few security keys, 

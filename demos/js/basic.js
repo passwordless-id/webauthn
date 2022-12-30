@@ -1,4 +1,4 @@
-import { client } from '../../dist/webauthn.min.js'
+import { client, parsers } from '../../dist/webauthn.min.js'
 
 const app = new Vue({
   el: '#app',
@@ -6,7 +6,9 @@ const app = new Vue({
     username: null,
     isRegistered: false,
     isAuthenticated: false,
-    isExternal: false
+    isRoaming: false,
+    registrationData: null,
+    authenticationData: null
   },
   methods: {
     async checkIsRegistered() {
@@ -14,36 +16,47 @@ const app = new Vue({
       this.isRegistered = !!window.localStorage.getItem(this.username)
     },
     async register() {
-      let res = await client.register(this.username, window.crypto.randomUUID(),{authType: this.isExternal ? 'extern' : 'auto'})
+      let res = await client.register(this.username, window.crypto.randomUUID(), { authType: this.isRoaming ? 'roaming' : 'auto' })
+      console.debug(res)
+
+      const parsed = parsers.parseRegistration(res)
+      console.log(parsed)
+
+      window.localStorage.setItem(this.username, parsed.credential.id)
+      this.isAuthenticated = true
+      this.registrationData = parsed
+
       this.$buefy.toast.open({
-          message: 'Registered!',
-          type: 'is-success'
+        message: 'Registered!',
+        type: 'is-success'
       })
 
-      console.log(res)
-
-      this.isAuthenticated = true;
-      window.localStorage.setItem(this.username, res.credential.id)
       await this.checkIsRegistered()
     },
     async login() {
       let credentialId = window.localStorage.getItem(this.username)
-      let res = await client.authenticate(credentialId ? [credentialId] : [], window.crypto.randomUUID(), {isExternal: this.isExternal})
-      console.log(res)
+      let res = await client.authenticate(credentialId ? [credentialId] : [], window.crypto.randomUUID(), { authType: this.isRoaming ? 'roaming' : 'auto' })
+      console.debug(res)
 
-      this.isAuthenticated = true;
+      const parsed = parsers.parseAuthentication(res)
+      console.log(parsed)
+
+      this.isAuthenticated = true
+      this.authenticationData = parsed
+
       this.$buefy.toast.open({
-          message: 'Signed in!',
-          type: 'is-success'
+        message: 'Signed in!',
+        type: 'is-success'
       })
     },
     async logout() {
       this.isAuthenticated = false;
       this.$buefy.toast.open({
-          message: 'Signed out!',
-          type: 'is-success'
+        message: 'Signed out!',
+        type: 'is-success'
       })
-
+      this.authenticationData = null
+      this.registrationData = null
     }
   }
 })
