@@ -16,6 +16,17 @@ Or the tutorial here:
 
 - https://blog.passwordless.id/new-webauthn-library-web-authentication-through-touch-swipe-face
 
+
+How does it work?
+-----------------
+
+This diagram shows how the webauthn protocol works, slightly simplified.
+
+![diagram](https://passwordless.id/protocols/webauthn/overview.svg)
+
+To learn more about the protocol, check out the webauthn guide at [Passwordless.ID](https://passwordless.id).
+
+
 Installation / Usage
 --------------------
 
