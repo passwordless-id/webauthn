@@ -122,7 +122,8 @@ Example call:
 ```js
 import { client } from '@passwordless-id/webauthn' 
 
-const registration = await client.register("Arnaud", "a7c61ef9-dc23-4806-b486-2428938a547e", {
+const challenge = "a7c61ef9-dc23-4806-b486-2428938a547e"
+const registration = await client.register("Arnaud", challenge, {
   "authenticatorType": "auto",
   "userVerification": "required",
   "timeout": 60000,
@@ -243,7 +244,8 @@ Example call:
 ```js
 import { client } from 'webauthn'
 
-const authentication = await webauthn.authenticate(["3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU"], "56535b13-5d93-4194-a282-f234c1c24500", {
+const challenge = "56535b13-5d93-4194-a282-f234c1c24500"
+const authentication = await client.authenticate(["3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU"], challenge, {
   "authenticatorType": "auto",
   "userVerification": "required",
   "timeout": 60000
