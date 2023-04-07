@@ -5,20 +5,42 @@ A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](h
 
 <img src="demos/img/banner-biometric-auth.svg" />
 
-Check out the demos:
+> This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider based on WebAuthn for strong authentication and implementing the OpenID protocol.
+
+Try out the playground to see how it works:
+
+- [Testing Playground](https://webauthn.passwordless.id/demos/playground.html)
+
+Or the demos with minial examples:
 
 - [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
 - [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
 - [Minimal Example (repository)](https://webauthn.passwordless.id/demos/example-raw.html)
-- [Testing Playground](https://webauthn.passwordless.id/demos/playground.html)
 
-Or the tutorial here:
+There is also a tutorial here:
 
 - https://blog.passwordless.id/new-webauthn-library-web-authentication-through-touch-swipe-face
 
 
-How does it work?
------------------
+
+What is the difference between this and Passwordless.ID?
+--------------------------------------------------------
+
+This library is a wrapper around the WebAuthn protocol. It is the technical foundation for strong authentication.
+
+[Passwordless.ID](https://passwordless.id) is a service. It provides is all the other things required for a complete authentication system:
+
+- multiple registered devices per account
+- user profile
+- e-mail verification (phone should come too at some point)
+- account recovery mechanisms
+- OAuth2/OpenID integration
+- ...
+
+This WebAuthn library enables you to build a custom solution, while [Passwordless.ID](https://passwordless.id) enables you to use a "Sign in with Passwordless.ID" button, a bit like "Sign in with Google/Microsoft/Apple" but platform neutral, secure and without configuration.
+
+How does the protocol work?
+---------------------------
 
 This diagram shows how the webauthn protocol works, slightly simplified.
 
@@ -62,7 +84,7 @@ So you might for example `import { client } from '@passwordless-id/webauthn'` fo
 
 ### Runs in...
 
-- In Chrome, Edge, Safari (Firefox is still missing some pieces)
+- In Chrome, Edge, Safari (*Firefox is still missing a [piece](https://github.com/passwordless-id/webauthn/issues/18)*)
 - NodeJS **19+** (because the `WebCrypto` is only available as `crypto` global starting from node 19!)
 - Cloudflare Workers
 - Probably in most recent browsers/servers
