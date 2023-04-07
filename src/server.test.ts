@@ -1,5 +1,4 @@
-import * as server from './server'
-import { client } from './index'
+import * as server from './server.js'
 
 test('Test RS256 signatures', async () => {
     const res = await server.verifySignature({

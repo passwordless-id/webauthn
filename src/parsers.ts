@@ -1,5 +1,5 @@
-import * as authenticators from './authenticators'
-import * as utils from './utils'
+import * as authenticators from './authenticators.js'
+import * as utils from './utils.js'
 import { AuthenticatorInfo, ClientInfo, RegistrationEncoded, RegistrationParsed, AuthenticationEncoded, AuthenticationParsed } from './types'
 
 const utf8Decoder = new TextDecoder('utf-8')

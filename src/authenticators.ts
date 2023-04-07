@@ -1,5 +1,5 @@
-import authenticatorMetadata from './authenticatorMetadata' //assert {type: 'json'}
-import * as utils from './utils'
+import authenticatorMetadata from './authenticatorMetadata.js' //assert {type: 'json'}
+import * as utils from './utils.js'
 
 
 export function parseAuthBuffer(authData :ArrayBuffer) {

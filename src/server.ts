@@ -1,6 +1,6 @@
-import { parseAuthentication, parseRegistration } from "./parsers";
-import { AuthenticationEncoded, AuthenticationParsed, CredentialKey, NamedAlgo, RegistrationEncoded, RegistrationParsed } from "./types";
-import * as utils from './utils'
+import { parseAuthentication, parseRegistration } from "./parsers.js";
+import { AuthenticationEncoded, AuthenticationParsed, CredentialKey, NamedAlgo, RegistrationEncoded, RegistrationParsed } from "./types.js";
+import * as utils from './utils.js'
 
 
 async function isValid(validator :any, value :any) :Promise<boolean> {

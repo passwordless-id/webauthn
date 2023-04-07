@@ -1,5 +1,5 @@
-import * as utils from './utils'
-import { AuthenticateOptions, AuthenticationEncoded, AuthType, NamedAlgo, NumAlgo, RegisterOptions, RegistrationEncoded } from './types'
+import * as utils from './utils.js'
+import { AuthenticateOptions, AuthenticationEncoded, AuthType, NamedAlgo, NumAlgo, RegisterOptions, RegistrationEncoded } from './types.js'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.

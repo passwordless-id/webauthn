@@ -1,4 +1,4 @@
-import {parsers} from './index'
+import {parsers} from './index.js'
 
 test('Test parseRegistration', async () => {
     const res = parsers.parseRegistration({
