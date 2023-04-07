@@ -7,7 +7,7 @@ A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](h
 
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider based on WebAuthn for strong authentication and implementing the OpenID protocol.
 
-Try out the playground to see how it works:
+Try out the playground to see how this library works:
 
 - [Testing Playground](https://webauthn.passwordless.id/demos/playground.html)
 
@@ -23,10 +23,13 @@ There is also a tutorial here:
 
 
 
+
 What is the difference between this and Passwordless.ID?
 --------------------------------------------------------
 
-This library is a wrapper around the WebAuthn protocol. It is the technical foundation for strong authentication.
+This library is a wrapper around the WebAuthn protocol.
+It is the technical foundation for strong authentication.
+No more, no less.
 
 [Passwordless.ID](https://passwordless.id) is a service. It provides is all the other things required for a complete authentication system:
 
@@ -37,7 +40,9 @@ This library is a wrapper around the WebAuthn protocol. It is the technical foun
 - OAuth2/OpenID integration
 - ...
 
-This WebAuthn library enables you to build a custom solution, while [Passwordless.ID](https://passwordless.id) enables you to use a "Sign in with Passwordless.ID" button, a bit like "Sign in with Google/Microsoft/Apple" but platform neutral, secure and without configuration.
+This WebAuthn library enables you to build a custom solution from scratch. In contrast, [Passwordless.ID](https://passwordless.id) enables you to use a "Sign in with Passwordless.ID" button, a bit like "Sign in with Google/Microsoft/Apple" but platform neutral, secure and without configuration.
+
+
 
 How does the protocol work?
 ---------------------------
@@ -46,7 +51,8 @@ This diagram shows how the webauthn protocol works, slightly simplified.
 
 ![diagram](https://passwordless.id/protocols/webauthn/overview.svg)
 
-To learn more about the protocol, check out the webauthn guide at [Passwordless.ID](https://passwordless.id).
+Further documentation about the protocol can be found in the webauthn guide at [Passwordless.ID](https://passwordless.id).
+
 
 
 Installation / Usage
