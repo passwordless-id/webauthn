@@ -319,17 +319,21 @@ Remarks
 
 ### The `challenge` is critical
 
-It should be truly random. Otherwise, your whole implementation might become vulnerable.
+The challenge must be a random value.
+Otherwise, your implementation might become vulnerable to replay attacks. 
+
 
 ### There can be multiple credentials per user ID
 
 Unlike traditional authentication, you can have multiple public/private key pairs per user: one per device.
+
 
 ### Authentication does *not* provide `username` out of the box
 
 Only `credentialId` is provided during the authentication.
 
 So either you maintain a mapping `credentialId -> username` in your database, or you add the `username` in your frontend to backend communication.
+
 
 ### Let the platform choose the user
 
@@ -338,8 +342,7 @@ You can *not* specify any credential ids during authentication. In that case, th
 
 ### This library simplifies a few things by using sensible defaults
 
-
-Unlike the [webauthn protocol](), some defaults are different:
+Unlike the [WebAuthn protocol](https://w3c.github.io/webauthn/), some defaults are different:
 
 - The `timeout` is one minute by default.
 - If the device can act as authenticator itself, it is preferred instead of asking which authenticator type to use.
