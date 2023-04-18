@@ -245,7 +245,7 @@ Remember it on the server side during a certain amount of time and "consume" it 
 Example call:
 
 ```js
-import { client } from 'webauthn'
+import { client } from '@passwordless-id/webauthn'
 
 const challenge = "56535b13-5d93-4194-a282-f234c1c24500"
 const authentication = await client.authenticate(["3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU"], challenge, {
