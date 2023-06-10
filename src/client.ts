@@ -184,7 +184,7 @@ export async function authenticate(credentialIds :string[], challenge :string, o
     if(options.debug)
         console.debug(authOptions)
 
-    let auth = await navigator.credentials.get({publicKey: authOptions}) as PublicKeyCredential
+    let auth = await navigator.credentials.get({publicKey: authOptions, mediation: options.mediation}) as PublicKeyCredential
     
     if(options.debug)
         console.debug(auth)
