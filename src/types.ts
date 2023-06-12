@@ -13,6 +13,7 @@ export interface AuthenticateOptions {
     authenticatorType ?:AuthType
     timeout ?:number
     debug ?:boolean
+    mediation ?:CredentialMediationRequirement;
 }
 
 
