@@ -11,12 +11,14 @@ Try out the playground to see how this library works:
 
 - [Testing Playground](https://webauthn.passwordless.id/demos/playground.html)
 
-Or the demos with minial examples:
+---
+
+Other demos with minial examples:
 
 - [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
 - [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
 - [Minimal Example (repository)](https://webauthn.passwordless.id/demos/example-raw.html)
-
+- GitHub Repo: https://github.com/passwordless-id/webauthn
 
 
 How does the protocol work?
