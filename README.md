@@ -19,7 +19,7 @@ Other demos with minial examples:
 - [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
 - [Minimal Example (repository)](https://webauthn.passwordless.id/demos/example-raw.html)
 
-Or check out the GitHub Repo directly: https://github.com/passwordless-id/webauthn
+GitHub: https://github.com/passwordless-id/webauthn
 
 
 How does the protocol work?
