@@ -368,10 +368,7 @@ The following options are available for both `register` and `authenticate`.
     - `'both'`: prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
 - `attestation`: (Only for registration) If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this is not available on some platforms. *(Default: false)*
 - `debug`: If enabled, parses the "data" objects and provide it in a "debug" properties.
-
-The following option is available for `authenticate`.
-
-- `mediation`: https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
+- `mediation`: (Only for authentication) See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
 
 
 Parsing data
