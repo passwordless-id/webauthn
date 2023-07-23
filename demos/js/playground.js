@@ -90,7 +90,7 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
                     challenge: this.authentication.challenge,
                     origin: this.origin,
                     userVerified: this.authentication.userVerification === 'required',
-                    counter: 0
+                    counter: -1 // Fixes #27 since counter is 0 on first auth with ios/macos
                 })
                 console.log(parsed)
                 this.authentication.parsed = parsed
