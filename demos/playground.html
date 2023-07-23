@@ -173,7 +173,7 @@ const expected = {
     challenge: "{{authentication?.challenge ?? '...'}}",
     origin: "{{origin}}",
     userVerified: {{authentication?.options?.userVerification === 'required'}},
-    counter: 0
+    counter: -1
 }
 
 const verified = await server.verifyAuthentication(res, credentialKey, expected)
