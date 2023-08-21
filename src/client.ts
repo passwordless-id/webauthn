@@ -81,7 +81,7 @@ export async function register(username :string, challenge :string, options? :Re
             name: window.location.hostname
         },
         user: {
-            id: await utils.sha256(new TextEncoder().encode('passwordless.id-user:' + username)), // ID should not be directly "identifiable" for privacy concerns
+            id: options.userHandle ? utils.toBuffer(options.userHandle) : await utils.sha256(new TextEncoder().encode('passwordless.id-user:' + username)), // ID should not be directly "identifiable" for privacy concerns
             name: username,
             displayName: username,
         },

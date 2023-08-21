@@ -8,14 +8,17 @@ export type NumAlgo = -7 | -257
 export type NamedAlgo = 'RS256' | 'ES256'
 
 
-export interface AuthenticateOptions {
-    userVerification ?:UserVerificationRequirement
-    authenticatorType ?:AuthType
-    timeout ?:number
-    debug ?:boolean
-    mediation ?:CredentialMediationRequirement;
+export interface CommonOptions {
+  userVerification ?:UserVerificationRequirement
+  authenticatorType ?:AuthType
+  timeout ?:number
+  debug ?:boolean
 }
 
+
+export interface AuthenticateOptions extends CommonOptions {
+  mediation ?:CredentialMediationRequirement
+}
 
 export interface AuthenticationEncoded {
     credentialId: string
@@ -34,8 +37,9 @@ export interface AuthenticationParsed {
 }
 
 
-export interface RegisterOptions extends AuthenticateOptions {
-    attestation?: boolean
+export interface RegisterOptions extends CommonOptions {
+  userHandle?: string
+  attestation?: boolean
 }
 
 
