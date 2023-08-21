@@ -51,7 +51,7 @@ import * as webauthn from '@passwordless-id/webauthn'
 
 ```html
 <script type="module">
-  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.2.5/dist/webauthn.min.js'
+  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.2.6/dist/webauthn.min.js'
 </script>
 ```
 ### Import
@@ -131,11 +131,12 @@ import { client } from '@passwordless-id/webauthn'
 
 const challenge = "a7c61ef9-dc23-4806-b486-2428938a547e"
 const registration = await client.register("Arnaud", challenge, {
-  "authenticatorType": "auto",
-  "userVerification": "required",
-  "timeout": 60000,
-  "attestation": false,
-  "debug": false
+  authenticatorType: "auto",
+  userVerification: "required",
+  timeout: 60000,
+  attestation: false,
+  userHandle: "recommended to set the to a random 64 bytes value",
+  debug: false
 })
 ```
 
@@ -372,6 +373,7 @@ The following options are available for both `register` and `authenticate`.
     - `'both'`: prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
 - `attestation`: (Only for registration) If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this is not available on some platforms. *(Default: false)*
 - `debug`: If enabled, parses the "data" objects and provide it in a "debug" properties.
+- `userHandle`: (Only for registration) The `userHandle` can be used to re-register credentials for an existing user, thus overriding the current the key pair and username for that `userHandle`. *The default here is based on a hash of the `username`, and thus has some security implications as described in [issue](https://github.com/passwordless-id/webauthn/issues/29). For optimal security and privacy, it is recommended to set the `userHandle` to a random 64 bytes value.*
 - `mediation`: (Only for authentication) See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
 
 
