@@ -10,18 +10,28 @@
 
 
 <script type="module">
-import { client } from 'https://unpkg.com/@passwordless-id/webauthn'
+import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.2.5/dist/webauthn.min.js'
 
 window.register = async function() {
 	console.log('Registering...')
-	let res = client.register('MyUsername', 'random-challenge-base64-encoded')
-	console.log(res)
+	try {
+		let res = await client.register('MyUsername', 'random-challenge-base64-encoded')
+		alert(JSON.stringify(res))
+	}
+	catch(e) {
+		alert(e)
+	}
 }
 
 window.login = async function() {
 	console.log('Authenticating...')
-	let res = client.authenticate([], 'random-challenge-base64-encoded')
-	console.log(res)
+	try {
+		let res = await client.authenticate([], 'random-challenge-base64-encoded')
+		alert(JSON.stringify(res))
+	}
+	catch(e) {
+		alert(e)
+	}
 }
 
 </script>

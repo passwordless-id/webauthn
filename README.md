@@ -2,6 +2,7 @@ Passwordless.ID / webauthn
 ==========================
 
 A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
+It is minimalistik (11kb) and dependency-free.
 
 <img src="demos/img/banner-biometric-auth.svg" />
 
@@ -50,7 +51,7 @@ import * as webauthn from '@passwordless-id/webauthn'
 
 ```html
 <script type="module">
-  import { client } from 'https://unpkg.com/@passwordless-id/webauthn'
+  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.2.5/dist/webauthn.min.js'
 </script>
 ```
 ### Import

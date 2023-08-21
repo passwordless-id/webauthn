@@ -1,6 +1,6 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
   "type": "module",
   "main": "dist/esm/index.js",
