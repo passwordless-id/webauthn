@@ -135,7 +135,7 @@ const registration = await client.register("Arnaud", challenge, {
   userVerification: "required",
   timeout: 60000,
   attestation: false,
-  userHandle: "recommended to set the to a random 64 bytes value",
+  userHandle: "recommended to set it to a random 64 bytes value",
   debug: false
 })
 ```
