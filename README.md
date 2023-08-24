@@ -2,7 +2,7 @@ Passwordless.ID / webauthn
 ==========================
 
 A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
-It is minimalistik (11kb) and dependency-free.
+It is an [open source](https://github.com/passwordless-id/webauthn), minimalistik (11kb) and dependency-free library.
 
 <img src="demos/img/banner-biometric-auth.svg" />
 
