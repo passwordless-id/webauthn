@@ -1,5 +1,5 @@
 import { randomChallenge } from "./utils.js";
-
+import * as crypto from 'crypto';
 
 console.log('Node version: ', process.version);
 console.log(Object.getOwnPropertyNames(crypto))
