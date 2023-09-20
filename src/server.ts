@@ -1,6 +1,7 @@
 import { parseAuthentication, parseRegistration } from "./parsers.js";
 import { AuthenticationEncoded, AuthenticationParsed, CredentialKey, NamedAlgo, RegistrationEncoded, RegistrationParsed } from "./types.js";
 import * as utils from './utils.js'
+import * as crypto from 'crypto'
 
 
 async function isValid(validator :any, value :any) :Promise<boolean> {
@@ -129,7 +130,7 @@ type AlgoParams = AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParam
 
 async function parseCryptoKey(algoParams: AlgoParams, publicKey: string): Promise<CryptoKey> {
     const buffer = utils.parseBase64url(publicKey)
-    return crypto.subtle.importKey('spki', buffer, algoParams, false, ['verify'])
+    return crypto.webcrypto.subtle.importKey('spki', buffer, algoParams, false, ['verify'])
 }
 
 
@@ -174,7 +175,7 @@ export async function verifySignature({ algorithm, publicKey, authenticatorData,
     if(algorithm == 'ES256')
         signatureBuffer = convertASN1toRaw(signatureBuffer)
 
-    const isValid = await crypto.subtle.verify(algoParams, cryptoKey, signatureBuffer, comboBuffer)
+    const isValid = await crypto.webcrypto.subtle.verify(algoParams, cryptoKey, signatureBuffer, comboBuffer)
 
     return isValid
 }
