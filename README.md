@@ -70,7 +70,7 @@ So you might for example `import { client } from '@passwordless-id/webauthn'` fo
 ### Runs in...
 
 - In Chrome, Edge, Safari (*Firefox is still missing a [piece](https://github.com/passwordless-id/webauthn/issues/18)*)
-- NodeJS **19+** (because the `WebCrypto` is only available as `crypto` global starting from node 19!)
+- NodeJS **19+** (because the `WebCrypto` is only available as `crypto` global starting from node 19! For older Node versions, take a look at [Arch0125's fork](https://github.com/Arch0125/webauthn/tree/nodev14-v16-support)
 - Cloudflare Workers
 - Probably in most recent browsers/servers
 
