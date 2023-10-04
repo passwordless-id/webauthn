@@ -67,8 +67,9 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  *          'both': prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
  * @param {boolean} [options.attestation=false] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data.
  *                                Note that this is not available on some platforms.
- * @param {'discouraged'|'preferred'|'required'} [options.discoverable] If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs.
- *                                A native pop-up will appear for user selection. This may have an impact on "passkeys" user experience and syncing behavior.
+ * @param {'discouraged'|'preferred'|'required'} [options.discoverable] A "discoverable" credential can be selected using `authenticate(...)` without providing credential IDs.
+ *              Instead, a native pop-up will appear for user selection.
+ *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
  */
 export async function register(username :string, challenge :string, options? :RegisterOptions) :Promise<RegistrationEncoded> {
     options = options ?? {}
