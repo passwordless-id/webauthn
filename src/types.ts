@@ -40,6 +40,7 @@ export interface AuthenticationParsed {
 export interface RegisterOptions extends CommonOptions {
   userHandle?: string
   attestation?: boolean
+  discoverable?: ResidentKeyRequirement
 }
 
 

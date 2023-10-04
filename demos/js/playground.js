@@ -10,6 +10,7 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
             options: {
                 authenticatorType: 'auto',
                 userVerification: 'required',
+                discoverable: 'preferred',
                 timeout: 60000,
                 attestation: false,
             },

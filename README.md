@@ -360,8 +360,8 @@ Unlike the [WebAuthn protocol](https://w3c.github.io/webauthn/), some defaults a
 - The `username` is used for both the protocol level user "name" and "displayName"
 
 
-Options
--------
+Common options
+--------------
 
 The following options are available for both `register` and `authenticate`.
 
@@ -372,10 +372,21 @@ The following options are available for both `register` and `authenticate`.
     - `'local'`: use the local device (using TouchID, FaceID, Windows Hello or PIN)
     - `'roaming'`: use a roaming device (security key or connected phone)
     - `'both'`: prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
-- `attestation`: (Only for registration) If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this is not available on some platforms. *(Default: false)*
 - `debug`: If enabled, parses the "data" objects and provide it in a "debug" properties.
-- `userHandle`: (Only for registration) The `userHandle` can be used to re-register credentials for an existing user, thus overriding the current the key pair and username for that `userHandle`. *The default here is based on a hash of the `username`, and thus has some security implications as described in [issue](https://github.com/passwordless-id/webauthn/issues/29). For optimal security and privacy, it is recommended to set the `userHandle` to a random 64 bytes value.*
-- `mediation`: (Only for authentication) See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
+
+
+Registration options
+--------------------
+
+- `discoverable`: (`'discouraged'`, `'preferred'` or `'required'`) If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. *(Default: 'preferred')*
+- `attestation`: If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this is not available on some platforms. *(Default: false)*
+- `userHandle`: The `userHandle` can be used to re-register credentials for an existing user, thus overriding the current the key pair and username for that `userHandle`. *The default here is based on a hash of the `username`, and thus has some security implications as described in [issue](https://github.com/passwordless-id/webauthn/issues/29). For optimal security and privacy, it is recommended to set the `userHandle` to a random 64 bytes value.*
+
+
+Authentication options
+----------------------
+
+- `mediation`: See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
 
 
 Parsing data

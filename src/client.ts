@@ -65,8 +65,10 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  *          'local': use the local device (using TouchID, FaceID, Windows Hello or PIN)
  *          'roaming': use a roaming device (security key or connected phone)
  *          'both': prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
- * @param {boolean} [attestation=false] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data.
+ * @param {boolean} [options.attestation=false] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data.
  *                                Note that this is not available on some platforms.
+ * @param {'discouraged'|'preferred'|'required'} [options.discoverable] If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs.
+ *                                A native pop-up will appear for user selection. This may have an impact on "passkeys" user experience and syncing behavior.
  */
 export async function register(username :string, challenge :string, options? :RegisterOptions) :Promise<RegistrationEncoded> {
     options = options ?? {}
@@ -93,8 +95,10 @@ export async function register(username :string, challenge :string, options? :Re
         authenticatorSelection: {
             userVerification: options.userVerification ?? "required", // Webauthn default is "preferred"
             authenticatorAttachment: await getAuthAttachment(options.authenticatorType ?? "auto"),
+            residentKey: options.discoverable ?? 'preferred', // official default is 'discouraged'
+            requireResidentKey: (options.discoverable === 'required') // mainly for backwards compatibility, see https://www.w3.org/TR/webauthn/#dictionary-authenticatorSelection
         },
-        attestation: "direct" // options.attestation ? "direct" : "none"
+        attestation: options.attestation ? "direct" : "none"
     }
 
     if(options.debug)

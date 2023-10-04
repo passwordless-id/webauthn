@@ -53,11 +53,6 @@
             <div class="hint">Which device to use as authenticator.</div>
         </b-field>
 
-        <b-field label="Timeout" horizontal>
-            <b-input v-model="registration.options.timeout" placeholder="60000" expanded></b-input>
-            <div class="hint">Number of milliseconds the user has to respond to the biometric/PIN check.</div>
-        </b-field>
-
         <b-field label="userVerification" horizontal>
             <b-select v-model="registration.options.userVerification" expanded>
                 <option>required</option>
@@ -65,6 +60,20 @@
                 <option>discouraged</option>
             </b-select>
             <div class="hint">Whether a biometric/PIN check is required or not. This filters out security keys not having this capability.</div>
+        </b-field>
+        
+        <b-field label="discoverable" horizontal>
+            <b-select v-model="registration.options.discoverable" expanded>
+                <option>required</option>
+                <option>preferred</option>
+                <option>discouraged</option>
+            </b-select>
+            <div class="hint">A "discoverable" credential can be selected using `authenticate` without providing credential IDs. Instead, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key.</div>
+        </b-field>
+
+        <b-field label="Timeout" horizontal>
+            <b-input v-model="registration.options.timeout" placeholder="60000" expanded></b-input>
+            <div class="hint">Number of milliseconds the user has to respond to the biometric/PIN check.</div>
         </b-field>
 
         <b-field label="debug" horizontal>
