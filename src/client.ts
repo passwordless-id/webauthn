@@ -109,11 +109,11 @@ export async function register(username :string, challenge :string, options? :Re
     if(options.debug)
         console.debug(creationOptions)
 
-    console.log("[WebAuthN] creationOptions: ", creationOptions);
+    console.log("[Torrey's WebAuthN] creationOptions: ", creationOptions);
 
     const credential = await navigator.credentials.create({publicKey: creationOptions}) as any //PublicKeyCredential
 
-    console.log("[WebAuthN] credential: ", credential);
+    console.log("[Torrey's WebAuthN] response: ", credential);
     
     if(options.debug)
         console.debug(credential)
