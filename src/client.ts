@@ -99,7 +99,11 @@ export async function register(username :string, challenge :string, options? :Re
             residentKey: "required", //TORREY options.discoverable ?? 'preferred', // official default is 'discouraged'
             requireResidentKey: (options.discoverable === 'required') // mainly for backwards compatibility, see https://www.w3.org/TR/webauthn/#dictionary-authenticatorSelection
         },
-        attestation: "none" //TORREY options.attestation ? "direct" : "none"
+        attestation: "none", //TORREY options.attestation ? "direct" : "none"
+        excludeCredentials: [],
+        extensions: {
+          credProps: true,
+        },
     }
 
     if(options.debug)
