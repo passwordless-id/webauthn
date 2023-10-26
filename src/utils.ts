@@ -36,7 +36,7 @@ export function isBase64url(txt :string) :boolean {
 
 export function toBase64url(buffer :ArrayBuffer) :string {
     const txt = btoa(parseBuffer(buffer)) // base64
-    return txt.replaceAll('+', '-').replaceAll('/', '_')
+    return txt.replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }
 
 export function parseBase64url(txt :string) :ArrayBuffer {
