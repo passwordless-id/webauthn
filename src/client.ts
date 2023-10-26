@@ -90,20 +90,16 @@ export async function register(username :string, challenge :string, options? :Re
         },
         pubKeyCredParams: [
             {alg: -7, type: "public-key"},   // ES256 (Webauthn's default algorithm)
-            //{alg: -257, type: "public-key"}, // RS256 (for Windows Hello and others)
+            {alg: -257, type: "public-key"}, // RS256 (for Windows Hello and others)
         ],
         timeout: options.timeout ?? 60000,
         authenticatorSelection: {
-            userVerification: "preferred", //TORREY  options.userVerification ?? "required", // Webauthn default is "preferred"
-            //TORREY authenticatorAttachment: await getAuthAttachment(options.authenticatorType ?? "auto"),
-            residentKey: "required", //TORREY options.discoverable ?? 'preferred', // official default is 'discouraged'
+            userVerification: options.userVerification ?? "required", // Webauthn default is "preferred"
+            authenticatorAttachment: await getAuthAttachment(options.authenticatorType ?? "auto"),
+            residentKey: options.discoverable ?? 'preferred', // official default is 'discouraged'
             requireResidentKey: (options.discoverable === 'required') // mainly for backwards compatibility, see https://www.w3.org/TR/webauthn/#dictionary-authenticatorSelection
         },
-        attestation: "none", //TORREY options.attestation ? "direct" : "none"
-        excludeCredentials: [],
-        extensions: {
-          credProps: true,
-        },
+        attestation: options.attestation ? "direct" : "none"
     }
 
     if(options.debug)
