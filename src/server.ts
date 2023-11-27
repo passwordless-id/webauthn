@@ -46,7 +46,7 @@ interface AuthenticationChecks {
     challenge: string | Function,
     origin: string | Function,
     userVerified: boolean,
-    counter: number
+    counter?: number // Made optional according to https://github.com/passwordless-id/webauthn/issues/38
 }
 
 
@@ -88,7 +88,7 @@ export async function verifyAuthentication(authenticationRaw: AuthenticationEnco
     if (!authentication.authenticator.flags.userVerified && expected.userVerified)
         throw new Error(`Unexpected authenticator flags: missing userVerified`)
 
-    if (authentication.authenticator.counter <= expected.counter)
+    if (expected.counter && authentication.authenticator.counter <= expected.counter)
         throw new Error(`Unexpected authenticator counter: ${authentication.authenticator.counter} (should be > ${expected.counter})`)
 
     return authentication
