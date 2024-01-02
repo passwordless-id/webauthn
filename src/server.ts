@@ -46,7 +46,8 @@ interface AuthenticationChecks {
     challenge: string | Function,
     origin: string | Function,
     userVerified: boolean,
-    counter?: number // Made optional according to https://github.com/passwordless-id/webauthn/issues/38
+    counter?: number, // Made optional according to https://github.com/passwordless-id/webauthn/issues/38
+    verbose?: boolean
 }
 
 
@@ -59,7 +60,8 @@ export async function verifyAuthentication(authenticationRaw: AuthenticationEnco
         publicKey: credential.publicKey,
         authenticatorData: authenticationRaw.authenticatorData,
         clientData: authenticationRaw.clientData,
-        signature: authenticationRaw.signature
+        signature: authenticationRaw.signature,
+        verbose: expected.verbose
     })
 
     if(!isValidSignature)
@@ -140,6 +142,7 @@ type VerifyParams = {
     authenticatorData: string, // Base64url encoded
     clientData: string, // Base64url encoded
     signature: string, // Base64url encoded
+    verbose?: boolean, // Enables debug logs containing sensitive data like crypto keys
 }
 
 
@@ -154,20 +157,25 @@ type VerifyParams = {
 [...] For COSEAlgorithmIdentifier -37 (PS256) [...] The signature is not ASN.1 wrapped.
 */
 // see also https://gist.github.com/philholden/50120652bfe0498958fd5926694ba354
-export async function verifySignature({ algorithm, publicKey, authenticatorData, clientData, signature }: VerifyParams): Promise<boolean> {
+export async function verifySignature({ algorithm, publicKey, authenticatorData, clientData, signature, verbose }: VerifyParams): Promise<boolean> {
     const algoParams = getAlgoParams(algorithm)
     let cryptoKey = await parseCryptoKey(algoParams, publicKey)
-    console.debug(cryptoKey)
+    
+    if(verbose) {
+        console.debug(cryptoKey)
+    }
 
     let clientHash = await utils.sha256(utils.parseBase64url(clientData));
 
     // during "login", the authenticatorData is exactly 37 bytes
     let comboBuffer = utils.concatenateBuffers(utils.parseBase64url(authenticatorData), clientHash)
 
-    console.debug('Crypto Algo: ' + JSON.stringify(algoParams))
-    console.debug('Public key: ' + publicKey)
-    console.debug('Data: ' + utils.toBase64url(comboBuffer))
-    console.debug('Signature: ' + signature)
+    if(verbose) {
+        console.debug('Crypto Algo: ' + JSON.stringify(algoParams))
+        console.debug('Public key: ' + publicKey)
+        console.debug('Data: ' + utils.toBase64url(comboBuffer))
+        console.debug('Signature: ' + signature)
+    }
 
     // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify
     let signatureBuffer = utils.parseBase64url(signature)

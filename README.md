@@ -50,7 +50,7 @@ import * as webauthn from '@passwordless-id/webauthn'
 
 ```html
 <script type="module">
-  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.3.2/dist/webauthn.min.js'
+  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.3.3/dist/webauthn.min.js'
 </script>
 ```
 ### Import
@@ -310,7 +310,8 @@ const expected = {
     challenge: async (challenge) => { /* async call to DB for example */ return true },
     origin: (origin) => listOfAllowedOrigins.includes(origin),
     userVerified: true, // no function allowed here
-    counter: 123  // optional, no function allowed here
+    counter: 123,  // optional, no function allowed here
+    verbose: true, // optional, enables debug logs containing sensitive information
 }
 ```
 
