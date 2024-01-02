@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+    <style>
+        main.container {
+            text-align: center;
+        }
+        .authenticators {
+            table-layout: fixed;
+            width: 100%;
+        }
+        .authenticators th {
+            text-align: center;
+        }
+        .authenticators img {
+            width: 32px;
+            height: 32px;
+        }
+    </style>
+</head>
+
+<body>
+    <main id="app" class="section container">
+        <h1 class="title">Authenticators list</h1>
+        <p>Includes both hardware and software authenticators.</p>
+
+        <table class="authenticators table is-striped is-narrow is-hoverable">
+            <thead>
+                <th>AAGUID</th>
+                <th>Name</th>
+            </thead>
+            <tbody>
+                <tr v-for="(name, aaguid) in authenticatorMetadata">
+                    <td>
+                        {{aaguid}}
+                    </td>
+                    <td>
+                        {{name}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <script src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
+    <script src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
+    <script src="https://unpkg.com/browse/axios@1.4.0/dist/axios.min.js"></script>
+
+    <script type="module">
+        import { authenticatorMetadata } from '../../dist/webauthn.min.js'
+        console.log(authenticatorMetadata)
+
+        const app = new Vue({
+        el: '#app',
+        data: {
+            authenticatorMetadata
+        }})
+    </script>
+</body>
+
+</html>

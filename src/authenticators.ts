@@ -1,4 +1,4 @@
-import authenticatorMetadata from './authenticatorMetadata.js' //assert {type: 'json'}
+import { authenticatorMetadata } from './authenticatorMetadata.js'
 import * as utils from './utils.js'
 
 
@@ -33,7 +33,8 @@ export function parseAuthBuffer(authData :ArrayBuffer) {
         parsed = {
             ...parsed,
             aaguid, // bytes 37->53
-            name: resolveAuthenticatorName(aaguid)
+            name: authenticatorMetadata[aaguid] ?? 'Unknown',
+            
             // credentialBytes, // bytes 53->55: credential length
             // credentialId: utils.toBase64url(authData.slice(55, 55+credentialLength)),
             //publicKey: until where? ...and it's encoded using a strange format, let's better avoid it
@@ -54,14 +55,26 @@ function formatAaguid(buffer :ArrayBuffer) :string {
     return aaguid // example: "d41f5a69-b817-4144-a13c-9ebd6d9254d6"
 }
 
+
+
+
+/**
+ * Kept for compatibility purposes.
+ * @deprecated
+ */
 export function resolveAuthenticatorName(aaguid :string) :string {
     const aaguidMetadata = updatedAuthenticatorMetadata ?? authenticatorMetadata //await getAaguidMetadata()
-    return aaguidMetadata[aaguid]?.name
+    return aaguidMetadata[aaguid]
 }
 
 let updatedAuthenticatorMetadata :any = null
 
-// List of AAGUIDs are encoded as JWT here: https://mds.fidoalliance.org/
+/**
+ * Updates the built-in metadata according to raw data available at https://mds.fidoalliance.org/
+ * This service delivers a list of AAGUIDs encoded as a JWT.
+ * Kept for compatibility purposes.
+ * @deprecated
+ */
 export async function updateDevicesMetadata() {
     // this function is rather resource intensive and time consuming
     // therefore, the result is cached in local storage
@@ -80,7 +93,7 @@ export async function updateDevicesMetadata() {
         if(!e.aaguid || !e.metadataStatement)
             continue
 
-        aaguidMetadata[e.aaguid] = {name: e.metadataStatement.description}
+        aaguidMetadata[e.aaguid] = e.metadataStatement.description
     }
 
     console.debug(aaguidMetadata)

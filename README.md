@@ -2,7 +2,7 @@ Passwordless.ID / webauthn
 ==========================
 
 A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
-It is an [open source](https://github.com/passwordless-id/webauthn), minimalistic (11kb) and dependency-free library.
+It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator aaguids/names).
 
 <img src="demos/img/banner-biometric-auth.svg" />
 
@@ -17,8 +17,9 @@ Other demos with minial examples:
 - [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
 - [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
 - [Minimal Example (repository)](https://webauthn.passwordless.id/demos/example-raw.html)
+- [Authenticators list](https://webauthn.passwordless.id/demos/authenticators.html)
 
-GitHub: https://github.com/passwordless-id/webauthn
+The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn)
 
 
 How does the protocol work?
@@ -49,7 +50,7 @@ import * as webauthn from '@passwordless-id/webauthn'
 
 ```html
 <script type="module">
-  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.3.1/dist/webauthn.min.js'
+  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.3.2/dist/webauthn.min.js'
 </script>
 ```
 ### Import
@@ -67,7 +68,7 @@ So you might for example `import { client } from '@passwordless-id/webauthn'` fo
 
 ### Runs in...
 
-- In Chrome, Edge, Safari (*Firefox is still missing a [piece](https://github.com/passwordless-id/webauthn/issues/18)*)
+- In Chrome, Edge, Firefox, Safari
 - NodeJS **19+** (*)
 - Cloudflare Workers
 - Probably in most recent browsers/servers
