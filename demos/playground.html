@@ -106,6 +106,7 @@
 
         <p>Resulting into:</p>
         
+        <p v-if="registration.parsed"><img :src="registration.parsed.authenticator.icon_light" /> {{registration.parsed.authenticator.name}}</p>
         <pre>{{registration.parsed ?? '...'}}</pre>
 
         

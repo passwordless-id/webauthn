@@ -14,11 +14,18 @@
             width: 100%;
         }
         .authenticators th {
-            text-align: center;
+            text-align: center !important;
         }
         .authenticators img {
             width: 32px;
             height: 32px;
+        }
+        .dark {
+            background-color: black;
+            color: white;
+        }
+        .table td {
+            vertical-align: middle;
         }
     </style>
 </head>
@@ -26,16 +33,30 @@
 <body>
     <main id="app" class="section container">
         <h1 class="title">Authenticators list</h1>
-        <p>Includes both hardware and software authenticators.</p>
+        
+        <p>This list includes both hardware and software authenticators and all icons are available as png 64x64.</p>
+        <ul>
+            <li><code>https://webauthn.passwordless.id/authenticators/{aaguid}-light.png</code></li>
+            <li><code>https://webauthn.passwordless.id/authenticators/{aaguid}-dark.png&nbsp;</code></li>
+        </ul>
+        <hr/>
 
         <table class="authenticators table is-striped is-narrow is-hoverable">
             <thead>
+                <th style="width: 40px">Light</th>
+                <th style="width: 40px">Dark</th>
                 <th>AAGUID</th>
                 <th>Name</th>
             </thead>
             <tbody>
                 <tr v-for="(name, aaguid) in authenticatorMetadata">
-                    <td>
+                    <td class="light">
+                        <img :src="'/authenticators/' + aaguid + '-light.png'" />
+                    </td>
+                    <td class="dark">
+                        <img :src="'/authenticators/' + aaguid + '-dark.png'" />
+                    </td>
+                    <td style="font-family: monospace">
                         {{aaguid}}
                     </td>
                     <td>

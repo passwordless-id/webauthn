@@ -26,19 +26,14 @@ export function parseAuthBuffer(authData :ArrayBuffer) {
     if(authData.byteLength > 37) {
         // registration contains additional data
 
-        const aaguid = extractAaguid(authData)
+        const aaguid = extractAaguid(authData) // bytes 37->53
         // https://w3c.github.io/webauthn/#attested-credential-data
-        //let credentialLength = new DataView(authData.slice(53,55)).getUint16(0, false) // Big-Endian!
-        
         parsed = {
             ...parsed,
-            aaguid, // bytes 37->53
+            aaguid,
             name: authenticatorMetadata[aaguid] ?? 'Unknown',
-            
-            // credentialBytes, // bytes 53->55: credential length
-            // credentialId: utils.toBase64url(authData.slice(55, 55+credentialLength)),
-            //publicKey: until where? ...and it's encoded using a strange format, let's better avoid it
-            //extensions: starting where?
+            icon_light: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-light.png',
+            icon_dark: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-dark.png',
         }
     }
 

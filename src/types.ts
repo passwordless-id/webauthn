@@ -96,4 +96,7 @@ export interface AuthenticatorInfo {
     counter: number
     aaguid: string
     name: string
+
+    icon_light: string
+    icon_dark: string
   }
