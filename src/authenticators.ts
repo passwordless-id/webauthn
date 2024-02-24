@@ -10,18 +10,21 @@ export function parseAuthBuffer(authData :ArrayBuffer) {
     // https://w3c.github.io/webauthn/#sctn-authenticator-data
     let parsed :any = {
         rpIdHash: utils.toBase64url(authData.slice(0,32)),
-            flags: {
-                 userPresent: !!(flags & 1),
-                 //reserved1: !!(flags & 2),
-                 userVerified: !!(flags &  4),
-                 backupEligibility: !!(flags & 8),
-                 backupState: !!(flags & 16),
-                 //reserved2: !!(flags & 32),
-                 attestedData: !!(flags & 64),
-                 extensionsIncluded: !!(flags & 128)
-            },
-            counter: new DataView(authData.slice(33,37)).getUint32(0, false),  // Big-Endian!
+        flags: {
+                userPresent: !!(flags & 1),
+                //reserved1: !!(flags & 2),
+                userVerified: !!(flags &  4),
+                backupEligibility: !!(flags & 8),
+                backupState: !!(flags & 16),
+                //reserved2: !!(flags & 32),
+                attestedData: !!(flags & 64),
+                extensionsIncluded: !!(flags & 128)
+        },
+        counter: new DataView(authData.slice(33,37)).getUint32(0, false),  // Big-Endian!
     }
+
+    // this is more descriptive than "backupState"
+    parsed.synced = parsed.flags.backupState
 
     if(authData.byteLength > 37) {
         // registration contains additional data

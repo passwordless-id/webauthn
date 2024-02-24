@@ -12,7 +12,7 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
                 userVerification: 'required',
                 discoverable: 'preferred',
                 timeout: 60000,
-                attestation: false,
+                attestation: true,
             },
             result: null,
             parsed: null

@@ -87,8 +87,8 @@
         <b-field label="attestation" horizontal>
             <b-checkbox v-model="registration.options.attestation" expanded></b-checkbox>
             <div class="hint">
-                <p>If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Not
-                    available on some platforms.</p>
+                <p>If enabled, the device attestation and clientData will be provided as base64 encoded binary data.
+                    Note that this may impact the authenticator information available or the UX depending on the platform.</p>
             </div>
         </b-field>
 
