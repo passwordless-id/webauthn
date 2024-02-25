@@ -106,9 +106,7 @@
 
         <p>Resulting into:</p>
         
-        <p v-if="registration.parsed"><img :src="registration.parsed.authenticator.icon_light" /> {{registration.parsed.authenticator.name}}</p>
         <pre>{{registration.parsed ?? '...'}}</pre>
-
         
         <div class="notification is-warning" v-if="registration.parsed">
             <p>At this point, you should store the `credential` and associate it with the user account. You will need it later to verify authentication attempts.</p>

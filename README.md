@@ -50,7 +50,7 @@ import * as webauthn from '@passwordless-id/webauthn'
 
 ```html
 <script type="module">
-  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.3.3/dist/webauthn.min.js'
+  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.4.1/dist/webauthn.min.js'
 </script>
 ```
 ### Import

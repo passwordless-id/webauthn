@@ -99,7 +99,7 @@ export async function register(username :string, challenge :string, options? :Re
             residentKey: options.discoverable ?? 'preferred', // official default is 'discouraged'
             requireResidentKey: (options.discoverable === 'required') // mainly for backwards compatibility, see https://www.w3.org/TR/webauthn/#dictionary-authenticatorSelection
         },
-        attestation: options.attestation ? "direct" : "none"
+        attestation: "direct"
     }
 
     if(options.debug)

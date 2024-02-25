@@ -39,7 +39,7 @@
         <span>{{registrationData.authenticator.name}}</span>
       </p>
       <p>
-        <b>Type:</b>
+        <b>Synced?</b>
         <template v-if="registrationData.authenticator">
           <b-tag type="is-primary" v-if="registrationData.authenticator.synced === true">Synced / multi-device credential</b-tag>
           <b-tag type="is-primary" v-if="registrationData.authenticator.synced === false">Device-bound credential</b-tag>
@@ -58,6 +58,8 @@
       <b-button type="is-primary" @click="logout()">Sign Out</b-button>
     </div>
   </template>
+  <hr/>
+  <p>Check out the <a href="playground.html">playground</a> for more detailed usage and options.</p>
 </main>
 
 <script src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>

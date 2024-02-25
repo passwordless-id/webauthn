@@ -17,8 +17,7 @@ const app = new Vue({
     },
     async register() {
       let res = await client.register(this.username, window.crypto.randomUUID(), { 
-        authenticatorType: this.isRoaming ? 'roaming' : 'auto',
-        attestation: true
+        authenticatorType: this.isRoaming ? 'roaming' : 'auto'
       })
       console.debug(res)
 
