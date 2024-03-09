@@ -26,6 +26,7 @@ export interface AuthenticationEncoded {
     authenticatorData: string
     clientData: string
     signature: string
+    userHandle?: string | null
 }
 
 export interface AuthenticationParsed {
