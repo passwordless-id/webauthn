@@ -69,7 +69,10 @@ test('Test README registration example', async () => {
           },
           "counter": 0,
           "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
-          "name": "Windows Hello Hardware Authenticator"
+          "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
+          "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
+          "name": "Windows Hello",
+          "synced": false,
         },
         "attestation": null
       })

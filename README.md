@@ -50,7 +50,7 @@ import * as webauthn from '@passwordless-id/webauthn'
 
 ```html
 <script type="module">
-  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.4.1/dist/webauthn.min.js'
+  import { client } from 'https://unpkg.com/@passwordless-id/webauthn@1.5.0/dist/webauthn.min.js'
 </script>
 ```
 ### Import
@@ -135,7 +135,7 @@ const registration = await client.register("Arnaud", challenge, {
   userVerification: "required",
   timeout: 60000,
   attestation: true,
-  userHandle: "recommended to set it to a random 64 bytes value",
+  userHandle: "Optional server-side user id. Must not reveal personal information.",
   debug: false
 })
 ```
@@ -189,7 +189,10 @@ Example result:
   },
   "authenticator": {
     ...
-    "name": "Windows Hello Hardware Authenticator"
+    "name": "Windows Hello",
+    "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
+    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
+    "synced": true
   },
   ...
 }
@@ -396,7 +399,7 @@ Registration options
 
 - `discoverable`: (`'discouraged'`, `'preferred'` or `'required'`) If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. *(Default: 'preferred')*
 - `attestation`: If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this may impact the authenticator information available or the UX depending on the platform. *(Default: false)*
-- `userHandle`: The `userHandle` can be used to re-register credentials for an existing user, thus overriding the current the key pair and username for that `userHandle`. *The default here is based on a hash of the `username`, and thus has some security implications as described in [issue](https://github.com/passwordless-id/webauthn/issues/29). For optimal security and privacy, it is recommended to set the `userHandle` to a random 64 bytes value.*
+- `userHandle`: The user "handle" (also known as user "id") can be used to re-register credentials for an existing user, thus overriding the current credential key pair and username for that `userHandle`. *The default here is based on a hash of the `username`, and thus has some security implications as described in [issue](https://github.com/passwordless-id/webauthn/issues/29).*
 
 
 Authentication options
@@ -454,7 +457,10 @@ parsers.parseRegistration({
     },
     "counter": 0,
     "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
-    "name": "Windows Hello Hardware Authenticator"
+    "name": "Windows Hello",
+    "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
+    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
+    "synced": true
   },
   "attestation": null
 }
@@ -540,7 +546,10 @@ parsers.parseAuthenticator("SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiY
     },
     "counter": 0,
     "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
-    "name": "Windows Hello Hardware Authenticator"
+    "name": "Windows Hello",
+    "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
+    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
+    "synced": true
   }
 ```
 

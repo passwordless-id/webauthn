@@ -199,11 +199,10 @@ export async function authenticate(credentialIds :string[], challenge :string, o
     
     const authentication :AuthenticationEncoded = {
         credentialId: auth.id,
-        //userHash: utils.toBase64url(response.userHandle), // unreliable, optional for authenticators
         authenticatorData: utils.toBase64url(response.authenticatorData),
         clientData: utils.toBase64url(response.clientDataJSON),
         signature: utils.toBase64url(response.signature),
-        userHandle: response.userHandle ? utils.toBase64url(response.userHandle) : null
+        userHandle: response.userHandle ? utils.toBase64url(response.userHandle) : undefined // may not be returned by every authenticator
     }
 
     return authentication
