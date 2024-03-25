@@ -109,7 +109,7 @@ The registration process occurs in four steps:
 3. The server parses and verifies the registration payload
 4. The server stores the credential key of this device for the user account
 
-Note that unlike traditionnal authentication, the credential key is attached to the device. Therefore, it might make sense for a single user account to have multiple credential keys.
+Note that unlike traditional authentication, the credential key is attached to the device. Therefore, it might make sense for a single user account to have multiple credential keys.
 
 
 ### 1. Requesting challenge
