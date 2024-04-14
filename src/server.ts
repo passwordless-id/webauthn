@@ -51,7 +51,7 @@ interface AuthenticationChecks {
 }
 
 
-export async function verifyAuthentication(authenticationRaw: AuthenticationEncoded, credential: CredentialKey, expected: AuthenticationChecks): Promise<AuthenticationParsed> {
+export async function verifyAuthentication(authenticationRaw: AuthenticationEncoded, credential: CredentialKey, expected: AuthenticationChecks, mode: "browser" | "extension" = "browser"): Promise<AuthenticationParsed> {
     if (authenticationRaw.credentialId !== credential.id)
         throw new Error(`Credential ID mismatch: ${authenticationRaw.credentialId} vs ${credential.id}`)
 
@@ -79,7 +79,7 @@ export async function verifyAuthentication(authenticationRaw: AuthenticationEnco
         throw new Error(`Unexpected ClientData challenge: ${authentication.client.challenge}`)
 
     // this only works because we consider `rp.origin` and `rp.id` to be the same during authentication/registration
-    const rpId = new URL(authentication.client.origin).hostname
+    const rpId = mode === "extension" ? authentication.client.origin : new URL(authentication.client.origin).hostname
     const expectedRpIdHash = utils.toBase64url(await utils.sha256(utils.toBuffer(rpId)))
     if (authentication.authenticator.rpIdHash !== expectedRpIdHash)
         throw new Error(`Unexpected RpIdHash: ${authentication.authenticator.rpIdHash} vs ${expectedRpIdHash}`)
@@ -160,7 +160,7 @@ type VerifyParams = {
 export async function verifySignature({ algorithm, publicKey, authenticatorData, clientData, signature, verbose }: VerifyParams): Promise<boolean> {
     const algoParams = getAlgoParams(algorithm)
     let cryptoKey = await parseCryptoKey(algoParams, publicKey)
-    
+
     if(verbose) {
         console.debug(cryptoKey)
     }
