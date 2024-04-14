@@ -70,8 +70,9 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  * @param {'discouraged'|'preferred'|'required'} [options.discoverable] A "discoverable" credential can be selected using `authenticate(...)` without providing credential IDs.
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
+ * @param {'browser'|'extension'} [mode='browser'] Context in which the function is called. If 'extension', the `rpId` will be set to `undefined`.
  */
-export async function register(username :string, challenge :string, options? :RegisterOptions) :Promise<RegistrationEncoded> {
+export async function register(username :string, challenge :string, options? :RegisterOptions, mode: "browser" | "extension" = "browser") :Promise<RegistrationEncoded> {
     options = options ?? {}
 
     if(!utils.isBase64url(challenge))
@@ -80,7 +81,7 @@ export async function register(username :string, challenge :string, options? :Re
     const creationOptions :PublicKeyCredentialCreationOptions = {
         challenge: utils.parseBase64url(challenge),
         rp: {
-            id: window.location.hostname,
+            id: mode === "extension" ? undefined : window.location.hostname,
             name: window.location.hostname
         },
         user: {
@@ -106,12 +107,12 @@ export async function register(username :string, challenge :string, options? :Re
         console.debug(creationOptions)
 
     const credential = await navigator.credentials.create({publicKey: creationOptions}) as any //PublicKeyCredential
-    
+
     if(options.debug)
         console.debug(credential)
-   
+
     const response = credential.response as any // AuthenticatorAttestationResponse
-    
+
     let registration :RegistrationEncoded = {
         username: username,
         credential: {
@@ -137,7 +138,7 @@ async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport
     // 'hybrid' was added mid-2022 in the specs and currently not yet available in the official dom types
     // @ts-ignore
     const roaming :AuthenticatorTransport[] = ['hybrid', 'usb', 'ble', 'nfc']
-    
+
     if(authType === "local")
         return local
     if(authType == "roaming" || authType === "extern")
@@ -166,8 +167,9 @@ async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport
  * @param {number} [options.timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
  * @param {'required'|'preferred'|'discouraged'} [options.userVerification='required'] Whether to prompt for biometric/PIN check or not.
  * @param {'optional'|'conditional'|'required'|'silent'} [options.mediation='optional'] https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
+ * @param {'browser'|'extension'} [mode='browser'] Context in which the function is called. If 'extension', the `rpId` will be set to `undefined`.
  */
-export async function authenticate(credentialIds :string[], challenge :string, options? :AuthenticateOptions) :Promise<AuthenticationEncoded> {
+export async function authenticate(credentialIds :string[], challenge :string, options? :AuthenticateOptions, mode: "browser" | "extension" = "browser") :Promise<AuthenticationEncoded> {
     options = options ?? {}
 
     if(!utils.isBase64url(challenge))
@@ -177,7 +179,7 @@ export async function authenticate(credentialIds :string[], challenge :string, o
 
     let authOptions :PublicKeyCredentialRequestOptions = {
         challenge: utils.parseBase64url(challenge),
-        rpId: window.location.hostname,
+        rpId: mode === "extension" ? undefined : window.location.hostname,
         allowCredentials: credentialIds.map(id => { return {
             id: utils.parseBase64url(id),
             type: 'public-key',
@@ -191,12 +193,12 @@ export async function authenticate(credentialIds :string[], challenge :string, o
         console.debug(authOptions)
 
     let auth = await navigator.credentials.get({publicKey: authOptions, mediation: options.mediation}) as PublicKeyCredential
-    
+
     if(options.debug)
         console.debug(auth)
 
     const response = auth.response as AuthenticatorAssertionResponse
-    
+
     const authentication :AuthenticationEncoded = {
         credentialId: auth.id,
         authenticatorData: utils.toBase64url(response.authenticatorData),
