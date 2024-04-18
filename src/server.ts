@@ -46,6 +46,7 @@ interface AuthenticationChecks {
     origin: string | Function,
     userVerified: boolean,
     counter?: number, // Made optional according to https://github.com/passwordless-id/webauthn/issues/38
+    domain ?:string, // Same as `rp.id`
     verbose?: boolean
 }
 
@@ -67,6 +68,8 @@ export async function verifyAuthentication(authenticationRaw: AuthenticationEnco
         throw new Error(`Invalid signature: ${authenticationRaw.signature}`)
 
     const authentication = parseAuthentication(authenticationRaw)
+    if(expected.verbose)
+        console.debug(authentication)
 
     if (authentication.client.type !== "webauthn.get")
         throw new Error(`Unexpected clientData type: ${authentication.client.type}`)
@@ -78,7 +81,7 @@ export async function verifyAuthentication(authenticationRaw: AuthenticationEnco
         throw new Error(`Unexpected ClientData challenge: ${authentication.client.challenge}`)
 
     // this only works because we consider `rp.origin` and `rp.id` to be the same during authentication/registration
-    const rpId = new URL(authentication.client.origin).hostname
+    const rpId = expected.domain ?? new URL(authentication.client.origin).hostname
     const expectedRpIdHash = utils.toBase64url(await utils.sha256(utils.toBuffer(rpId)))
     if (authentication.authenticator.rpIdHash !== expectedRpIdHash)
         throw new Error(`Unexpected RpIdHash: ${authentication.authenticator.rpIdHash} vs ${expectedRpIdHash}`)

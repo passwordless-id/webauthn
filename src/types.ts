@@ -9,6 +9,7 @@ export type NamedAlgo = 'RS256' | 'ES256'
 
 
 export interface CommonOptions {
+  domain ?:string // used for parent/subdomain auth and other exotic use cases
   userVerification ?:UserVerificationRequirement
   authenticatorType ?:AuthType
   timeout ?:number
@@ -42,10 +43,6 @@ export interface RegisterOptions extends CommonOptions {
   userHandle?: string
   attestation?: boolean
   discoverable?: ResidentKeyRequirement
-  rp?: {
-    id :string,
-    name :string
-  }
 }
 
 

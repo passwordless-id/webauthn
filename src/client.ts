@@ -79,9 +79,9 @@ export async function register(username :string, challenge :string, options? :Re
 
     const creationOptions :PublicKeyCredentialCreationOptions = {
         challenge: utils.parseBase64url(challenge),
-        rp: options.rp ?? {
-            id: window.location.hostname,
-            name: window.location.hostname
+        rp: {
+            id: options.domain ?? window.location.hostname,
+            name: options.domain ?? window.location.hostname
         },
         user: {
             id: options.userHandle ? utils.toBuffer(options.userHandle) : await utils.sha256(new TextEncoder().encode('passwordless.id-user:' + username)), // ID should not be directly "identifiable" for privacy concerns
@@ -177,7 +177,7 @@ export async function authenticate(credentialIds :string[], challenge :string, o
 
     let authOptions :PublicKeyCredentialRequestOptions = {
         challenge: utils.parseBase64url(challenge),
-        rpId: window.location.hostname,
+        rpId: options.domain ?? window.location.hostname,
         allowCredentials: credentialIds.map(id => { return {
             id: utils.parseBase64url(id),
             type: 'public-key',
