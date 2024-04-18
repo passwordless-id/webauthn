@@ -398,9 +398,12 @@ Registration options
 --------------------
 
 - `discoverable`: (`'discouraged'`, `'preferred'` or `'required'`) If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. *(Default: 'preferred')*
-- `attestation`: If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this may impact the authenticator information available or the UX depending on the platform. *(Default: false)*
+- `attestation`: If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this may impact the authenticator information available or the UX depending on the platform. *(Default: false)* 
 - `userHandle`: The user "handle" (also known as user "id") can be used to re-register credentials for an existing user, thus overriding the current credential key pair and username for that `userHandle`. *The default here is based on a hash of the `username`, and thus has some security implications as described in [issue](https://github.com/passwordless-id/webauthn/issues/29).*
-
+- `rp:{id:..., name: ...}`: By default the domain name is used as relying party ID and name. However, there are uses cases where you may want to customize it:
+   - defining a parent domain to let the credential work on all subdomains
+   - for browser extensions requiring specific IDs
+   - for specific iframes use cases?
 
 Authentication options
 ----------------------

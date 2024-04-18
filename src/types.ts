@@ -42,6 +42,10 @@ export interface RegisterOptions extends CommonOptions {
   userHandle?: string
   attestation?: boolean
   discoverable?: ResidentKeyRequirement
+  rp?: {
+    id :string,
+    name :string
+  }
 }
 
 

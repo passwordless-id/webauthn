@@ -79,7 +79,7 @@ export async function register(username :string, challenge :string, options? :Re
 
     const creationOptions :PublicKeyCredentialCreationOptions = {
         challenge: utils.parseBase64url(challenge),
-        rp: {
+        rp: options.rp ?? {
             id: window.location.hostname,
             name: window.location.hostname
         },
