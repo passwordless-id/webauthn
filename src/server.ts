@@ -27,7 +27,6 @@ interface RegistrationChecks {
 
 export async function verifyRegistration(registrationRaw: RegistrationEncoded, expected: RegistrationChecks): Promise<RegistrationParsed> {
     const registration = parseRegistration(registrationRaw)
-    registration.client.challenge
 
     if (registration.client.type !== "webauthn.create")
         throw new Error(`Unexpected ClientData type: ${registration.client.type}`)
@@ -160,7 +159,7 @@ type VerifyParams = {
 export async function verifySignature({ algorithm, publicKey, authenticatorData, clientData, signature, verbose }: VerifyParams): Promise<boolean> {
     const algoParams = getAlgoParams(algorithm)
     let cryptoKey = await parseCryptoKey(algoParams, publicKey)
-    
+
     if(verbose) {
         console.debug(cryptoKey)
     }
