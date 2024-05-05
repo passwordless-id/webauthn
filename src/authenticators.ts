@@ -23,9 +23,6 @@ export function parseAuthBuffer(authData :ArrayBuffer) {
         counter: new DataView(authData.slice(33,37)).getUint32(0, false),  // Big-Endian!
     }
 
-    // this is more descriptive than "backupState"
-    parsed.synced = parsed.flags.backupState
-
     if(authData.byteLength > 37) {
         // registration contains additional data
 

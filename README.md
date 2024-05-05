@@ -185,18 +185,21 @@ Example result:
   "credential": {
     "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
     "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
-    "algorithm": "ES256"
+    "algorithm": "ES256",
+    "synced": true
   },
   "authenticator": {
     ...
     "name": "Windows Hello",
     "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
-    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
-    "synced": true
+    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png"
   },
   ...
 }
 ```
+
+The credential's `synced` variable indicates if the corresponding *private key* is a "multi-device" key, typically synced in the cloud, or a "device-bound" key, typically stored on a dedicated hardware chip.
+
 
 > **NOTE:** Currently, the *attestation* which proves the exact model type of the authenticator is *not verified*. [Do I need attestation?](https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651)
 
@@ -208,7 +211,8 @@ The credential key is the most important part and should be stored in a database
 "credential": {
   "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
   "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
-  "algorithm": "ES256"
+  "algorithm": "ES256",
+  "synced": true
 },
 ```
 
@@ -289,7 +293,8 @@ import { server } from '@passwordless-id/webauthn'
 const credentialKey = { // obtained from database by looking up `authentication.credentialId`
     id: "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
     publicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
-    algorithm: "ES256"
+    algorithm: "ES256",
+    synced: true
 } as const
 
 const expected = {
@@ -450,7 +455,8 @@ parsers.parseRegistration({
   "credential": {
     "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
     "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
-    "algorithm": "ES256"
+    "algorithm": "ES256",
+    "synced": true
   },
   "client": {
     "type": "webauthn.create",
@@ -472,8 +478,7 @@ parsers.parseRegistration({
     "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
     "name": "Windows Hello",
     "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
-    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
-    "synced": true
+    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png"
   },
   "attestation": null
 }
@@ -561,8 +566,7 @@ parsers.parseAuthenticator("SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiY
     "aaguid": "08987058-cadc-4b81-b6e1-30de50dcbe96",
     "name": "Windows Hello",
     "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
-    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
-    "synced": true
+    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png"
   }
 ```
 

@@ -41,8 +41,8 @@
       <p>
         <b>Synced?</b>
         <template v-if="registrationData.authenticator">
-          <b-tag type="is-primary" v-if="registrationData.authenticator.synced === true">Synced / multi-device credential</b-tag>
-          <b-tag type="is-primary" v-if="registrationData.authenticator.synced === false">Device-bound credential</b-tag>
+          <b-tag type="is-primary" v-if="registrationData.credential.synced === true">Synced / multi-device credential</b-tag>
+          <b-tag type="is-primary" v-if="registrationData.credential.synced === false">Device-bound credential</b-tag>
         </template>
       </p>
       <hr/>

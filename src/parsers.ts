@@ -29,14 +29,17 @@ export function parseAttestation(data :string|ArrayBuffer) :unknown {
 
 
 export function parseRegistration(registration :RegistrationEncoded) :RegistrationParsed {
-    return {
+    const parsed = {
         username: registration.username,
         credential: registration.credential,
-
         client:        parseClient(registration.clientData),
         authenticator: parseAuthenticator(registration.authenticatorData),
         attestation:   registration.attestationData ? parseAttestation(registration.attestationData) : null
     }
+
+    // because this is more descriptive than a "backupState" flag bit
+    parsed.credential.synced = parsed.authenticator.flags.backupState
+    return parsed
 }
 
 export function parseAuthentication(authentication :AuthenticationEncoded) :AuthenticationParsed {

@@ -49,7 +49,8 @@ export interface RegisterOptions extends CommonOptions {
 export interface CredentialKey {
   id: string
   publicKey: string
-  algorithm: 'RS256' | 'ES256'
+  algorithm: NamedAlgo
+  synced?: boolean // only available after parsing
 }
 
 
@@ -63,11 +64,7 @@ export interface RegistrationEncoded {
 
 export interface RegistrationParsed {
   username: string
-  credential: {
-      id: string
-      publicKey: string
-      algorithm: 'RS256' | 'ES256'
-  }
+  credential: CredentialKey
   authenticator: AuthenticatorInfo
   client: ClientInfo
   attestation?: any

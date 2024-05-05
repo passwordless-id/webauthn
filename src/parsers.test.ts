@@ -16,7 +16,8 @@ test('Test parseRegistration', async () => {
       "credential": {
         "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
         "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
-        "algorithm": "ES256"
+        "algorithm": "ES256",
+        "synced": false
       },
       "client": {
         "type": "webauthn.create",
@@ -39,7 +40,6 @@ test('Test parseRegistration', async () => {
         "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
         "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
         "name": "Windows Hello",
-        "synced": false,
       },
       "attestation": null
     })
@@ -73,7 +73,6 @@ test('Test parseAuthentication', async () => {
           "extensionsIncluded": false
         },
         "counter": 1,
-        "synced": false
       },
       "signature": "MEUCIAqtFVRrn7q9HvJCAsOhE3oKJ-Hb4ISfjABu4lH70MKSAiEA666slmop_oCbmNZdc-QemTv2Rq4g_D7UvIhWT_vVp8M="
     })
@@ -97,7 +96,6 @@ test('Test parseAuthenticator', async () => {
     "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
     "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png",
     "name": "Windows Hello",
-    "synced": false,
   })
 })
 
