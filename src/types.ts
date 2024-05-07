@@ -18,7 +18,7 @@ export interface CommonOptions {
 
 
 export interface AuthenticateOptions extends CommonOptions {
-  mediation ?:CredentialMediationRequirement
+  mediation ?:CredentialMediationRequirement // TODO: explain in docs
 }
 
 export interface AuthenticationEncoded {
@@ -27,7 +27,7 @@ export interface AuthenticationEncoded {
     authenticatorData: string
     clientData: string
     signature: string
-    userHandle?: string
+    userId?: string
 }
 
 export interface AuthenticationParsed {
@@ -40,11 +40,16 @@ export interface AuthenticationParsed {
 
 
 export interface RegisterOptions extends CommonOptions {
-  userHandle?: string
+  user: string | User
   attestation?: boolean
   discoverable?: ResidentKeyRequirement
 }
 
+export interface User { 
+  id? :string
+  name :string
+  username? :string
+}
 
 export interface CredentialKey {
   id: string

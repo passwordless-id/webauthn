@@ -202,7 +202,7 @@ export async function authenticate(credentialIds :string[], challenge :string, o
         authenticatorData: utils.toBase64url(response.authenticatorData),
         clientData: utils.toBase64url(response.clientDataJSON),
         signature: utils.toBase64url(response.signature),
-        userHandle: response.userHandle ? utils.toBase64url(response.userHandle) : undefined // may not be returned by every authenticator
+        userId: response.userHandle ? utils.toBase64url(response.userHandle) : undefined // may not be returned by every authenticator
     }
 
     return authentication

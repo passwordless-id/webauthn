@@ -1,2 +1,12 @@
+site_name: '@passwordless-id/webauthn'
+site_url: https://webauthn.passwordless.id
+repo_url: https://github.com/passwordless-id/webauthn
 extra_css:
-  - docs/style.css
+  - style.css
+plugins:
+  - search
+  - mermaid2
+theme:
+  name: mkdocs
+  locale: en
+  include_sidebar: false
