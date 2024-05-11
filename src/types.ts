@@ -14,6 +14,7 @@ export interface CommonOptions {
   authenticatorType ?:AuthType
   timeout ?:number
   debug ?:boolean
+  signal ?:AbortSignal
 }
 
 

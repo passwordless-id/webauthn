@@ -105,7 +105,7 @@ export async function register(username :string, challenge :string, options? :Re
     if(options.debug)
         console.debug(creationOptions)
 
-    const credential = await navigator.credentials.create({publicKey: creationOptions}) as any //PublicKeyCredential
+    const credential = await navigator.credentials.create({publicKey: creationOptions, signal: options.signal}) as any //PublicKeyCredential
     
     if(options.debug)
         console.debug(credential)
@@ -190,7 +190,11 @@ export async function authenticate(credentialIds :string[], challenge :string, o
     if(options.debug)
         console.debug(authOptions)
 
-    let auth = await navigator.credentials.get({publicKey: authOptions, mediation: options.mediation}) as PublicKeyCredential
+    let auth = await navigator.credentials.get({
+      publicKey: authOptions,
+      mediation: options.mediation,
+      signal: options.signal,
+    }) as PublicKeyCredential
     
     if(options.debug)
         console.debug(auth)
