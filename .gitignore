@@ -1,4 +1,5 @@
 /node_modules
 /.vscode
 /dist/esm
-/dist/commonjs
+/dist/cjs
+/dist/types
