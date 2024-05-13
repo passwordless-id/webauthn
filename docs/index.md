@@ -1,14 +1,10 @@
----
-toc: false
----
+![banner](img/banner-biometric-auth.svg)
 
 Introduction
-============
+------------
 
 This library is a greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
 It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator aaguids/names).
-
-![banner](img/banner-biometric-auth.svg)
 
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider based on WebAuthn.
 
@@ -29,14 +25,36 @@ The source of all demos is on [GitHub](https://github.com/passwordless-id/webaut
 How does the protocol work?
 ---------------------------
 
-This diagram shows how the webauthn protocol works, slightly simplified.
+In a very simplified way, here is how Passkeys / WebAuthn works.
 
 ```mermaid
 sequenceDiagram
-    Alice->>+John: Hello John, how are you?
-    Alice->>+John: John, can you hear me?
-    John-->>-Alice: Hi Alice, I can hear you!
-    John-->>-Alice: I feel great!
+  actor User as User/Authenticator
+  participant Browser
+  participant Server
+
+  Note over User, Server: REGISTRATION
+  
+  Browser->>Server: I want to register!
+  Server->>Browser: Please send me a public key
+  Browser->>User: `webauthn.register(...)`
+  User->>User: Local authentication <br> using device PIN, biometrics...
+  User->>Browser: New key pair created
+  Browser->>Server: Send public key
+  Server->>Server: Store public key for later
+  Server->>Browser: Account created
+
+  Note over User, Server: AUTHENTICATION
+
+  Browser->>Server: I want to login!
+  Server->>Browser: Please sign this challenge
+  Browser->>User: `webauthn.authenticate(...)`
+  User->>User: Local authentication <br> using device PIN, biometrics...
+  User->>Browser: Challenge signed with private key
+  Browser->>Server: Send signed challenge
+  Server->>Server: Verify signature using public key
+  Server->>Browser: Welcome!
+
 ```
 
 ![diagram](https://passwordless.id/protocols/webauthn/overview.svg)
