@@ -1,5 +1,5 @@
 import * as utils from './utils.js'
-import { AuthenticateOptions, AuthenticationEncoded, AuthType, NamedAlgo, NumAlgo, RegisterOptions, RegistrationEncoded } from './types.js'
+import { AuthenticateOptions, AuthenticationEncoded, AuthType, NamedAlgo, NumAlgo, RegisterOptions, RegistrationEncoded, User } from './types.js'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
@@ -55,8 +55,8 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
 /**
  * Creates a cryptographic key pair, in order to register the public key for later passwordless authentication.
  *
- * @param {string} username
- * @param {string} challenge A server-side randomly generated string.
+ * @param {string|Object} [options.user] Username or user object (id, name, displayName)
+ * @param {string} [options.challenge] A server-side randomly generated string.
  * @param {Object} [options] Optional parameters.
  * @param {number} [options.timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
  * @param {'required'|'preferred'|'discouraged'} [options.userVerification='required'] Whether to prompt for biometric/PIN check or not.
@@ -71,26 +71,35 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
  */
-export async function register(username :string, challenge :string, options? :RegisterOptions) :Promise<RegistrationEncoded> {
-    options = options ?? {}
+export async function register(options :RegisterOptions) :Promise<RegistrationEncoded> {
+    
+    if(!options.challenge)
+        throw new Error('"challenge" required')
+    
+    if(!options.user)
+        throw new Error('"user" required')
 
-    if(!utils.isBase64url(challenge))
+    if(!utils.isBase64url(options.challenge))
         throw new Error('Provided challenge is not properly encoded in Base64url')
 
+    const user :User = typeof(options.user) === 'string' ? {name: options.user} : options.user
+    if(!user.id)
+        user.id = crypto.randomUUID()
+
     const creationOptions :PublicKeyCredentialCreationOptions = {
-        challenge: utils.parseBase64url(challenge),
+        challenge: utils.parseBase64url(options.challenge),
         rp: {
             id: options.domain ?? window.location.hostname,
             name: options.domain ?? window.location.hostname
         },
         user: {
-            id: options.userHandle ? utils.toBuffer(options.userHandle) : await utils.sha256(new TextEncoder().encode('passwordless.id-user:' + username)), // ID should not be directly "identifiable" for privacy concerns
-            name: username,
-            displayName: username,
+            id: utils.toBuffer(user.id),
+            name: user.name,
+            displayName: user.displayName ?? user.name,
         },
         pubKeyCredParams: [
             {alg: -7, type: "public-key"},   // ES256 (Webauthn's default algorithm)
-            {alg: -257, type: "public-key"}, // RS256 (for Windows Hello and others)
+            {alg: -257, type: "public-key"}, // RS256 (for older Windows Hello and others)
         ],
         timeout: options.timeout ?? 60000,
         authenticatorSelection: {
@@ -113,7 +122,7 @@ export async function register(username :string, challenge :string, options? :Re
     const response = credential.response as any // AuthenticatorAttestationResponse
     
     let registration :RegistrationEncoded = {
-        username: username,
+        user,
         credential: {
             id: credential.id,
             publicKey: utils.toBase64url(response.getPublicKey()),
@@ -167,18 +176,16 @@ async function getTransports(authType :AuthType) :Promise<AuthenticatorTransport
  * @param {'required'|'preferred'|'discouraged'} [options.userVerification='required'] Whether to prompt for biometric/PIN check or not.
  * @param {'optional'|'conditional'|'required'|'silent'} [options.mediation='optional'] https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
  */
-export async function authenticate(credentialIds :string[], challenge :string, options? :AuthenticateOptions) :Promise<AuthenticationEncoded> {
-    options = options ?? {}
-
-    if(!utils.isBase64url(challenge))
+export async function authenticate(options :AuthenticateOptions) :Promise<AuthenticationEncoded> {
+    if(!utils.isBase64url(options.challenge))
         throw new Error('Provided challenge is not properly encoded in Base64url')
 
     const transports = await getTransports(options.authenticatorType ?? "auto");
 
     let authOptions :PublicKeyCredentialRequestOptions = {
-        challenge: utils.parseBase64url(challenge),
+        challenge: utils.parseBase64url(options.challenge),
         rpId: options.domain ?? window.location.hostname,
-        allowCredentials: credentialIds.map(id => { return {
+        allowCredentials: (options.allowCredentials ?? []).map(id => { return {
             id: utils.parseBase64url(id),
             type: 'public-key',
             transports: transports,
@@ -190,7 +197,11 @@ export async function authenticate(credentialIds :string[], challenge :string, o
     if(options.debug)
         console.debug(authOptions)
 
-    let auth = await navigator.credentials.get({publicKey: authOptions, mediation: options.mediation}) as PublicKeyCredential
+    let auth = await navigator.credentials.get({
+        publicKey: authOptions, 
+        mediation: options.mediation,
+        signal: options.signal
+    }) as PublicKeyCredential
     
     if(options.debug)
         console.debug(auth)

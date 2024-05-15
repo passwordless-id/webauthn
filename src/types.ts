@@ -9,6 +9,7 @@ export type NamedAlgo = 'RS256' | 'ES256'
 
 
 export interface CommonOptions {
+  challenge :string
   domain ?:string // used for parent/subdomain auth and other exotic use cases
   userVerification ?:UserVerificationRequirement
   authenticatorType ?:AuthType
@@ -18,7 +19,9 @@ export interface CommonOptions {
 
 
 export interface AuthenticateOptions extends CommonOptions {
+  allowCredentials ?:string[]
   mediation ?:CredentialMediationRequirement // TODO: explain in docs
+  signal ?:AbortSignal
 }
 
 export interface AuthenticationEncoded {
@@ -48,7 +51,7 @@ export interface RegisterOptions extends CommonOptions {
 export interface User { 
   id? :string
   name :string
-  username? :string
+  displayName? :string
 }
 
 export interface CredentialKey {
@@ -60,7 +63,7 @@ export interface CredentialKey {
 
 
 export interface RegistrationEncoded {
-    username: string
+    user: User
     credential: CredentialKey
     authenticatorData: string
     clientData: string
@@ -68,7 +71,7 @@ export interface RegistrationEncoded {
 }
 
 export interface RegistrationParsed {
-  username: string
+  user: User
   credential: CredentialKey
   authenticator: AuthenticatorInfo
   client: ClientInfo
