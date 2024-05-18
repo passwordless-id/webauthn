@@ -24,6 +24,7 @@ export interface AuthenticateOptions extends CommonOptions {
   signal ?:AbortSignal
 }
 
+
 export interface AuthenticationEncoded {
     credentialId: string
     //userHash: string, // unreliable, optional for authenticators
@@ -32,6 +33,7 @@ export interface AuthenticationEncoded {
     signature: string
     userId?: string
 }
+
 
 export interface AuthenticationParsed {
   credentialId: string
@@ -48,11 +50,13 @@ export interface RegisterOptions extends CommonOptions {
   discoverable?: ResidentKeyRequirement
 }
 
+
 export interface User { 
   id? :string
   name :string
   displayName? :string
 }
+
 
 export interface CredentialKey {
   id: string
@@ -78,6 +82,7 @@ export interface RegistrationParsed {
   attestation?: any
 }
 
+
 export interface ClientInfo {
   type: "webauthn.create" | "webauthn.get"
   challenge: string
@@ -89,6 +94,7 @@ export interface ClientInfo {
   }
   extensions?: any
 }
+
 
 export interface AuthenticatorInfo {
     rpIdHash: string,

@@ -2,23 +2,32 @@ site_name: '@passwordless-id/webauthn'
 site_url: https://webauthn.passwordless.id
 repo_url: https://github.com/passwordless-id/webauthn
 extra_css:
-  - style.css
+  - css/style.css
 plugins:
   - search
   - mermaid2
 
 nav:
   - Introduction: 'index.md'
-  - demos.md
-  - registration.md
-  - authentication.md
-  - verification.md
-  - passkeys-faq.md
+  - Demos:
+    - Basic: demos/basic.html
+    - Playground: demos/playground.html
+    - Authenticators: demos/authenticators.html
+  - Docs:
+    - docs/registration.md
+    - docs/authentication.md
+    - docs/verification.md
+    - docs/version_1.md
+  - F.A.Q.:
+    - faq/passkeys-faq.md
+    - faq/why_not.md
 
 theme:
   #name: readthedocs
   name: mkdocs
-  #user_color_mode_toggle: true
+  color_mode: light
+  hljs_style: dark
+  user_color_mode_toggle: false
 
   #name: material
   locale: en

@@ -8,6 +8,9 @@ It is an [open source](https://github.com/passwordless-id/webauthn), dependency-
 
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider based on WebAuthn.
 
+Demos
+-----
+
 Try out the playground to see how this library works:
 
 ### *[Testing Playground](https://webauthn.passwordless.id/demos/playground.html)*
@@ -20,47 +23,6 @@ Other demos with minial examples:
 - [Authenticators list](https://webauthn.passwordless.id/demos/authenticators.html)
 
 The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn)
-
-
-How does the protocol work?
----------------------------
-
-In a very simplified way, here is how Passkeys / WebAuthn works.
-
-```mermaid
-sequenceDiagram
-  actor User as User/Authenticator
-  participant Browser
-  participant Server
-
-  Note over User, Server: REGISTRATION
-  
-  Browser->>Server: I want to register!
-  Server->>Browser: Please send me a public key
-  Browser->>User: `webauthn.register(...)`
-  User->>User: Local authentication <br> using device PIN, biometrics...
-  User->>Browser: New key pair created
-  Browser->>Server: Send public key
-  Server->>Server: Store public key for later
-  Server->>Browser: Account created
-
-  Note over User, Server: AUTHENTICATION
-
-  Browser->>Server: I want to login!
-  Server->>Browser: Please sign this challenge
-  Browser->>User: `webauthn.authenticate(...)`
-  User->>User: Local authentication <br> using device PIN, biometrics...
-  User->>Browser: Challenge signed with private key
-  Browser->>Server: Send signed challenge
-  Server->>Server: Verify signature using public key
-  Server->>Browser: Welcome!
-
-```
-
-![diagram](https://passwordless.id/protocols/webauthn/overview.svg)
-
-Further documentation about the protocol can be found in the webauthn guide at [Passwordless.ID](https://passwordless.id).
-
 
 
 Installation / Usage
@@ -104,3 +66,44 @@ So you might for example `import { client } from '@passwordless-id/webauthn'` fo
 - Probably in most recent browsers/servers
 
 (*) For older Node versions, take a look at [Arch0125's fork](https://github.com/Arch0125/webauthn/tree/nodev14-v16-support). (The reason of the Node 19+ compatibility is basically `WebCrypto` being globally available, making it possible to use the same build for all targets: browser, node, clouflare workers...)
+
+
+
+Getting started
+---------------
+
+In a very simplified way, here is how Passkeys / WebAuthn works.
+
+```mermaid
+sequenceDiagram
+  actor User as User/Authenticator
+  participant Browser
+  participant Server
+
+  Note over User, Server: REGISTRATION
+  
+  Browser->>Server: I want to register!
+  Server->>Browser: Please send me a public key
+  Browser->>User: `webauthn.register(...)`
+  User->>User: Local authentication <br> using device PIN, biometrics...
+  User->>Browser: New key pair created
+  Browser->>Server: Send public key
+  Server->>Server: Store public key for later
+  Server->>Browser: Account created
+
+  Note over User, Server: AUTHENTICATION
+
+  Browser->>Server: I want to login!
+  Server->>Browser: Please sign this challenge
+  Browser->>User: `webauthn.authenticate(...)`
+  User->>User: Local authentication <br> using device PIN, biometrics...
+  User->>Browser: Challenge signed with private key
+  Browser->>Server: Send signed challenge
+  Server->>Server: Verify signature using public key
+  Server->>Browser: Welcome!
+
+```
+
+
+Further documentation about the protocol can be found in the webauthn guide at [Passwordless.ID](https://passwordless.id).
+
