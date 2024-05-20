@@ -34,7 +34,12 @@
 h1 {
     text-align: center;
 }
+
 .navbar.bg-primary {
     background-image: none;
 }
 
+.mermaid {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}

@@ -66,7 +66,7 @@ Besides the required `user` and `challenge`, it has following options.
 |--------|---------|-------------|
 | allowPlatform | `true` | Allow the platform to be used as authenticator. |
 | allowRoaming | `true` | Allow roaming authenticators to be used. Including QR codes to scan. |
-| userVerification | `required` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`. Note that this differs from the native WebAuthn protocol, whose default is `preferred`. This might make a difference for roaming authenticators not possessing user verification.
+| userVerification | `required` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`. Note that this differs from the native WebAuthn protocol, whose default is `preferred`. Note that some security keys are not capable of user verification.
 | timeout | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
 | attestation | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple) and its verification is complex.
 | domain | `window.location.hostname` | This can be overriden for two use-cases. By using the parent domain, to have the passkey valid for all subdomains. Or by using the outer domain when using iframes. 
