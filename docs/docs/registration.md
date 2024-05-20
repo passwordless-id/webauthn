@@ -4,13 +4,29 @@ Registration
 
 ### Overview
 
+
 The registration process occurs in four steps:
 
-1. The browser requests a challenge from the server
+1. The browser requests a `challenge` (a nonce) from the server
 2. The browser triggers `client.register(...)` and sends the result to the server
-3. The server parses and verifies the registration payload
-4. The server stores the credential key of this device for the user account
+3. The server parses the JSON payload, verifies it, and ensures the `challenge` matches
+4. The server stores the public key credential for this device for the user account
 
+```mermaid
+sequenceDiagram
+  actor User as User/Authenticator
+  participant Browser
+  participant Server
+  
+  Browser->>Server: I want to register!
+  Server->>Browser: Please send me a public key, <br>here is a challenge (nonce)
+  Browser->>User: `webauthn.register(...)`
+  User->>User: Local authentication <br> using device PIN, biometrics...
+  User->>Browser: New key pair created
+  Browser->>Server: Send public key credential
+  Server->>Server: Store public key for later
+  Server->>Browser: Account created
+```
 Note that unlike traditional authentication, the credential key is attached to the device. Therefore, it might make sense for a single user account to have multiple credential keys.
 
 
@@ -44,7 +60,26 @@ const registration = await client.register({
 })
 ```
 
-The `registration` object looks like this:
+Besides the required `user` and `challenge`, it has following options.
+
+| option | default | description |
+|--------|---------|-------------|
+| allowPlatform | `true` | Allow the platform to be used as authenticator. |
+| allowRoaming | `true` | Allow roaming authenticators to be used. Including QR codes to scan. |
+| userVerification | `required` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`. Note that this differs from the native WebAuthn protocol, whose default is `preferred`. This might make a difference for roaming authenticators not possessing user verification.
+| timeout | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
+| attestation | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple) and its verification is complex.
+| domain | `window.location.hostname` | This can be overriden for two use-cases. By using the parent domain, to have the passkey valid for all subdomains. Or by using the outer domain when using iframes. 
+| debug | `false` | If true, the parsed payloads will be included in the result.
+
+
+### 3. Send the payload to the server
+
+> By default, the native WebAuthn protocol does not result in a serializable object. The protocol in its third iteration provided a `toJSON()` function but its support is not widespread. Moreover, decoding this response would still need decoding CBOR server-side.
+>
+> Because of this, this library decided to return a more convinient format instead. Plain JSON not requiring CBOR libraries server-side.
+
+The result `registration` object looks like this:
 
 ```json
 {
@@ -150,3 +185,8 @@ Registration options
 
 - `discoverable`: (`'discouraged'`, `'preferred'` or `'required'`) If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. *(Default: 'preferred')*
 - `attestation`: If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this may impact the authenticator information available or the UX depending on the platform. *(Default: false)* 
+
+
+### Replacing a credential or updating the user name
+
+Regarding the `user`, you can either provide a name as string, or an object like `{id: '...', name: '...', displayName: '...'}`. By default, `name` and `displayName` will be the same. The `id` should not disclose personal information as it can be exposed. Providing the ID can be used to override a credential with a new one, including an updated `name`/`username`.

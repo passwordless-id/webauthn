@@ -29,9 +29,11 @@
     --bs-dropdown-link-hover-bg: #7957d5;
     --bs-dropdown-link-hover-bg-rgb: 121, 87, 213;
     */
-    --headings-line-height: 2;
 }
 
+h1 {
+    text-align: center;
+}
 .navbar.bg-primary {
     background-image: none;
 }
