@@ -1,7 +1,9 @@
 Passkeys F.A.Q.
 ===============
 
-> Information on the web might not always be 100% accurate. The WebAuthn protocol evolved quite a bit in the past years, major browser vendors pushed their agenda, and it may still evolve, so take all information with a grain of salt. In particular, there are claims that the passkey is device-bound while others claim it is synced in the cloud. This is partly due to the WebAuthn having drastically evolved in the past years. From being hardware-bound keys to being software-bound keys synced by a password manager.
+> Information on the web might is not always 100% accurate. The WebAuthn protocol is more than 200 pages on paper, it's complex and gets constantly tweaked. Morevover, the reality of browsers and authenticators have their own quirks and deviate from the W3C version. So take all information with a grain of salt.
+> 
+> In particular, there is some confusion regarding where passkeys are stored. This is because the protocol evolved quite a bit in the past few years. In the beginning, "public key credentials" were hardware-bound. However, major vendors pushed their agenda and nowadays "passkeys" are frequently synced in the cloud.
 
 
 ## What *is* a passkey?
