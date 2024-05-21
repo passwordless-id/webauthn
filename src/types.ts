@@ -1,18 +1,16 @@
-// 'extern' is deprecated in favor of 'roaming' but kept for compatibility purposes
-export type AuthType = 'auto' | 'local' | 'extern' | 'roaming' | 'both'
-
-
 // TODO: although algo "-8" is currently only used optionally by a few security keys, 
 // it would not harm to support it for the sake of completeness
-export type NumAlgo = -7 | -257
-export type NamedAlgo = 'RS256' | 'ES256'
+export type NumAlgo = -7 | -8 | -257
+export type NamedAlgo = 'RS256' | 'Ed25519' | 'ES256'
+
+export type PublicKeyCredentialHints = "client-device" | "hybrid" | "security-key"
 
 
 export interface CommonOptions {
   challenge :string
   domain ?:string // used for parent/subdomain auth and other exotic use cases
   userVerification ?:UserVerificationRequirement
-  authenticatorType ?:AuthType
+  hints ?:PublicKeyCredentialHints[]
   timeout ?:number
   debug ?:boolean
 }
@@ -20,8 +18,7 @@ export interface CommonOptions {
 
 export interface AuthenticateOptions extends CommonOptions {
   allowCredentials ?:string[]
-  mediation ?:CredentialMediationRequirement // TODO: explain in docs
-  signal ?:AbortSignal
+  onAutofill ?:(authentication: AuthenticationEncoded) => void
 }
 
 
