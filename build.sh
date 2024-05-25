@@ -9,9 +9,7 @@ npm run build
 mv dist site/dist
 
 # Build Icons
-cd misc
-pip install -r requirements.txt
-python icons.py
-mv authenticators ../site/authenticators
+pip install -r misc/requirements.txt
+python misc/icons.py site/authenticators
 
 
