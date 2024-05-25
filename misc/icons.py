@@ -58,7 +58,7 @@ for key, item in sorted(authenticators.items()):
             continue
 
         # Save the image to a file
-        save_as = f'../authenticators/{key}-{mode}.png'
+        save_as = f'authenticators/{key}-{mode}.png'
         try:
             if img_format == 'svg':
                 print(f'Converting SVG to PNG {save_as}...')
