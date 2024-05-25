@@ -48,11 +48,11 @@ Not by default. Passkeys are a single step 2FA only if:
 
 ## Are hardware-bound credentials more secure than synced ones?
 
-Yes. They are. When the credential is bound to the device, the security guarantees are straightforward. You have to possess the device. End of story.
+*Yes*. When the credential is hardware-bound, the security guarantees are straightforward. You have to possess the device. Simple and effective.
 
-When using synced "multi-device" passkeys, the security guarantees are basically delegated to the software authenticator, whether it's built-in in the platform or a password manager. The passkeys are stored in your account and synced in the cloud. So basically, these passkeys are as safe as the main account itself. If the account is hacked, whether it's by a stolen password, temporary access to your device or a lax recovery procedure, all the passkeys come along with it. While it offers convinience, the security guarantees are fully delegated to the authenticator.
+When using synced "multi-device" passkeys, the "cloud" has the key, your device software have the key, and the key is in-transit over the wire. While vendors go to great length to secure every aspect, it is still more exposed to risk. All security guanrantees are basically delegated to the software authenticator, whether it's built-in in the platform or a password manager. At best, these passkeys are as safe as the main account itself. If the account is hacked, whether it's by a stolen password, temporary access to your device or a lax recovery procedure, all the passkeys would come along with the hacked account. While it offers convinience, the security guarantees are not as strong as with hardware bound authenticators.
 
-The privacy concerns are similar. It is a matter of thrust with the authenticator.
+The privacy concerns are similar. It is a matter of thrust with the vendor.
 
 
 ## How to deal with recovery when using hardware-bound credentials?
