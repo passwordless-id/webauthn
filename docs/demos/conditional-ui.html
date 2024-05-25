@@ -23,11 +23,10 @@
   <br/>
   <template v-if="!isAuthenticated">
     <b-field>
-      <b-input v-model="username" placeholder="Username" @input="checkIsRegistered()" autocomplete="username"></b-input>
+      <b-input v-model="username" placeholder="Username" autocomplete="username webauthn"></b-input>
     </b-field>
     <div>
-      <b-button type="is-primary" @click="register()" :disabled="!username || isRegistered">Register device</b-button>
-      <b-button type="is-primary" @click="login()" :disabled="!username || !isRegistered">Authenticate</b-button>
+      <b-button type="is-primary" @click="register()" :disabled="!username">Sign in/up</b-button>
     </div>
   </template>
   <template v-if="isAuthenticated">
@@ -66,6 +65,6 @@
 <script src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
 <script src="https://unpkg.com/browse/axios@1.4.0/dist/axios.min.js"></script>
 
-<script type="module" src="js/basic.js"></script>
+<script type="module" src="js/autofill.js"></script>
 </body>
 </html>

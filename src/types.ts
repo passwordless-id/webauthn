@@ -6,6 +6,17 @@ export type NamedAlgo = 'RS256' | 'Ed25519' | 'ES256'
 export type PublicKeyCredentialHints = "client-device" | "hybrid" | "security-key"
 
 
+export interface WebAuthnCreateOptions extends PublicKeyCredentialCreationOptions {
+  hints ?:PublicKeyCredentialHints[]
+}
+export interface WebAuthnGetOptions extends PublicKeyCredentialRequestOptions {
+  hints ?:PublicKeyCredentialHints[]
+}
+
+export interface WebAuthnCreateResponse extends PublicKeyCredential {
+  response: 
+}
+
 export interface CommonOptions {
   challenge :string
   domain ?:string // used for parent/subdomain auth and other exotic use cases
@@ -18,7 +29,7 @@ export interface CommonOptions {
 
 export interface AuthenticateOptions extends CommonOptions {
   allowCredentials ?:string[]
-  onAutofill ?:(authentication: AuthenticationEncoded) => void
+  conditional ?:boolean
 }
 
 

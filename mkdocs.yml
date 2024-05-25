@@ -8,7 +8,6 @@ plugins:
   - mermaid2
 
 nav:
-  - Introduction: 'index.md'
   - Demos:
     - Basic: demos/basic.html
     - Playground: demos/playground.html
@@ -28,14 +27,15 @@ theme:
   color_mode: light
   hljs_style: dark
   user_color_mode_toggle: false
+  custom_dir: docs/theme
 
   #name: material
   locale: en
   logo: passkeys-logo-dark.svg
-  features:
-  - navigation.tabs
-  - navigation.tabs.sticky
-  - toc.integrate
+  #features:
+  #- navigation.tabs
+  #- navigation.tabs.sticky
+  #- toc.integrate
 
 #markdown_extensions:
 #  - pymdownx.highlight:

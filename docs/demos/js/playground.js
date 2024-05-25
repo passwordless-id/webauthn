@@ -5,25 +5,28 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
     data: {
         origin: document.location.origin,
         registration: {
-            username: "Arnaud",
-            challenge: utils.randomChallenge(),
             options: {
-                authenticatorType: 'auto',
+                user: "Arnaud",
+                challenge: utils.randomChallenge(),
+                hints: [],
                 userVerification: 'required',
                 discoverable: 'preferred',
                 timeout: 60000,
                 attestation: true,
+                debug: false
             },
             result: null,
             parsed: null
         },
         authentication: {
             credentialId: null,
-            challenge: utils.randomChallenge(),
             options: {
+                challenge: utils.randomChallenge(),
+                hints: [],
                 authenticatorType: 'auto',
                 userVerification: 'required',
                 timeout: 60000,
+                debug: false
             },
             result: null,
             parsed: null
@@ -47,7 +50,7 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
         },
         async register() {
             try {
-                let res = await client.register(this.registration.username, this.registration.challenge, this.registration.options)
+                let res = await client.register(this.registration.options)
                 this.$buefy.toast.open({
                     message: 'Registered!',
                     type: 'is-success'
@@ -76,7 +79,7 @@ import {client, server, parsers, utils} from '../../dist/webauthn.min.js'
             this.authentication.parsed = null
             try {
                 const credentialId = this.authentication.credentialId
-                const res = await client.authenticate(credentialId ? [credentialId] : [], this.authentication.challenge, this.authentication.options)
+                const res = await client.authenticate(this.authentication.options)
                 console.log(res)
 
                 this.authentication.result = res

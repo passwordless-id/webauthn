@@ -39,10 +39,9 @@ const app = new Vue({
       await this.checkIsRegistered()
     },
     async login() {
-      let credentialId = window.localStorage.getItem(this.username)
       let res = await client.authenticate({
         challenge: window.crypto.randomUUID(),
-        allowCredentials: [credentialId]
+        conditional: true,
       })
       console.debug(res)
 
@@ -68,3 +67,5 @@ const app = new Vue({
     }
   }
 })
+
+app.login()

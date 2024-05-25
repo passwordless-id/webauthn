@@ -1,5 +1,5 @@
 import * as utils from './utils.js'
-import { AuthenticateOptions, AuthenticationEncoded, CommonOptions, NamedAlgo, NumAlgo, PublicKeyCredentialHints, RegisterOptions, RegistrationEncoded, User } from './types.js'
+import { AuthenticateOptions, AuthenticationEncoded, CommonOptions, NamedAlgo, NumAlgo, PublicKeyCredentialHints, RegisterOptions, RegistrationEncoded, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
@@ -21,7 +21,7 @@ export async function isLocalAuthenticator() :Promise<boolean> {
  * Before "hints" were a thing, the "authenticatorAttachment" was the way to go.
  */
 function getAuthAttachment(hints ?:PublicKeyCredentialHints[]) :AuthenticatorAttachment|undefined {
-    if(!hints)
+    if(!hints || hints.length === 0)
         return undefined // The webauthn protocol considers `null` as invalid but `undefined` as "both"!
 
     if(hints.includes('client-device')) {
@@ -74,7 +74,7 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
     if(!user.id)
         user.id = crypto.randomUUID()
 
-    const creationOptions :PublicKeyCredentialCreationOptions = {
+    const creationOptions :WebAuthnCreateOptions = {
         challenge: utils.parseBase64url(options.challenge),
         rp: {
             id: options.domain ?? window.location.hostname,
@@ -85,6 +85,7 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
             name: user.name,
             displayName: user.displayName ?? user.name,
         },
+        hints: options.hints,
         pubKeyCredParams: [
             {alg: -7, type: "public-key"},   // ES256 (Webauthn's default algorithm)
             {alg: -257, type: "public-key"}, // RS256 (for older Windows Hello and others)
@@ -102,8 +103,18 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
     if(options.debug)
         console.debug(creationOptions)
 
-    const credential = await navigator.credentials.create({publicKey: creationOptions}) as any //PublicKeyCredential
+    // stops the possibly ongoing conditional UI autofill authentication process
+    if(ongoingAuth != null)
+        ongoingAuth.abort()
+    ongoingAuth = new AbortController();
+
+    const credential = await navigator.credentials.create({
+        publicKey: creationOptions,
+        signal: ongoingAuth?.signal
+    }) as any //PublicKeyCredential
     
+    ongoingAuth = null;
+
     if(options.debug)
         console.debug(credential)
    
@@ -129,6 +140,9 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
 
 
 function getTransports(hints ?:PublicKeyCredentialHints[]) :AuthenticatorTransport[] {
+    if(!hints || hints.length === 0)
+        return ['internal', 'hybrid', 'usb', 'ble', 'nfc']
+
     const transportMap :Record<PublicKeyCredentialHints, AuthenticatorTransport[]> = {
         'client-device': ['internal'],
         'hybrid': ['hybrid', 'ble', 'nfc'],
@@ -136,44 +150,35 @@ function getTransports(hints ?:PublicKeyCredentialHints[]) :AuthenticatorTranspo
     }
     const uniqueTransports = new Set<AuthenticatorTransport>();
 
-    if (hints) {
-        hints.forEach(hint => {
-            if (transportMap.hasOwnProperty(hint)) {
-                transportMap[hint].forEach(transport => {
-                    uniqueTransports.add(transport);
-                });
-            }
-        });
-    } else {
-        // If no hints provided, return all supported transports
-        Object.values(transportMap).forEach(transports => {
-            transports.forEach(transport => {
+    hints.forEach(hint => {
+        if (transportMap.hasOwnProperty(hint)) {
+            transportMap[hint].forEach(transport => {
                 uniqueTransports.add(transport);
             });
-        });
-    }
+        }
+    });
 
     return Array.from(uniqueTransports);
 }
 
+let ongoingAuth :AbortController|null = null;
 
 /**
  * Signs a challenge using one of the provided credentials IDs in order to authenticate the user.
  *
  * @param {string[]} credentialIds The list of credential IDs that can be used for signing.
  * @param {string} challenge A server-side randomly generated string, the base64 encoded version will be signed.
- * @param {Object} [options] Optional parameters.
- * @param {number} [options.timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
- * @param {'required'|'preferred'|'discouraged'} [options.userVerification='required'] Whether to prompt for biometric/PIN check or not.
- * @param {'optional'|'conditional'|'required'|'silent'} [options.mediation='optional'] https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
+ * @param {number} [timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
+ * @param {'required'|'preferred'|'discouraged'} [userVerification='required'] Whether to prompt for biometric/PIN check or not.
+ * @param {boolean} [conditional] Does not return directly, but only when the user has selected a credential in the input field with `autocomplete="username webauthn"`
  */
 export async function authenticate(options :AuthenticateOptions) :Promise<AuthenticationEncoded> {
     if(!utils.isBase64url(options.challenge))
         throw new Error('Provided challenge is not properly encoded in Base64url')
 
-    const transports = await getTransports(options.authenticatorType ?? "auto");
+    const transports :AuthenticatorTransport[] = getTransports(options.hints);
 
-    let authOptions :PublicKeyCredentialRequestOptions = {
+    let authOptions :WebAuthnGetOptions = {
         challenge: utils.parseBase64url(options.challenge),
         rpId: options.domain ?? window.location.hostname,
         allowCredentials: (options.allowCredentials ?? []).map(id => { return {
@@ -181,6 +186,7 @@ export async function authenticate(options :AuthenticateOptions) :Promise<Authen
             type: 'public-key',
             transports: transports,
         }}),
+        hints: options.hints,
         userVerification: options.userVerification ?? "required",
         timeout: options.timeout ?? 60000,
     }
@@ -188,12 +194,18 @@ export async function authenticate(options :AuthenticateOptions) :Promise<Authen
     if(options.debug)
         console.debug(authOptions)
 
+    if(ongoingAuth != null)
+        ongoingAuth.abort()
+    ongoingAuth = new AbortController();
+    
     let auth = await navigator.credentials.get({
-        publicKey: authOptions, 
-        mediation: options.mediation,
-        signal: options.signal
+        publicKey: authOptions,
+        mediation: options.conditional ? 'conditional' : undefined,
+        signal: ongoingAuth?.signal
     }) as PublicKeyCredential
     
+    ongoingAuth = null;
+
     if(options.debug)
         console.debug(auth)
 
@@ -209,4 +221,3 @@ export async function authenticate(options :AuthenticateOptions) :Promise<Authen
 
     return authentication
 }
-

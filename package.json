@@ -7,7 +7,11 @@
   "types": "dist/esm/index.d.ts",
   "unpkg": "dist/webauthn.min.js",
   "scripts": {
-    "build": "tsc && esbuild src/index.ts --platform=neutral --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
+    "build": "npm run build-esm && npm run build-neutral && npm run build-node && npm run build-browser",
+    "build-esm": "tsc",
+    "build-neutral": "esbuild src/index.ts  --platform=neutral --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
+    "build-node":    "esbuild src/server.ts --platform=node    --bundle --outdir=dist/cjs",
+    "build-browser": "esbuild src/client.ts --platform=browser --bundle --minify --sourcemap --outdir=dist/browser",
     "test": "jest",
     "dev": "http-server"
   },

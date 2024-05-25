@@ -20,7 +20,7 @@ export function parseAttestation(data) {
 }
 export function parseRegistration(registration) {
     const parsed = {
-        username: registration.username,
+        user: registration.user,
         credential: registration.credential,
         client: parseClient(registration.clientData),
         authenticator: parseAuthenticator(registration.authenticatorData),

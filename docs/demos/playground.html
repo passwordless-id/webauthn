@@ -8,13 +8,15 @@
 </head>
 
 <body>
+
+<a class="button is-primary" href="/">&larr; Back to docs</a>
+
 <main id="app" class="container">
 
     <header class="m-3" style="display:flex; justify-content: center; flex-wrap: wrap;">
         <img src="img/banner-playground.svg" alt="banner" style="max-height: 300px" />
         <div class="col p-3">
-            <h1 class="title">Passwordless.ID /</h1>
-            <h1 class="title">Webauthn Playground</h1>
+            <h1 class="title">Passkeys Playground</h1>
         </div>
     </header>
 
@@ -28,28 +30,31 @@
         </header>
 
         <b-field label="Username" horizontal custom-class="required">
-            <b-input v-model="registration.username" placeholder="Username or E-Mail"></b-input>
+            <b-input v-model="registration.options.user" placeholder="User name"></b-input>
             <div class="hint">A username, email or other identifier</div>
         </b-field>
 
         <b-field label="Challenge" horizontal custom-class="required">
             <b-field>
-                <b-input v-model="registration.challenge" placeholder="Challenge" expanded></b-input>
+                <b-input v-model="registration.options.challenge" placeholder="Challenge" expanded></b-input>
                 <p class="control">
-                    <b-button type="is-primary" label="&#x21bb;" @click="registration.challenge = newChallenge()"/>
+                    <b-button type="is-primary" label="&#x21bb;" @click="registration.options.challenge = newChallenge()"/>
                 </p>
             </b-field>
             <div class="hint">A server-side randomly generated nonce, base64url encoded.</div>
         </b-field>
 
 
-        <b-field label="authenticatorType" horizontal>
-            <b-select v-model="registration.options.authenticatorType" expanded>
-                <option>auto</option>
-                <option>local</option>
-                <option>roaming</option>
-                <option>both</option>
-            </b-select>
+        <b-field label="Hints" horizontal>
+            <b-taginput expanded
+                v-model="registration.options.hints"
+                :data="['client-device', 'hybrid', 'security-key']"
+                autocomplete
+                allow-new
+                open-on-focus
+                icon="label"
+                placeholder="Add a hint">
+            </b-taginput>
             <div class="hint">Which device to use as authenticator.</div>
         </b-field>
 
@@ -92,7 +97,7 @@
             </div>
         </b-field>
 
-        <pre>await client.register("{{registration.username}}", "{{registration.challenge}}", {{registration.options}})</pre>
+        <pre>await client.register({{registration.options}})</pre>
         
         <b-button class="my-3" type="is-primary" @click="register()">Register device</b-button>
 
@@ -128,22 +133,25 @@
 
         <b-field label="challenge" horizontal custom-class="required">
             <b-field>
-                <b-input v-model="authentication.challenge" placeholder="Challenge" expanded></b-input>
+                <b-input v-model="authentication.options.challenge" placeholder="Challenge" expanded></b-input>
                 <p class="control">
-                    <b-button type="is-primary" label="&#x21bb;" @click="authentication.challenge = newChallenge()"/>
+                    <b-button type="is-primary" label="&#x21bb;" @click="authentication.options.challenge = newChallenge()"/>
                 </p>
             </b-field>
             <div class="hint">A server-side randomly generated nonce, base64url encoded.</div>
         </b-field>
 
-        <b-field label="authenticatorType" horizontal>
-            <b-select v-model="authentication.options.authenticatorType" expanded>
-                <option>auto</option>
-                <option>local</option>
-                <option>roaming</option>
-                <option>both</option>
-            </b-select>
-            <div class="hint">Which device to use as authenticator.</div>
+        <b-field label="hints" horizontal>
+            <b-taginput expanded
+                v-model="authentication.options.hints"
+                :data="['client-device', 'hybrid', 'security-key']"
+                autocomplete
+                allow-new
+                open-on-focus
+                icon="label"
+                placeholder="Add a hint">
+            </b-taginput>
+            <div class="hint">Which devices to use as authenticator. Browser support varies.</div>
         </b-field>
 
         <b-field label="timeout" horizontal>
@@ -164,7 +172,7 @@
             <b-checkbox v-model="authentication.options.debug" expanded></b-checkbox>
         </b-field>
 
-        <pre>webauthn.authenticate(["{{authentication.credentialId}}"], "{{authentication.challenge}}", {{authentication.options}})</pre>
+        <pre>webauthn.authenticate({{authentication.options}})</pre>
 
         <b-button type="is-primary" @click="login()">Login</b-button>
 

@@ -1,15 +1,23 @@
-export type AuthType = 'auto' | 'local' | 'extern' | 'roaming' | 'both';
-export type NumAlgo = -7 | -257;
-export type NamedAlgo = 'RS256' | 'ES256';
+export type NumAlgo = -7 | -8 | -257;
+export type NamedAlgo = 'RS256' | 'Ed25519' | 'ES256';
+export type PublicKeyCredentialHints = "client-device" | "hybrid" | "security-key";
+export interface WebAuthnCreateOptions extends PublicKeyCredentialCreationOptions {
+    hints?: PublicKeyCredentialHints[];
+}
+export interface WebAuthnGetOptions extends PublicKeyCredentialRequestOptions {
+    hints?: PublicKeyCredentialHints[];
+}
 export interface CommonOptions {
+    challenge: string;
     domain?: string;
     userVerification?: UserVerificationRequirement;
-    authenticatorType?: AuthType;
+    hints?: PublicKeyCredentialHints[];
     timeout?: number;
     debug?: boolean;
 }
 export interface AuthenticateOptions extends CommonOptions {
-    mediation?: CredentialMediationRequirement;
+    allowCredentials?: string[];
+    onAutofill?: boolean;
 }
 export interface AuthenticationEncoded {
     credentialId: string;
@@ -32,7 +40,7 @@ export interface RegisterOptions extends CommonOptions {
 export interface User {
     id?: string;
     name: string;
-    username?: string;
+    displayName?: string;
 }
 export interface CredentialKey {
     id: string;
@@ -41,14 +49,14 @@ export interface CredentialKey {
     synced?: boolean;
 }
 export interface RegistrationEncoded {
-    username: string;
+    user: User;
     credential: CredentialKey;
     authenticatorData: string;
     clientData: string;
     attestationData?: string;
 }
 export interface RegistrationParsed {
-    username: string;
+    user: User;
     credential: CredentialKey;
     authenticator: AuthenticatorInfo;
     client: ClientInfo;

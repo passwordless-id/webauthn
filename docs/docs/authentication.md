@@ -4,21 +4,76 @@ Authentication
 Overview
 --------
 
-There are two kinds of authentications possible:
+There are *three* possible way to trigger authentication.
 
-- by providing a list of allowed credential IDs
-- by letting the platform offer a default UI to select the user and its credential
+### 1. The default, calling `authenticate(...)`.
 
-Both have their pros & cons (TODO: article).
+This will trigger a native UI, which allows the user to select any "discoverable" passkey registered for that domain.
+
+Above is the windows example. Of course it varies according to platftorm.
+
+This is shown in this demo.
+
+### 2. Calling `authenticate(...)` with `allowCredentials` option
+
+If you know what credential IDs the user has registered, either by polling the server or storing it locally, you can provide it as parameter.
+
+```js
+client.authenticate({
+  challenge: ...,
+  allowCredentials: ['list-of', 'credential-id', 'from-user']
+})
+```
+It has the following benefits:
+
+- the passkey selection is skipped, it goes straight to the user verification (if required)
+- non-discoverable credentials can also be used
+- edge cases with "incomplete registrations" leaving an orphan passkey do not harm UX
+
+This is shown in this demo.
+
+
+### 3. Calling `authenticate(...)` with `conditional: true` option
+
+Unlike the previous methods, which invokes the protocol "directly", this one is triggered during page load.
+It activates autocomplete of passkey for input fields having the attribute `autocomplete="username webauthn"`.
+
+
+Since there is no way to programmatically know if the user has credentials/passkeys already registered for this domain,
+it offers an alternative by skipping the "authenticate" button click. Once selected, the promise will return with the authentication result.
+
+> While this feature is present in Chrome and Safari, it is still very experimental and not available on all browsers.
+
+This is shown in this demo.
+
+
+
+How does it work
+----------------
 
 The authentication procedure is similar to the procedure and divided in four steps.
+
+```mermaid
+sequenceDiagram
+  actor User as User/Authenticator
+  participant Browser
+  participant Server
+
+  Browser->>Server: I want to login!
+  Server->>Browser: Please sign this challenge
+  Browser->>User: `webauthn.authenticate(...)`
+  User->>User: Local authentication <br> using device PIN, biometrics...
+  User->>Browser: Challenge signed with private key
+  Browser->>Server: Send signed challenge
+  Server->>Server: Verify signature using public key
+  Server->>Browser: Welcome!
+```
+
 
 1. The browser requests a challenge from the server
 2. The browser triggers `client.authenticate(...)` and sends the result to the server
 3. The server loads the credential key used for authentication
 4. The server parses and verifies the authentication payload
-
-
 
 
 ### 1. Requesting challenge
@@ -42,9 +97,7 @@ const authentication = await client.authenticate({
   /* Required */
   challenge: "A server-side randomly generated string",
   /* Optional */
-  allowedCredentials: ["credential-id-1", "credential-id-2"],
-  authenticatorType: "auto",
-  userVerification: "required",
+  allowCredentials: ["credential-id-1", "credential-id-2"],
   timeout: 60000
 })
 ```
@@ -114,22 +167,17 @@ Please note that this parsed result `authenticationParsed` has no real use. It i
 Options
 -------
 
-### Common options
-
 The following options are available for both `register` and `authenticate`.
 
-- `timeout`: Number of milliseconds the user has to respond to the biometric/PIN check. *(Default: 60000)*
-- `userVerification`: Whether to prompt for biometric/PIN check or not. *(Default: "required")*
-- `authenticatorType`: Which device to use as authenticator. Possible values:
-    - `'auto'`: if the local device can be used as authenticator it will be preferred. Otherwise it will prompt for a roaming device. *(Default)*
-    - `'local'`: use the local device (using TouchID, FaceID, Windows Hello or PIN)
-    - `'roaming'`: use a roaming device (security key or connected phone)
-    - `'both'`: prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
-- `domain`: by default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
-   - a parent domain to let the credential work on all subdomains
-   - browser extensions requiring specific IDs instead of domains ?
-   - specific iframes use cases?
-- `debug`: If enabled, parses the "data" objects and provide it in a "debug" properties.
+Besides the required `challenge`, following options are avialable.
+
+| option | default | description |
+|--------|---------|-------------|
+| `timeout` | 60000 | Number of milliseconds the user has to respond to the biometric/PIN check. *(Default: 60000)*
+| `userVerification`| `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
+| `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
+| `domain` | `window.location.hostname` | By default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
+| `debug` | `false` | If enabled, parses the "data" objects and provide it in a "debug" properties.
 
 
 ### Authentication options
@@ -145,3 +193,23 @@ Verification options
 - `counter`: this should be an incrementing value on each authentication, but it was made optional according to https://github.com/passwordless-id/webauthn/issues/38
 - `domain`: in case you used a specific domain (relying party id) during registration/authentication, you need this too during verification
 - `verbose`: prints more details to the console if enabled
+
+
+Out of control
+--------------
+
+Sadly, there are a few things you cannot do.
+
+### You cannot know if a user already registered a passkey
+
+### You cannot decide if the passkey should be hardware-bound or synced
+
+### You cannot delete a passkey
+
+Perhaps this one will be coming.
+
+### *Beware of platform/browser quirks!*
+
+The specification is complex, areas like UX are left to platform's discretion and browser vendors have their own quirks. As such, I would highly recommend one thing: **test it out with a variety of browsers/platforms**. It's far from a consitent experience.
+
+Moreover, otpions like `hints`, `allowCredentials`, `userVerification` and `discoverable` may interact with each other and provide different UX depending on their combination and the time of the year. The protocol evolved dramatically in the last years, with changes to the UX every couple of months.

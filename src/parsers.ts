@@ -30,7 +30,7 @@ export function parseAttestation(data :string|ArrayBuffer) :unknown {
 
 export function parseRegistration(registration :RegistrationEncoded) :RegistrationParsed {
     const parsed = {
-        username: registration.username,
+        user: registration.user,
         credential: registration.credential,
         client:        parseClient(registration.clientData),
         authenticator: parseAuthenticator(registration.authenticatorData),

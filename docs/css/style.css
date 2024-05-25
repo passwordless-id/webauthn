@@ -1,36 +1,3 @@
-:root {
-    /*
-    --bs-primary: #6dc9f7;
-    --bs-primary-rgb: 109,201,247;
-    
-    --bs-primary: #0089ef;
-    --bs-primary-rgb: 0,137,239;
-    --bs-secondary: #fa759e;
-    --bs-secondary-rgb: 250,117,158;
-
-    --bs-primary: #7957d5;
-    --bs-primary-rgb: 29, 18, 115;
-
-    --bs-link-color: #d82c53;
-    --bs-link-color-rgb: 216, 44, 83;
-    
-
-
-
-    --bs-primary: #7957d5;
-    --bs-primary-rgb: 121, 87, 213;
-    
-    --bs-link-color: #7957d5;
-    --bs-link-color-rgb: 121, 87, 213;
-
-    --bs-link-hover-color: #7957d5;
-    --bs-link-hover-color-rgb: 121, 87, 213;
-    
-    --bs-dropdown-link-hover-bg: #7957d5;
-    --bs-dropdown-link-hover-bg-rgb: 121, 87, 213;
-    */
-}
-
 h1 {
     text-align: center;
 }

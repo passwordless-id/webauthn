@@ -1,8 +1,7 @@
-
-@passwordless-id/webauthn
-=========================
-
 ![banner](img/banner-biometric-auth.svg)
+
+Introduction
+------------
 
 > This library is a greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
 It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator aaguids/names).
@@ -12,10 +11,10 @@ It is an [open source](https://github.com/passwordless-id/webauthn), dependency-
 Demos
 -----
 
-- [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
-- [Testing Playground](https://webauthn.passwordless.id/demos/playground.html)
-- [Authenticators list](https://webauthn.passwordless.id/demos/authenticators.html)
-- [Passkeys autofill](https://webauthn.passwordless.id/demos/authenticators.html)
+- [Basic Demo](/demos/basic.html)
+- [Testing Playground](/demos/playground.html)
+- [Authenticators list](/demos/authenticators.html)
+- [Passkeys autofill](/demos/authenticators.html)
 
 The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn/)
 

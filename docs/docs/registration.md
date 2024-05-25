@@ -1,16 +1,9 @@
 
 Registration
-------------
+============
 
-### Overview
-
-
-The registration process occurs in four steps:
-
-1. The browser requests a `challenge` (a nonce) from the server
-2. The browser triggers `client.register(...)` and sends the result to the server
-3. The server parses the JSON payload, verifies it, and ensures the `challenge` matches
-4. The server stores the public key credential for this device for the user account
+Overview
+--------
 
 ```mermaid
 sequenceDiagram
@@ -27,7 +20,15 @@ sequenceDiagram
   Server->>Server: Store public key for later
   Server->>Browser: Account created
 ```
-Note that unlike traditional authentication, the credential key is attached to the device. Therefore, it might make sense for a single user account to have multiple credential keys.
+
+The registration process occurs in four steps:
+
+1. The browser requests a `challenge` (a nonce) from the server
+2. The browser triggers `client.register(...)` and sends the result to the server
+3. The server parses the JSON payload, verifies it, and ensures the `challenge` matches
+4. The server stores the public key credential for this device for the user account
+
+Note that unlike traditional authentication, it is often useful for a single user account to register multiple credentials passkeys.
 
 
 ### 1. Requesting challenge
@@ -59,19 +60,6 @@ const registration = await client.register({
   debug: false
 })
 ```
-
-Besides the required `user` and `challenge`, it has following options.
-
-| option | default | description |
-|--------|---------|-------------|
-| allowPlatform | `true` | Allow the platform to be used as authenticator. |
-| allowRoaming | `true` | Allow roaming authenticators to be used. Including QR codes to scan. |
-| userVerification | `required` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`. Note that this differs from the native WebAuthn protocol, whose default is `preferred`. Note that some security keys are not capable of user verification.
-| timeout | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
-| attestation | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple) and its verification is complex.
-| domain | `window.location.hostname` | This can be overriden for two use-cases. By using the parent domain, to have the passkey valid for all subdomains. Or by using the outer domain when using iframes. 
-| debug | `false` | If true, the parsed payloads will be included in the result.
-
 
 ### 3. Send the payload to the server
 
@@ -161,30 +149,24 @@ The credential key is the most important part and should be stored in a database
 For example, if you allow the user to use multiple device-bound keys and/or registering keys for multiple platforms.*
 
 
-Common options
---------------
-
-The following options are available for both `register` and `authenticate`.
-
-- `timeout`: Number of milliseconds the user has to respond to the biometric/PIN check. *(Default: 60000)*
-- `userVerification`: Whether to prompt for biometric/PIN check or not. *(Default: "required")*
-- `authenticatorType`: Which device to use as authenticator. Possible values:
-    - `'auto'`: if the local device can be used as authenticator it will be preferred. Otherwise it will prompt for a roaming device. *(Default)*
-    - `'local'`: use the local device (using TouchID, FaceID, Windows Hello or PIN)
-    - `'roaming'`: use a roaming device (security key or connected phone)
-    - `'both'`: prompt the user to choose between local or roaming device. The UI and user interaction in this case is platform specific.
-- `domain`: by default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
-   - a parent domain to let the credential work on all subdomains
-   - browser extensions requiring specific IDs instead of domains ?
-   - specific iframes use cases?
-- `debug`: If enabled, parses the "data" objects and provide it in a "debug" properties.
+Options
+-------
 
 
-Registration options
---------------------
+Besides the required `user` and `challenge`, it has following options.
 
-- `discoverable`: (`'discouraged'`, `'preferred'` or `'required'`) If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. *(Default: 'preferred')*
-- `attestation`: If enabled, the device attestation and clientData will be provided as base64 encoded binary data. Note that this may impact the authenticator information available or the UX depending on the platform. *(Default: false)* 
+| option | default | description |
+|--------|---------|-------------|
+| `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
+| userVerification | `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
+| `discoverable` | `preferred`. If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. Possible values are `required`, `preferred` and `discouraged`.
+| timeout | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
+| attestation | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple), it might be anonymized, and its verification is complex.
+| domain | `window.location.hostname` | This can be overriden for two use-cases. By using the parent domain, to have the passkey valid for all subdomains. Or by using the outer domain when using iframes. 
+| debug | `false` | If true, the parsed payloads will be included in the result.
+
+
+
 
 
 ### Replacing a credential or updating the user name
