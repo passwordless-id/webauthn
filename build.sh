@@ -12,10 +12,6 @@ mv dist site/dist
 cd misc
 pip install -rrequirements.txt
 python icons.py
-mv authenticators site/authenticators
+mv authenticators ../site/authenticators
 
-
-
-# Move icons & libs to docs site
-mv misc/authenticators site/authenticatores
 
