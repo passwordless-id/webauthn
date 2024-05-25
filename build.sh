@@ -10,7 +10,7 @@ mv dist site/dist
 
 # Build Icons
 cd misc
-pip install -rrequirements.txt
+pip install -r requirements.txt
 python icons.py
 mv authenticators ../site/authenticators
 
