@@ -42,15 +42,15 @@ During registration, the `credential.synced` flag informs you if it's a synced c
 Sadly, that is something only the authenticator can decide.
 You cannot influence whether the passkey should be synced or not, nor can you filter the authenticators that can be used.
 
-> Concerns have been raised times in the RFC, see [issue #1714](https://github.com/w3c/webauthn/issues/1714), [issue #1739](https://github.com/w3c/webauthn/issues/1739) and [issue #1688](https://github.com/w3c/webauthn/issues/1688) among others (and voice your opinion!).
+> Concerns have been raised many times in the RFC, see [issue #1714](https://github.com/w3c/webauthn/issues/1714), [issue #1739](https://github.com/w3c/webauthn/issues/1739) and [issue #1688](https://github.com/w3c/webauthn/issues/1688) among others (and voice your opinion!).
 
 
 ## Are passkeys a form of 2FA?
 
 Not by default. Passkeys are a single step 2FA only if:
 
-- The credential is hardware-bound, not `synced`. Then the first factor being "something you possess".
-- The flag `userVerification` is `required`. This requires the second factor, in form of something you are, like biometrics, or something you know, like a PIN code.
+- The credential is hardware-bound, not `synced`. Then this first factor is "something you possess".
+- The flag `userVerification` is `required`. Then this second factor is "something you are" (biometrics) or "something you know" (PIN code).
 
 > Note that this library uses `userVerification` as `required` by default, while the native WebAuthn protocol uses `preferred` by default. However, this restricts the security keys being usable to only those providing a form of user verification like fingerprint or PIN code.
 
