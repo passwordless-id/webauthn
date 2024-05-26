@@ -97,7 +97,19 @@ Instead of invoking the WebAuthn authentication on a button click directly, it w
 
 ## What is attestation?
 
-The attestation 
+The attestation is a proof of the authenticator model.
+
+> Note that several platforms and password managers do not provide this information.
+> Moreover some browsers allow replacing it with a generic attestation to increase privacy.
+ 
+
+## Do I need attestation?
+
+Unless you have stringent security requirements where you want only specific hardware devices to be allowed, you won't need it.
+Furthermore, the UX is deteriorated because the user first creates the credential client-side, which is then rejected server-side.
+
+> There was a feature request sent to the RFC to allow/exlude authenticators in the registration call, but it never landed in the specs.
+
 
 ## Usernameless authentication?
 
