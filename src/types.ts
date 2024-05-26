@@ -13,9 +13,6 @@ export interface WebAuthnGetOptions extends PublicKeyCredentialRequestOptions {
   hints ?:PublicKeyCredentialHints[]
 }
 
-export interface WebAuthnCreateResponse extends PublicKeyCredential {
-  response: 
-}
 
 export interface CommonOptions {
   challenge :string
