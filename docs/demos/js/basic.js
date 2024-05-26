@@ -1,4 +1,4 @@
-import { client, parsers } from '../../dist/webauthn.min.js'
+import { client, parsers } from 'webauthn.min.js'
 
 const app = new Vue({
   el: '#app',

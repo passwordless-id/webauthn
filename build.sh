@@ -6,7 +6,8 @@ ls -l site
 # Build JS libs
 npm install
 npm run build
-mv dist site/dist
+# Copy the bundled minimized modules of both client and server needed for the demos
+cp dist/*.js site/js
 
 # Build Icons
 pip install -r misc/requirements.txt

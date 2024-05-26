@@ -14,6 +14,11 @@ It is an [open source](https://github.com/passwordless-id/webauthn), dependency-
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider using Passkeys as core pillar.
 
 
+News
+-------
+
+The docs for the legacy version 1.x are found [here](/version-1)
+
 👀 Demos
 ---------
 
@@ -123,3 +128,8 @@ await server.verifyAuthentication(registration, expected)
 
 [&rarr; Verification docs](/docs/verification/)
 
+
+Why you need more
+-----------------
+
+***TODO***

@@ -1,6 +1,17 @@
 Verification
 ============
 
+Checks
+------
+
+| Check | Description |
+|-------|-------------|
+| `userVerified` | To ensure that the user has been verified by the authenticator.
+| `counter` | This should be an incrementing value on each authentication, but it was made optional according to https://github.com/passwordless-id/webauthn/issues/38 since some authenticators (like Apple) do not increment it! 
+| `domain` | In case you used a specific domain (relying party id) during registration/authentication, you need this too during verification.
+| `verbose` | Prints more details to the console if enabled
+
+
 Registration
 ------------
 

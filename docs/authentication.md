@@ -186,17 +186,9 @@ Besides the required `challenge`, following options are avialable.
 
 
 
-Verification options
---------------------
 
-- `userVerified`: to ensure that the user has been verified by the authenticator
-- `counter`: this should be an incrementing value on each authentication, but it was made optional according to https://github.com/passwordless-id/webauthn/issues/38
-- `domain`: in case you used a specific domain (relying party id) during registration/authentication, you need this too during verification
-- `verbose`: prints more details to the console if enabled
-
-
-Out of control
---------------
+Remarks
+-------
 
 Sadly, there are a few things you cannot do.
 
