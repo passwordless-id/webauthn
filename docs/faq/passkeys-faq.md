@@ -1,9 +1,11 @@
 Passkeys F.A.Q.
 ===============
 
-> Information on the web might is not always 100% accurate. The WebAuthn protocol is more than 200 pages on paper, it's complex and gets constantly tweaked. Morevover, the reality of browsers and authenticators have their own quirks and deviate from the W3C version. So take all information with a grain of salt.
+> The WebAuthn protocol is more than 200 pages long, it's complex and gets constantly tweaked.
+> Morevover, the reality of browsers and authenticators have their own quirks and deviate from the official RFC. So take all information on the web with a grain of salt.
 > 
-> In particular, there is some confusion regarding where passkeys are stored. This is because the protocol evolved quite a bit in the past few years. In the beginning, "public key credentials" were hardware-bound. However, major vendors pushed their agenda and nowadays "passkeys" are frequently synced in the cloud.
+> In particular, there is some confusion regarding where passkeys are stored because the protocol evolved quite a bit in the past few years.
+> In the beginning, "public key credentials" were hardware-bound. However, major vendors pushed their agenda and nowadays "passkeys" are frequently synced in the cloud.
 
 
 ## What *is* a passkey?
@@ -69,7 +71,7 @@ There are two ways to trigger authentication. By providing a list of allowed cre
 
 If no list is provided, the default, an OS native popup will appear to let the user pick a passkey. One of the *discoverable* credential registered for the website. However, if the credential is *not discoverable*, it will not be listed.
 
-Another way is to first prompt the user for its username, then the list of allowed credential IDs for this user from the server. Then, calling the authentication with `allowedCredentials: [...]`. This usually avoids a native popup and goes straight to user verification. 
+Another way is to first prompt the user for its username, then the list of allowed credential IDs for this user from the server. Then, calling the authentication with `allowCredentials: [...]`. This usually avoids a native popup and goes straight to user verification. 
 
 > There is also another indirect consequence for "security keys" (USB sticks like a Yubikey). Discoverable credentials need the ability to be listed, and as such require some storage on the security key, also named a "slot", which are typically fairly limited. On the other hand, non-discoverable credential do not need such storage, so unlimited non-discoverable keys can be used.
 There is an interesting article about it [here](https://fy.blackhats.net.au/blog/2023-02-02-how-hype-will-turn-your-security-key-into-junk/).
@@ -87,22 +89,43 @@ As an alternative to the problem of not being able to detect the existence of pa
 
 ## What is conditional UI and mediation?
 
+This mechanism leverages the browser's input field autocomplete feature to provide public key credentials in the list.
+Instead of invoking the WebAuthn authentication on a button click directly, it will be called when loading the page with "conditional mediation". That way, the credential selection and user verification will be triggered when the user selects an entry in the input field autocomplete.
 
-## Using username autofill
+> Note that the input field *must* have `autocomplete="username webauthn"` to work. Using with lib, you will have to call `authenticate(...)` with `mediation: true` as option.
 
 
 ## What is attestation?
 
+The attestation 
 
 ## Usernameless authentication?
+
+While it is in theory possible, it faces a very practical issue: how do you identify the credential ID to be used?
+Browsers do not allow having a unique identifier for the device, it would be a privacy issue. Also, things like local storage or cookies could be cleared at any moment. But *if* you have a way to identify the user, in a way or another, then you can also deduct the credential ID and trigger the authentication flow directly.
 
 
 ## What about the security aspects?
 
 The security aspects are very different depending on:
 
-- Synced or not
-- User verification or not
-- Discoverable or not
+1. Synced or hardware-bound
+2. User verification or not
+3. Discoverable or not
 
-TODO
+Basically, hardware-bound is a "factor", since you have to possess the device.
+The other factor would be "user verification", since it is something that you know (device PIN or password) or are (biometrics like fingerprint).
+
+Many implementations favor *synced credentials without user verification* though, for the sake of *convinience*, combined with descoverable credentials. This is even the default in the WebAuthn protocol and what many vendors recommend.
+
+In that case, the security guarantee becomes: *"the user has access to the software authenticator account"*. It's a delegated guarantee.
+The security is typically as strong as hacking the account itself. It goes without saying that having the software authenticator compromised (platform account or password manager), would leak all passkeys since they are synced.
+
+
+## What about privacy aspects?
+
+Well, if the passkeys are synced, you hand over the keys to your buddy, the software authenticator, in good faith.
+That's all. If the software authenticator has bad intents, gets hacked or the NSA/police knocks on their door, your keys may be given over if it's not secured enough or if there is a back door.
+
+> Note that if a password manager has an "account recovery" feature, it also means it is able to decrypt your (hopefully encrypted) keys / passwords. On the opposite, password managers without recovery feature usually encrypt your data with your main password. This is the more secure/private option, since that way, even they cannot decrypt your data.
+
