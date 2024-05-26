@@ -1,5 +1,5 @@
-Passkeys F.A.Q.
-===============
+F.A.Q.
+======
 
 > The WebAuthn protocol is more than 200 pages long, it's complex and gets constantly tweaked.
 > Moreover, the reality of browsers and authenticators have their own quirks and deviate from the official RFC. So, take all information on the web with a grain of salt.

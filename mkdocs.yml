@@ -8,31 +8,29 @@ plugins:
   - mermaid2
 
 nav:
-  - Demos:
-    - Basic: demos/basic.html
-    - Playground: demos/playground.html
-    - Authenticators: demos/authenticators.html
-  - Docs:
-    - docs/registration.md
-    - docs/authentication.md
-    - docs/verification.md
-    - docs/version_1.md
-  - F.A.Q.:
-    - faq/passkeys-faq.md
-    - faq/why_not.md
+  - registration.md
+  - authentication.md
+  - verification.md
+  - passkeys-faq.md
+  - version-1.md
 
 theme:
   #name: readthedocs
   name: mkdocs
+  logo: /img/passkeys-logo-dark.svg
   color_mode: light
   hljs_style: dark
   user_color_mode_toggle: false
-  custom_dir: docs/theme
+  custom_dir: docs-theme
+
 
   #name: material
-  locale: en
-  logo: passkeys-logo-dark.svg
+  #locale: en
+  #logo: img/passkeys-logo-dark.svg
+  #palette:
+  #  primary: '#7957d5'
   #features:
+  #- content.code.copy
   #- navigation.tabs
   #- navigation.tabs.sticky
   #- toc.integrate
@@ -40,4 +38,8 @@ theme:
 #markdown_extensions:
 #  - pymdownx.highlight:
 #      anchor_linenums: true
+#      line_spans: __span
+#      pygments_lang_class: true
+#  - pymdownx.inlinehilite
+#  - pymdownx.snippets
 #  - pymdownx.superfences

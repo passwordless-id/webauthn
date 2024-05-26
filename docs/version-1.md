@@ -1,37 +1,9 @@
-Passwordless.ID / webauthn
-==========================
+Version 1.x
+===========
 
-A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
-It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator aaguids/names).
-
-<img src="demos/img/banner-biometric-auth.svg" />
-
-> This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider based on WebAuthn.
-
-Try out the playground to see how this library works:
-
-### *[Testing Playground](https://webauthn.passwordless.id/demos/playground.html)*
-
-Other demos with minial examples:
-
-- [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
-- [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
-- [Minimal Example (repository)](https://webauthn.passwordless.id/demos/example-raw.html)
-- [Authenticators list](https://webauthn.passwordless.id/demos/authenticators.html)
-
-The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn)
-
-
-How does the protocol work?
----------------------------
-
-This diagram shows how the webauthn protocol works, slightly simplified.
-
-![diagram](https://passwordless.id/protocols/webauthn/overview.svg)
-
-Further documentation about the protocol can be found in the webauthn guide at [Passwordless.ID](https://passwordless.id).
-
-
+<div class="alert alert-danger">
+<b>This is the documentation of the older legacy version 1.x!</b>
+</div>
 
 Installation / Usage
 --------------------

@@ -1,4 +1,5 @@
-<h1 style="margin-bottom:0;"><code>@passwordless-id/webauthn</code></h1>
+@passwordless-id/webauthn
+=========================
 
 ![banner](img/banner-biometric-auth.svg)
 
