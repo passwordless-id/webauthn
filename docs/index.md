@@ -103,7 +103,7 @@ await client.register({
 })
 ```
 
-[&rarr; Registration docs](/docs/registration/)
+[&rarr; Registration docs](/registration/)
 
 
 ### Authentication
@@ -115,7 +115,7 @@ await client.authenticate({
 })
 ```
 
-[&rarr; Authentication docs](/docs/authentication/)
+[&rarr; Authentication docs](/authentication/)
 
 
 ### Verification
@@ -126,10 +126,5 @@ await server.verifyRegistration(registration, expected)
 await server.verifyAuthentication(registration, expected)
 ```
 
-[&rarr; Verification docs](/docs/verification/)
+[&rarr; Verification docs](/verification/)
 
-
-Why you need more
------------------
-
-***TODO***
