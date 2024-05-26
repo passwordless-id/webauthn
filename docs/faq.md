@@ -2,12 +2,12 @@ F.A.Q.
 ======
 
 > The WebAuthn protocol is more than 200 pages long, it's complex and gets constantly tweaked.
-> Moreover, the reality of browsers and authenticators have their own quirks and deviate from the official RFC. So, take all information on the web with a grain of salt.
+> Moreover, the reality of browsers and authenticators have their own quirks and deviate from the official RFC. As such, all information on the web should be taken with a grain of salt.
 > 
 > Also, there is some confusion regarding where passkeys are stored because the protocol evolved quite a bit in the past few years.
 > In the beginning, "public key credentials" were hardware-bound. Then, major vendors pushed their agenda with "passkeys" synced with the user account in the cloud. Then, even password managers joined in with synced accounts shared with the whole family for example.
 > 
-> How the protocol works, and its security implications, became more fuzzy and delegated.
+> How the protocol works, and its security implications, became fuzzier and more nuanced.
 
 
 ## What *is* a passkey?
@@ -21,7 +21,7 @@ However, if you ask me, that's a pretty dumb definition. Calling **any** public 
 
 ## What is an authenticator?
 
-The authenticator is the hardware or software that issues public key credentials and signs the authentication payload.
+The authenticator is the hardware or software that issues public key credentials and signs the authentication payloads.
 
 Hardware authenticators are typically security keys or the device itself using a dedicated chip.
 Software authenticators are password managers, either built-in in the platform or as dedicated app.
