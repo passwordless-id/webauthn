@@ -92,9 +92,9 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
         ],
         timeout: options.timeout ?? 60000,
         authenticatorSelection: {
-            userVerification: options.userVerification ?? "required", // Webauthn default is "preferred"
+            userVerification: options.userVerification,
             authenticatorAttachment: getAuthAttachment(options.hints),
-            residentKey: options.discoverable ?? 'preferred', // official default is 'discouraged'
+            residentKey: options.discoverable,
             requireResidentKey: (options.discoverable === 'required') // mainly for backwards compatibility, see https://www.w3.org/TR/webauthn/#dictionary-authenticatorSelection
         },
         attestation: "direct"

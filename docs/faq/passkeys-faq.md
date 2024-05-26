@@ -5,7 +5,9 @@ Passkeys F.A.Q.
 > Morevover, the reality of browsers and authenticators have their own quirks and deviate from the official RFC. So take all information on the web with a grain of salt.
 > 
 > In particular, there is some confusion regarding where passkeys are stored because the protocol evolved quite a bit in the past few years.
-> In the beginning, "public key credentials" were hardware-bound. However, major vendors pushed their agenda and nowadays "passkeys" are frequently synced in the cloud.
+> In the beginning, "public key credentials" were hardware-bound. Then, major vendors pushed their agenda with "passkeys" synced with the user account in the cloud. Then, even password managers joined in with synced accounts shared with the whole family for example.
+> 
+> How it works and the security implications became more fuzzy and delegated.
 
 
 ## What *is* a passkey?
@@ -34,7 +36,12 @@ In the past, where security keys pioneered the field, hardware-bound keys were t
 
 During registration, the `credential.synced` flag informs you if it's a synced credential or a hardware-bound one.
 
-> Sadly, you cannot influence whether the passkey will be synced or not, see  (and voice your opinion!).
+
+## Can I decide if the created credential should be hardware-bound or synced?
+
+Sadly, you cannot influence whether the passkey will be synced or not.
+This is not allowed by the API, see [issue #1714](https://github.com/w3c/webauthn/issues/1714), [issue #1739](https://github.com/w3c/webauthn/issues/1739) and [issue #1688](https://github.com/w3c/webauthn/issues/1688) among others (and voice your opinion!).
+
 > Note that some platforms behave differently depending on whether the credential should be discoverable or not.
 
 
@@ -82,7 +89,7 @@ There is an interesting article about it [here](https://fy.blackhats.net.au/blog
 
 No, the underlying WebAuthn protocol does not support it.
 
-> A request to add an `exists()` method to guide user experience has been brought up by me, but was ignored so far. See [issue](https://github.com/w3c/webauthn/issues/1749) (and voice your opinion!).
+> A request to add an `exists()` method to guide user experience has been brought up by me, but was ignored so far. See [issue #1749](https://github.com/w3c/webauthn/issues/1749) (and voice your opinion!).
 
 As an alternative to the problem of not being able to detect the existence of passkeys, major vendors pushed for an alternative called "conditional UI" which in turn pushes discoverable synced credentials.
 
