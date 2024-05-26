@@ -39,10 +39,10 @@ During registration, the `credential.synced` flag informs you if it's a synced c
 
 ## Can I decide if the created credential should be hardware-bound or synced?
 
-Sadly, you cannot influence whether the passkey will be synced or not.
-This is not allowed by the API, see [issue #1714](https://github.com/w3c/webauthn/issues/1714), [issue #1739](https://github.com/w3c/webauthn/issues/1739) and [issue #1688](https://github.com/w3c/webauthn/issues/1688) among others (and voice your opinion!).
+Sadly, that is something only the authenticator can decide.
+You cannot influence whether the passkey should be synced or not, nor can you filter the authenticators that can be used.
 
-> Note that some platforms behave differently depending on whether the credential should be discoverable or not.
+> Concerns have been raised times in the RFC, see [issue #1714](https://github.com/w3c/webauthn/issues/1714), [issue #1739](https://github.com/w3c/webauthn/issues/1739) and [issue #1688](https://github.com/w3c/webauthn/issues/1688) among others (and voice your opinion!).
 
 
 ## Are passkeys a form of 2FA?
