@@ -4,68 +4,71 @@ const app = new Vue({
   el: '#app',
   data: {
     username: null,
-    isRegistered: false,
-    isAuthenticated: false,
-    isRoaming: false,
     registrationData: null,
     authenticationData: null
   },
   methods: {
-    async checkIsRegistered() {
-      if(!this.username)
-        return false;
-      console.log(this.username + ' => ' + !!window.localStorage.getItem(this.username))
-      this.isRegistered = !!window.localStorage.getItem(this.username)
+
+    clear() {
+      this.authenticationData = null
+      this.registrationData = null;
     },
+
     async register() {
-      let res = await client.register({
-        user: this.username,
-        challenge: window.crypto.randomUUID()
+      this.clear();
+      this.$buefy.dialog.prompt({
+        message: "What's your name?",
+        onConfirm: async(username) => {
+          console.log(username);
+          if(!username)
+            return;
+
+          let res = await client.register({
+            user: {
+              id:`id-for-${username}`, // to override credential with same username
+              name:username
+            },
+            challenge: window.crypto.randomUUID()
+          })
+          console.debug(res)
+
+          const parsed = parsers.parseRegistration(res)
+          console.log(parsed)
+
+          this.registrationData = parsed
+
+          this.$buefy.toast.open({
+            message: 'Registered!',
+            type: 'is-success'
+          })
+        }
       })
-      console.debug(res)
-
-      const parsed = parsers.parseRegistration(res)
-      console.log(parsed)
-
-      window.localStorage.setItem(this.username, parsed.credential.id)
-      this.isAuthenticated = true
-      this.registrationData = parsed
-
-      this.$buefy.toast.open({
-        message: 'Registered!',
-        type: 'is-success'
-      })
-
-      await this.checkIsRegistered()
     },
-    async login() {
+
+    async authenticateManually() {
+      this.clear();
       let res = await client.authenticate({
-        challenge: window.crypto.randomUUID(),
-        conditional: true,
+        challenge: window.crypto.randomUUID()
       })
       console.debug(res)
 
       const parsed = parsers.parseAuthentication(res)
       console.log(parsed)
 
-      this.isAuthenticated = true
       this.authenticationData = parsed
 
       this.$buefy.toast.open({
-        message: 'Signed in!',
+        message: 'Authenticated!',
         type: 'is-success'
       })
     },
+
     async logout() {
-      this.isAuthenticated = false;
+      this.clear();
       this.$buefy.toast.open({
         message: 'Signed out!',
         type: 'is-success'
-      })
-      this.authenticationData = null
-      this.registrationData = null
+      });
     }
   }
 })
-
-app.login()

@@ -4,12 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
-  <style>
-    main.container {
-      max-width: 640px !important;
-      text-align: center;
-    }
-  </style>
   <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
   <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
   <script defer type="module" src="js/conditional-ui.js"></script>
@@ -19,47 +13,46 @@
 <a class="button is-primary" href="/">&larr; Back to docs</a>
 
 <main id="app" class="section container">
-  <img src="/img/banner-biometric-auth.svg" />
-  <b-tag>Please note: this is a demo. Nothing is stored server side, only locally.</b-tag>
-  <br/>
-  <br/>
-  <template v-if="!isAuthenticated">
+  <section>
+    <img src="/img/banner-biometric-auth.svg" style="max-width: 600px;"/>
+    <p><b-tag>Please note: this is a demo. Nothing is stored server side, only locally.</b-tag></p>
+    <br/>
+    <br/>
+    
     <b-field>
       <b-input v-model="username" placeholder="Username" autocomplete="username webauthn"></b-input>
     </b-field>
     <div>
       <b-button type="is-primary" @click="register()" :disabled="!username">Register</b-button>
-      <b-button type="is-primary" @click="login()" :disabled="!username || !isRegistered">Authenticate</b-button>
+      <b-button type="is-primary" @click="authenticate()" :disabled="!username">Authenticate</b-button>
+      <b-button type="is-primary" @click="logout()" :disabled="!registrationData && !authenticationData">Sign Out</b-button>
     </div>
-  </template>
-  <template v-if="isAuthenticated">
-    <p>{{'Hello ' + username + '!'}}</p>
-    <section v-if="registrationData && !authenticationData" style="text-align: left;">
-      <p>
-        <b>Authenticator:</b>
-        <img style="vertical-align: middle;" :src="registrationData.authenticator.icon_light" />
-        <span>{{registrationData.authenticator.name}}</span>
-      </p>
-      <p>
-        <b>Synced?</b>
-        <template v-if="registrationData.authenticator">
-          <b-tag type="is-primary" v-if="registrationData.credential.synced === true">Synced / multi-device credential</b-tag>
-          <b-tag type="is-primary" v-if="registrationData.credential.synced === false">Device-bound credential</b-tag>
-        </template>
-      </p>
-      <hr/>
-      <p><b>Credential ID:</b> {{registrationData.credential.id}}</p>
-      <p><b>Public Key:</b> {{registrationData.credential.publicKey.substring(0,32)}}...</p>
-      <p><b>Algorithm:</b> {{registrationData.credential.algorithm}}</p>
-    </section>
-    <section v-if="authenticationData" style="text-align: left;">
-      <p><b>Credential ID:</b> {{authenticationData.credentialId}}</p>
-      <p><b>Signature:</b> {{authenticationData.signature.substring(0,32)}}...</p>
-    </section>
-    <div>
-      <b-button type="is-primary" @click="logout()">Sign Out</b-button>
-    </div>
-  </template>
+  </section>
+  
+  <section v-if="registrationData" class="has-text-left">
+    <p>
+      <b>Authenticator:</b>
+      <img style="vertical-align: middle;" :src="registrationData.authenticator.icon_light" />
+      <span>{{registrationData.authenticator.name}}</span>
+    </p>
+    <p>
+      <b>Synced?</b>
+      <template v-if="registrationData.authenticator">
+        <b-tag type="is-primary" v-if="registrationData.credential.synced === true">Synced / multi-device credential</b-tag>
+        <b-tag type="is-primary" v-if="registrationData.credential.synced === false">Device-bound credential</b-tag>
+      </template>
+    </p>
+    <hr/>
+    <p><b>Credential ID:</b> {{registrationData.credential.id}}</p>
+    <p><b>Public Key:</b> {{registrationData.credential.publicKey.substring(0,32)}}...</p>
+    <p><b>Algorithm:</b> {{registrationData.credential.algorithm}}</p>
+  </section>
+
+  <section v-if="authenticationData" style="text-align: left;">
+    <p><b>Credential ID:</b> {{authenticationData.credentialId}}</p>
+    <p><b>Signature:</b> {{authenticationData.signature.substring(0,32)}}...</p>
+  </section>
+
   <hr/>
   <p>Check out the <a href="playground.html">playground</a> for more detailed usage and options.</p>
 </main>
