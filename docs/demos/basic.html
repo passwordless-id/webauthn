@@ -10,8 +10,10 @@
       text-align: center;
     }
   </style>
+  <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
+  <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
+  <script defer type="module" src="js/basic.js"></script>
 </head>
-
 <body>
 
 <a class="button is-primary" href="/">&larr; Back to docs</a>
@@ -21,17 +23,12 @@
   <b-tag>Please note: this is a demo. Nothing is stored server side, only locally.</b-tag>
   <br/>
   <br/>
-  <template v-if="!isAuthenticated">
-    <b-field>
-      <b-input v-model="username" placeholder="Username" @input="checkIsRegistered()" autocomplete="username"></b-input>
-    </b-field>
     <div>
-      <b-button type="is-primary" @click="register()" :disabled="!username || isRegistered">Register device</b-button>
-      <b-button type="is-primary" @click="login()" :disabled="!username || !isRegistered">Authenticate</b-button>
+      <b-button type="is-primary" @click="register()">Register</b-button>
+      <b-button type="is-primary" @click="authenticate()">Authenticate</b-button>
     </div>
   </template>
-  <template v-if="isAuthenticated">
-    <p>{{'Hello ' + username + '!'}}</p>
+  
     <section v-if="registrationData && !authenticationData" style="text-align: left;">
       <p>
         <b>Authenticator:</b>
@@ -40,10 +37,8 @@
       </p>
       <p>
         <b>Synced?</b>
-        <template v-if="registrationData.authenticator">
-          <b-tag type="is-primary" v-if="registrationData.credential.synced === true">Synced / multi-device credential</b-tag>
-          <b-tag type="is-primary" v-if="registrationData.credential.synced === false">Device-bound credential</b-tag>
-        </template>
+        <b-tag type="is-primary" v-if="registrationData.credential.synced === true">Synced / multi-device credential</b-tag>
+        <b-tag type="is-primary" v-if="registrationData.credential.synced === false">Device-bound credential</b-tag>
       </p>
       <hr/>
       <p><b>Credential ID:</b> {{registrationData.credential.id}}</p>
@@ -57,15 +52,9 @@
     <div>
       <b-button type="is-primary" @click="logout()">Sign Out</b-button>
     </div>
-  </template>
+  
   <hr/>
   <p>Check out the <a href="playground.html">playground</a> for more detailed usage and options.</p>
 </main>
-
-<script src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
-<script src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
-<script src="https://unpkg.com/browse/axios@1.4.0/dist/axios.min.js"></script>
-
-<script type="module" src="js/basic.js"></script>
 </body>
 </html>

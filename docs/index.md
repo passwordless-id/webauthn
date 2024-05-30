@@ -22,10 +22,11 @@ The docs for the legacy version 1.x are found [here](/version-1)
 👀 Demos
 ---------
 
-- [**Basic Demo**](/demos/basic.html)
-- [**Testing Playground**](/demos/playground.html)
-- [**Authenticators list**](/demos/authenticators.html)
-- [**Passkeys autofill**](/demos/conditional-ui.html)
+- [Basic Demo](/demos/basic.html)
+- [Conditional UI](/demos/conditional-ui.html)
+- [Testing Playground](/demos/playground.html)
+- [Authenticators list](/demos/authenticators.html)
+- [Passkeys autofill](/demos/authenticators.html)
 
 The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn/)
 

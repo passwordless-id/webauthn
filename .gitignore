@@ -2,6 +2,7 @@
 /.vscode
 /dist
 /docs/dist
+/docs/authenticators
 /site
 /authenticators
 /misc/authenticators

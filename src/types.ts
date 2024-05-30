@@ -13,7 +13,6 @@ export interface WebAuthnGetOptions extends PublicKeyCredentialRequestOptions {
   hints ?:PublicKeyCredentialHints[]
 }
 
-
 export interface CommonOptions {
   challenge :string
   domain ?:string // used for parent/subdomain auth and other exotic use cases

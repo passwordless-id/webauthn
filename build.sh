@@ -1,16 +1,16 @@
-# Build docs
-pip install -r docs/requirements.txt
-mkdocs build
-ls -l site
+#!/bin/bash
+set -e
+
+# Build Icons
+pip install -r misc/requirements.txt
+python misc/icons.py docs/authenticators
 
 # Build JS libs
 npm install
 npm run build
-# Copy the bundled minimized modules of both client and server needed for the demos
-cp dist/*.js site/js
+cp dist/*.js docs/demos/js
 
-# Build Icons
-pip install -r misc/requirements.txt
-python misc/icons.py site/authenticators
-
-
+# Build docs
+pip install -r docs/requirements.txt
+mkdocs build
+ls -l site

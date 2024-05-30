@@ -10,8 +10,10 @@
       text-align: center;
     }
   </style>
+  <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
+  <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
+  <script defer type="module" src="js/conditional-ui.js"></script>
 </head>
-
 <body>
 
 <a class="button is-primary" href="/">&larr; Back to docs</a>
@@ -26,7 +28,8 @@
       <b-input v-model="username" placeholder="Username" autocomplete="username webauthn"></b-input>
     </b-field>
     <div>
-      <b-button type="is-primary" @click="register()" :disabled="!username">Sign in/up</b-button>
+      <b-button type="is-primary" @click="register()" :disabled="!username">Register</b-button>
+      <b-button type="is-primary" @click="login()" :disabled="!username || !isRegistered">Authenticate</b-button>
     </div>
   </template>
   <template v-if="isAuthenticated">
@@ -60,11 +63,5 @@
   <hr/>
   <p>Check out the <a href="playground.html">playground</a> for more detailed usage and options.</p>
 </main>
-
-<script src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
-<script src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
-<script src="https://unpkg.com/browse/axios@1.4.0/dist/axios.min.js"></script>
-
-<script type="module" src="js/autofill.js"></script>
 </body>
 </html>
