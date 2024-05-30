@@ -145,3 +145,13 @@ In that case, the security guarantee becomes: *"the user has access to the softw
 Well, if the passkeys are synced, it's like handing over the keys to your buddy, the software authenticator, in good faith. That's all. If the software authenticator has bad intents, gets hacked or the NSA/police knocks on their door, your keys may be given over.
 
 > Note that if a password manager has an "account recovery" or "sharing" feature, it also means it is able to decrypt your (hopefully encrypted) keys / passwords. On the opposite, password managers without recovery feature usually encrypt your data with your main password. This is the more secure/private option, since that way, even they cannot decrypt your data.
+
+
+## Can I use passkeys in an IFrame?
+
+**TODO**
+
+## How to delete a passkey?
+
+**TODO**
+
