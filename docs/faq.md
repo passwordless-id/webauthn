@@ -155,8 +155,4 @@ Well, if the passkeys are synced, it's like handing over the keys to your buddy,
 
 > There were some requests to the RFC to provide that an API to delete passkeys, but as far as I know, it was rejected.
 
-In other words, it depends on the platform / password manager.
-
-On windows, you can delete passkeys via auccount manager:
-
-![delete-passkeys-windows](img/delete-passkeys-windows.png)
+In other words, it depends on the platform / password manager. Some do not even support it.

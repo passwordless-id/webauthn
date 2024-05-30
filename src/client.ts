@@ -90,7 +90,7 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
             {alg: -7, type: "public-key"},   // ES256 (Webauthn's default algorithm)
             {alg: -257, type: "public-key"}, // RS256 (for older Windows Hello and others)
         ],
-        timeout: options.timeout ?? 60000,
+        timeout: options.timeout,
         authenticatorSelection: {
             userVerification: options.userVerification,
             authenticatorAttachment: getAuthAttachment(options.hints),
@@ -181,14 +181,14 @@ export async function authenticate(options :AuthenticateOptions) :Promise<Authen
     let authOptions :WebAuthnGetOptions = {
         challenge: utils.parseBase64url(options.challenge),
         rpId: options.domain ?? window.location.hostname,
-        allowCredentials: (options.allowCredentials ?? []).map(id => { return {
+        allowCredentials: options.allowCredentials?.map(id => { return {
             id: utils.parseBase64url(id),
             type: 'public-key',
             transports: transports,
         }}),
         hints: options.hints,
-        userVerification: options.userVerification ?? "required",
-        timeout: options.timeout ?? 60000,
+        userVerification: options.userVerification,
+        timeout: options.timeout,
     }
 
     if(options.debug)
