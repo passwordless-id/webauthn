@@ -20,7 +20,7 @@ const app = new Vue({
 
     async register() {
       this.clear();
-      const username = (await this.$buefy.dialog.prompt("What's your name?")).result;
+      const username = (await this.$buefy.dialog.prompt({message: "What's your name?"})).result;
       console.log(username);
       if(!username)
         return;
