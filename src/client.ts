@@ -103,9 +103,8 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
     if(options.debug)
         console.debug(creationOptions)
 
-    // stops the possibly ongoing conditional UI autofill authentication process
     if(ongoingAuth != null)
-        ongoingAuth.abort()
+        ongoingAuth.abort('Stopping ongoing conditional UI authentication')
     ongoingAuth = new AbortController();
 
     const credential = await navigator.credentials.create({
@@ -195,7 +194,7 @@ export async function authenticate(options :AuthenticateOptions) :Promise<Authen
         console.debug(authOptions)
 
     if(ongoingAuth != null)
-        ongoingAuth.abort()
+        ongoingAuth.abort('Stopping ongoing conditional UI authentication')
     ongoingAuth = new AbortController();
     
     let auth = await navigator.credentials.get({
@@ -216,7 +215,7 @@ export async function authenticate(options :AuthenticateOptions) :Promise<Authen
         authenticatorData: utils.toBase64url(response.authenticatorData),
         clientData: utils.toBase64url(response.clientDataJSON),
         signature: utils.toBase64url(response.signature),
-        userId: response.userHandle ? utils.toBase64url(response.userHandle) : undefined // may not be returned by every authenticator
+        userId: response.userHandle ? utils.parseBuffer(response.userHandle) : undefined // may not be returned by every authenticator
     }
 
     return authentication
