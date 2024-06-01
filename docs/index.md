@@ -5,7 +5,7 @@
 
 <center style="margin:-3rem 0 4rem;">
 <a href="/demos/basic.html" class="btn btn-primary btn-lg mx-3 px-5">&#x27A4; Demo</a>
-<a href="/demos/basic.html" class="btn btn-primary btn-lg mx-3 px-4">&#x27A4; Playground</a>
+<a href="/demos/playground.html" class="btn btn-primary btn-lg mx-3 px-4">&#x27A4; Playground</a>
 </center>
 
 > This library is a greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
@@ -13,11 +13,6 @@ It is an [open source](https://github.com/passwordless-id/webauthn), dependency-
 >
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider using Passkeys as core pillar.
 
-
-News
--------
-
-The docs for the legacy version 1.x are found [here](/version-1)
 
 👀 Demos
 ---------
@@ -29,6 +24,38 @@ The docs for the legacy version 1.x are found [here](/version-1)
 - [Passkeys autofill](/demos/authenticators.html)
 
 The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn/)
+
+
+
+💡 Concepts
+------------
+
+Passkeys and the WebAuthn protocol are not purely client side or server side. It relies on asymetric cryptography involving both sides.
+
+Upon registration, a key pair is created by the authenticator, for the given domain and user.
+The public is then sent to the server while the private key is safely stored by the authenticator. 
+
+> This private key can either be hardware-bound (if a security key is used for example) or synced in the cloud (if a password manager is used for example). It can also require local user verification or not, depending on the authenticator and the options. Check out the [F.A.Q.](/faq) for more information.
+
+During authentication, the server will request that the authenticator *signs* a "challenge" (a nonce) using its private key. Then, the server can verify the signature using the previously stored public key and confirm the user is the rightful owner of that key pair.
+
+The logical flow which can be summarized as follows.
+
+```mermaid
+sequenceDiagram
+  Browser ->> Server: Get challenge
+  Server ->> Browser: Here you go
+  Browser ->> Browser: Register or authenticate<br> with WebAuthn
+  Browser ->> Server: Here is the JSON payload
+  Server ->> Server: Verify the payload,<br> including the challenge
+  Server ->> Browser: Welcome!
+```
+
+> **Security tip**
+> 
+> The `challenge` *must be randomly generated* on each call.
+> Using a constant challenge would make authentication vulnerable to replay attacks.
+> Guessable challenges, while harder to exploit, would still weaken the security properties of the algorithm.
 
 
 
@@ -63,29 +90,6 @@ Alternatively, the client-side can be imported directly imported in a static pag
 Lastly, a CommonJS variant is also available for old Node stacks. It's usage is discouraged though, in favor of the default ES modules.
 
 Note that at least NodeJS **19+** is necessary. For older Node versions, take a look at [Arch0125's fork](https://github.com/Arch0125/webauthn/tree/nodev14-v16-support). (The reason of the Node 19+ compatibility is basically `WebCrypto` being globally available, making it possible to have a "universal build")
-
-
-💡 Concepts
-------------
-
-Passkeys and the WebAuthn protocol are not purely client side or server side. Both sides are involved.
-As such, it is important to understand the logical flow which can be summarized as follows.
-
-```mermaid
-sequenceDiagram
-  Browser ->> Server: get challenge
-  Server ->> Browser: here you go
-  Browser ->> Browser: register and authenticate with WebAuthn
-  Browser ->> Server: here is the JSON payload
-  Server ->> Server: verify the payload, including the challenge
-  Server ->> Browser: done
-```
-
-> **Security tip**
-> 
-> The `challenge` *must be randomly generated* on each call.
-> Using a constant challenge would make authentication vulnerable to replay attacks.
-> Guessable challenges, while harder to exploit, would still weaken the security properties of the algorithm.
 
 
 🚀 Getting started
@@ -129,3 +133,28 @@ await server.verifyAuthentication(registration, expected)
 
 [&rarr; Verification docs](/verification/)
 
+
+
+📃 Changelog
+-------------
+
+> The "Version 2" is a complete overhaul of the first version.
+> While it still strives for simplicity and ease of use, it also differs from the previous mainly regarding its default behavior.
+>
+> Previously, this lib defaulted to using the platform as authenticator if possible.
+> The user experience was improved that way, going straight to user verification instead of intermediate popup(s) to select the authenticator.
+> 
+> Now, letting the user select the authenticator is the default.
+> Why this change of mind? Because many platform authenticators now sync credentials in the cloud, with the built-in password manager.
+> While this is certainly convinient, the security and privacy guarantees using synced credentials are not as strong as when using security keys with hardware-bound credentials.
+> That is why security keys now deserve some love.
+>
+> Same goes for user verification, it is now `preferred`, like the native WebAuthn protocol.
+> While this reduces security, it supports a wider range of security keys.
+
+- Use platform authenticator by default => authenticator selection pops up by default
+- `authenticatorType` was removed => use `hints` instead
+- User verification default: `required` => `preferred`
+- Timeout: 1 minute => no timeout
+
+The docs for the legacy version 1.x are found [here](/version-1)
