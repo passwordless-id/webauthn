@@ -151,10 +151,13 @@ await server.verifyAuthentication(registration, expected)
 >
 > Same goes for user verification, it is now `preferred`, like the native WebAuthn protocol.
 > While this reduces security, it supports a wider range of security keys.
+>
+> Lastly, the response format has been changed completely to be compatible with the output as the `PublicKeyCredential.toJson()` method. Currently only FireFox implements this method though. We hope this will increase compatibility cross-libraries in the long term.
 
 - Use platform authenticator by default => authenticator selection pops up by default
 - `authenticatorType` was removed => use `hints` instead
 - User verification default: `required` => `preferred`
 - Timeout: 1 minute => no timeout
+- Response format changed
 
 The docs for the legacy version 1.x are found [here](/version-1)
