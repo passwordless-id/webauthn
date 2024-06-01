@@ -36,6 +36,7 @@ const app = new Vue({
               id: `id-for-${username}`, // to override credential with same username, should be anonymous
               name:username
             },
+            discoverable: 'required', // this demo relies on discoverable credentials
             debug: true
           })
 
