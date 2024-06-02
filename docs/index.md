@@ -9,7 +9,7 @@
 </center>
 
 > This library is a greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
-It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator aaguids/names).
+It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator AAGUIDs/names).
 >
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider using Passkeys as core pillar.
 
@@ -21,23 +21,24 @@ It is an [open source](https://github.com/passwordless-id/webauthn), dependency-
 - [Conditional UI](/demos/conditional-ui.html)
 - [Testing Playground](/demos/playground.html)
 - [Authenticators list](/demos/authenticators.html)
-- [Passkeys autofill](/demos/authenticators.html)
-
-The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn/)
-
+- Parser/Verifier: TODO
+  
+These demos are plain HTML/JS, not minimized. Just open the sources in your browser if you are curious.
 
 
 💡 Concepts
 ------------
 
-Passkeys and the WebAuthn protocol are not purely client side or server side. It relies on asymetric cryptography involving both sides.
+Passkeys and the WebAuthn protocol are not purely client side or server side.
+It relies on [asymmetric cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography) involving both sides.
 
-Upon registration, a key pair is created by the authenticator, for the given domain and user.
-The public is then sent to the server while the private key is safely stored by the authenticator. 
+Asymmetric cryptography's foundation is based on a "key pair", but a more suitable layman analogy would be an key and a lock. The private key 🔑 is used to encrypt a message, while the corresponding public key 🔒 is used to decrypt the message.
+
+Upon registration, a cryptographic key pair (🔑+🔒) is created by the authenticator, for the given domain and user. The public key (🔒) is then sent to the server while the private key (🔑) is safely stored by the authenticator. 
 
 > This private key can either be hardware-bound (if a security key is used for example) or synced in the cloud (if a password manager is used for example). It can also require local user verification or not, depending on the authenticator and the options. Check out the [F.A.Q.](/faq) for more information.
 
-During authentication, the server will request that the authenticator *signs* a "challenge" (a nonce) using its private key. Then, the server can verify the signature using the previously stored public key and confirm the user is the rightful owner of that key pair.
+During authentication, the server will request that the authenticator *signs* a "challenge" (a nonce) using its private key (🔑). Then, the server can verify the signature using the previously stored public key (🔒) and confirm the user is the rightful owner of that key pair.
 
 The logical flow which can be summarized as follows.
 
@@ -146,7 +147,7 @@ await server.verifyAuthentication(registration, expected)
 > 
 > Now, letting the user select the authenticator is the default.
 > Why this change of mind? Because many platform authenticators now sync credentials in the cloud, with the built-in password manager.
-> While this is certainly convinient, the security and privacy guarantees using synced credentials are not as strong as when using security keys with hardware-bound credentials.
+> While this is certainly convenient, the security and privacy guarantees using synced credentials are not as strong as when using security keys with hardware-bound credentials.
 > That is why security keys now deserve some love.
 >
 > Same goes for user verification, it is now `preferred`, like the native WebAuthn protocol.
@@ -159,5 +160,6 @@ await server.verifyAuthentication(registration, expected)
 - User verification default: `required` => `preferred`
 - Timeout: 1 minute => no timeout
 - Response format changed
+- Transports as part of `allowCredentials`
 
 The docs for the legacy version 1.x are found [here](/version-1)

@@ -75,37 +75,16 @@
     <body{% if page and page.is_homepage %} class="homepage"{% endif %}>
         {% include "navbar.html" %}
    
-        <div class="container">
+        <main class="container">
             <div class="row">
                 {%- block content %}
-                    <div class="col-md-3">{% include "toc.html" %}</div>
                     <div class="col-md-9" role="main">{% include "content.html" %}</div>
+                    <div class="col-md-3">{% include "toc.html" %}</div>
                 {%- endblock %}
             </div>
-        </div>
+          </main>
 
-        <footer class="col-md-12">
-          {%- block next_prev %}
-            {%- if page and (page.next_page or page.previous_page) %}
-                <div class="d-flex justify-content-around">
-                    <a rel="prev" {% if page.previous_page %}href="{{ page.previous_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
-                        <i class="fa fa-arrow-left"></i> {% trans %}Previous{% endtrans %}
-                    </a>
-                
-                    <a rel="next" {% if page.next_page %}href="{{ page.next_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
-                        {% trans %}Next{% endtrans %} <i class="fa fa-arrow-right"></i>
-                    </a>
-                  </div>
-            {%- endif %}
-          {%- endblock %}
-          {%- block footer %}
-            <hr>
-            {%- if config.copyright %}
-                <p>{{ config.copyright }}</p>
-            {%- endif %}
-            <p>{% trans mkdocs_link='<a href="https://www.mkdocs.org/">MkDocs</a>' %}Documentation built with {{ mkdocs_link }}.{% endtrans %}</p>
-          {%- endblock %}
-        </footer>
+        {% include "footer.html" %}
 
       {%- block scripts %}
         <script src="{{ 'js/bootstrap.bundle.min.js'|url }}"></script>
@@ -121,7 +100,6 @@
 
         {% if 'search' in config.plugins %}{%- include "search-modal.html" %}{% endif %}
         {%- include "keyboard-modal.html" %}
-
     </body>
 </html>
 {% if page and page.is_homepage %}

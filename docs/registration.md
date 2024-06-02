@@ -161,7 +161,7 @@ Besides the required `user` and `challenge`, it has following options.
 | `discoverable` | `preferred`. If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. Possible values are `required`, `preferred` and `discouraged`.
 | timeout | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
 | attestation | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple), it might be anonymized, and its verification is complex.
-| domain | `window.location.hostname` | This can be overriden for two use-cases. By using the parent domain, to have the passkey valid for all subdomains. Or by using the outer domain when using iframes. 
+| domain | `window.location.hostname` | This can be set to a parent domain, to have the passkey valid for all subdomains.
 | debug | `false` | If true, the parsed payloads will be included in the result.
 
 
