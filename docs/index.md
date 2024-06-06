@@ -14,7 +14,7 @@ It is an [open source](https://github.com/passwordless-id/webauthn), dependency-
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider using Passkeys as core pillar.
 
 
-👀 Demos
+👀 More demos
 ---------
 
 - [Basic Demo](/demos/basic.html)

@@ -6,3 +6,11 @@ main.container {
     position: sticky;
     top: 10rem;
 }
+
+#navbar-collapse {
+    justify-content: space-between;
+}
+
+.navbar-nav .nav-item:hover {
+    filter: brightness(1.2);
+}
