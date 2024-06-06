@@ -15,7 +15,7 @@ It is an [open source](https://github.com/passwordless-id/webauthn), dependency-
 
 
 👀 More demos
----------
+--------------
 
 - [Basic Demo](/demos/basic.html)
 - [Conditional UI](/demos/conditional-ui.html)
@@ -56,7 +56,7 @@ sequenceDiagram
 > 
 > The `challenge` *must be randomly generated* on each call.
 > Using a constant challenge would make authentication vulnerable to replay attacks.
-> Guessable challenges, while harder to exploit, would still weaken the security properties of the algorithm.
+> Guessable challenges, while harder to exploit, would still weaken the security properties of the protocol.
 
 
 
@@ -69,7 +69,7 @@ sequenceDiagram
 npm install @passwordless-id/webauthn
 ```
 
-The base package contains both client and server side modules. You can import the `client` submodule or the `server` depending on your need.
+The base package contains both client and server side modules. You can import the `client` submodule or the `server` depending on your needs.
 
 ```js
 import {client} from '@passwordless-id/webauthn'
@@ -80,7 +80,7 @@ import {server} from '@passwordless-id/webauthn'
 
 **Browser**
 
-Alternatively, the client-side can be imported directly imported in a static page as a `webauthnClient` browser global.
+Alternatively, the client-side can be imported directly imported in a static page as a `webauthn.client` browser global.
 
 ```html
 <script src="https://unpkg.com/@passwordless-id/webauthn@1.6.1/dist/browser/webauthn.min.js"></script>
