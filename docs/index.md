@@ -135,6 +135,30 @@ await server.verifyAuthentication(registration, expected)
 [&rarr; Verification docs](/verification/)
 
 
+🛠️ A tool vs a solution
+------------------------
+
+This library is a tool to implement passkeys for your website. Whether it is the main mechanism or to improve an existing authentication system, it is flexible enough to do both. However, you may also need to...
+
+- Register multiple authenticators per account
+- Verify e-mail address upon registration
+- Have account recovery mechanisms
+- Detect suspicious activity
+- Upload a user portrait
+- Manage the user profile
+- ...and so on
+
+Basically, this library is just a tool to realize something bigger. If you just want to "register" and "authenticate" users without dealing with the intricacies, a "solution" like [Passwordless.ID](https://passwordless.id) would be more suited.
+
+It's free and the API is trivial:
+
+- Redirect to `.../sign-in` to let a user sign-up or sign-in, once done the user will be redirected back to your website
+- Request `.../profile` to obtain the user profile 
+- Request `.../token` to get a signed (or encrypted!) JWTs as proof of identity
+- Place `.../portrait` as image URL for the user portrait
+- Redirect to `.../sign-out` to sign-out
+
+
 
 📃 Changelog
 -------------
