@@ -8,7 +8,7 @@
 <a href="/demos/playground.html" class="btn btn-primary btn-lg mx-3 px-4">&#x27A4; Playground</a>
 </center>
 
-> This open source library greatly simplifies the usage of passkeys by invoking the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is an opinionated, dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator AAGUIDs/names).
+> This [open source](https://github.com/passwordless-id/webauthn) library greatly simplifies the usage of passkeys by invoking the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is an opinionated, dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator AAGUIDs/names).
 >
 > This library is provided by [Passwordless.ID](https://passwordless.id), a free public identity provider.
 
