@@ -1,5 +1,5 @@
 import * as utils from './utils.js'
-import { AuthenticateOptions, AuthenticationEncoded, CommonOptions, NamedAlgo, NumAlgo, PublicKeyCredentialHints, RegisterOptions, RegistrationEncoded, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
+import { AuthenticateOptions, AuthenticationJSON, AuthenticationResponseJSON, AuthenticatorTransport, CommonOptions, NamedAlgo, NumAlgo, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
@@ -34,16 +34,11 @@ function getAuthAttachment(hints ?:PublicKeyCredentialHints[]) :AuthenticatorAtt
 }
 
 
-
-function getAlgoName(num :NumAlgo) :NamedAlgo {
-    switch(num) {
-        case -7: return "ES256"
-        // case -8 ignored to to its rarity
-        case -257: return "RS256"
-        default: throw new Error(`Unknown algorithm code: ${num}`)
-    }
-}
-
+/**
+ * For conditional UI, the ongoing "authentication" must be aborted when triggering a registration.
+ * It should also be aborted when triggering authentication another time.
+ */
+let ongoingAuth :AbortController|null = null;
 
 
 /**
@@ -59,7 +54,7 @@ function getAlgoName(num :NumAlgo) :NamedAlgo {
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
  */
-export async function register(options :RegisterOptions) :Promise<RegistrationEncoded> {
+export async function register(options :RegisterOptions) :Promise<RegistrationJSON> {
     
     if(!options.challenge)
         throw new Error('"challenge" required')
@@ -107,60 +102,45 @@ export async function register(options :RegisterOptions) :Promise<RegistrationEn
         ongoingAuth.abort('Stopping ongoing conditional UI authentication')
     ongoingAuth = new AbortController();
 
-    const credential = await navigator.credentials.create({
+    const raw = await navigator.credentials.create({
         publicKey: creationOptions,
         signal: ongoingAuth?.signal
-    }) as any //PublicKeyCredential
-    
+    }) as PublicKeyCredential
+    const response = raw.response as AuthenticatorAttestationResponse
+
     ongoingAuth = null;
 
     if(options.debug)
-        console.debug(credential)
+        console.debug(raw)
    
-    const response = credential.response as any // AuthenticatorAttestationResponse
-    
-    let registration :RegistrationEncoded = {
-        user,
-        credential: {
-            id: credential.id,
-            publicKey: utils.toBase64url(response.getPublicKey()),
-            algorithm: getAlgoName(credential.response.getPublicKeyAlgorithm())
+    if(raw.type != "public-key")
+        throw "Unexpected credential type!";
+
+    const publicKey = response.getPublicKey();
+    if(!publicKey)
+        throw "Non-compliant browser or authenticator!"
+
+    // This should provide the same as `response.toJson()` which is sadly only available on FireFox
+    const json :RegistrationJSON = {
+        type: raw.type,
+        id: raw.id,
+        rawId: utils.toBase64url(raw.rawId), // Same as ID, but useful in tests
+        authenticatorAttachment: raw.authenticatorAttachment as AuthenticatorAttachment,
+        clientExtensionResults: raw.getClientExtensionResults(),
+        response: {
+            attestationObject: utils.toBase64url(response.attestationObject),
+            authenticatorData: utils.toBase64url(response.getAuthenticatorData()),
+            clientDataJSON: utils.toBase64url(response.clientDataJSON),
+            publicKey: utils.toBase64url(publicKey),
+            publicKeyAlgorithm: response.getPublicKeyAlgorithm(),
+            transports: response.getTransports() as AuthenticatorTransport[],
         },
-        authenticatorData: utils.toBase64url(response.getAuthenticatorData()),
-        clientData: utils.toBase64url(response.clientDataJSON),
+        user, // That's our own addition 
     }
 
-    if(options.attestation) {
-        registration.attestationData = utils.toBase64url(response.attestationObject)
-    }
-
-    return registration
+    return json
 }
 
-
-function getTransports(hints ?:PublicKeyCredentialHints[]) :AuthenticatorTransport[] {
-    if(!hints || hints.length === 0)
-        return ['internal', 'hybrid', 'usb', 'ble', 'nfc']
-
-    const transportMap :Record<PublicKeyCredentialHints, AuthenticatorTransport[]> = {
-        'client-device': ['internal'],
-        'hybrid': ['hybrid', 'ble', 'nfc'],
-        'security-key': ['usb', 'ble', 'nfc']
-    }
-    const uniqueTransports = new Set<AuthenticatorTransport>();
-
-    hints.forEach(hint => {
-        if (transportMap.hasOwnProperty(hint)) {
-            transportMap[hint].forEach(transport => {
-                uniqueTransports.add(transport);
-            });
-        }
-    });
-
-    return Array.from(uniqueTransports);
-}
-
-let ongoingAuth :AbortController|null = null;
 
 /**
  * Signs a challenge using one of the provided credentials IDs in order to authenticate the user.
@@ -171,19 +151,17 @@ let ongoingAuth :AbortController|null = null;
  * @param {'required'|'preferred'|'discouraged'} [userVerification='required'] Whether to prompt for biometric/PIN check or not.
  * @param {boolean} [conditional] Does not return directly, but only when the user has selected a credential in the input field with `autocomplete="username webauthn"`
  */
-export async function authenticate(options :AuthenticateOptions) :Promise<AuthenticationEncoded> {
+export async function authenticate(options :AuthenticateOptions) :Promise<AuthenticationJSON> {
     if(!utils.isBase64url(options.challenge))
         throw new Error('Provided challenge is not properly encoded in Base64url')
-
-    const transports :AuthenticatorTransport[] = getTransports(options.hints);
 
     let authOptions :WebAuthnGetOptions = {
         challenge: utils.parseBase64url(options.challenge),
         rpId: options.domain ?? window.location.hostname,
-        allowCredentials: options.allowCredentials?.map(id => { return {
-            id: utils.parseBase64url(id),
+        allowCredentials: options.allowCredentials?.map(cred => { return {
+            id: utils.parseBase64url(cred.id),
             type: 'public-key',
-            transports: transports,
+            transports: cred.transports as any,
         }}),
         hints: options.hints,
         userVerification: options.userVerification,
@@ -197,26 +175,36 @@ export async function authenticate(options :AuthenticateOptions) :Promise<Authen
         ongoingAuth.abort('Stopping ongoing conditional UI authentication')
     ongoingAuth = new AbortController();
     
-    let auth = await navigator.credentials.get({
+    const raw = await navigator.credentials.get({
         publicKey: authOptions,
         mediation: options.conditional ? 'conditional' : undefined,
         signal: ongoingAuth?.signal
     }) as PublicKeyCredential
     
+    if(raw.type != "public-key")
+        throw "Unexpected credential type!";
+    
     ongoingAuth = null;
 
     if(options.debug)
-        console.debug(auth)
+        console.debug(raw)
 
-    const response = auth.response as AuthenticatorAssertionResponse
+    const response = raw.response as AuthenticatorAssertionResponse
     
-    const authentication :AuthenticationEncoded = {
-        credentialId: auth.id,
-        authenticatorData: utils.toBase64url(response.authenticatorData),
-        clientData: utils.toBase64url(response.clientDataJSON),
-        signature: utils.toBase64url(response.signature),
-        userId: response.userHandle ? utils.parseBuffer(response.userHandle) : undefined // may not be returned by every authenticator
+    // This should provide the same as `response.toJson()` which is sadly only available on FireFox
+    const json :AuthenticationJSON = {
+        clientExtensionResults: raw.getClientExtensionResults(),
+        id: raw.id,
+        rawId: utils.toBase64url(raw.rawId),
+        type: raw.type,
+        authenticatorAttachment: raw.authenticatorAttachment as AuthenticatorAttachment,
+        response: {
+            authenticatorData: utils.toBase64url(response.authenticatorData),
+            clientDataJSON: utils.toBase64url(response.clientDataJSON),
+            signature: utils.toBase64url(response.signature),
+            userHandle: response.userHandle ? utils.toBase64url(response.userHandle) : undefined
+        }
     }
 
-    return authentication
+    return json
 }
