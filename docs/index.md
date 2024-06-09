@@ -8,10 +8,9 @@
 <a href="/demos/playground.html" class="btn btn-primary btn-lg mx-3 px-4">&#x27A4; Playground</a>
 </center>
 
-> This library is a greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
-It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator AAGUIDs/names).
+> This open source library greatly simplifies the usage of passkeys by invoking the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is an opinionated, dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator AAGUIDs/names).
 >
-> This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider using Passkeys as core pillar.
+> This library is provided by [Passwordless.ID](https://passwordless.id), a free public identity provider.
 
 
 👀 More demos
@@ -148,9 +147,7 @@ This library is a tool to implement passkeys for your website. Whether it is the
 - Manage the user profile
 - ...and so on
 
-Basically, this library is just a tool to realize something bigger. If you just want to "register" and "authenticate" users without dealing with the intricacies, a "solution" like [Passwordless.ID](https://passwordless.id) would be more suited.
-
-It's free too, and even simpler to use than re-inventing the wheel by yourself.
+Basically, this library is just a tool to realize something bigger. If you just want to "register" and "authenticate" users without dealing with the intricacies, a "solution" like [Passwordless.ID](https://passwordless.id) would be more suited. It's free and (soon) open source too, so there is no need for you to re-invent the wheel.
 
 
 
