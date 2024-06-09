@@ -14,3 +14,7 @@ main.container {
 .navbar-nav .nav-item:hover {
     filter: brightness(1.2);
 }
+
+main.container img {
+    width: 100%;
+}

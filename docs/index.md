@@ -3,7 +3,7 @@
 
 ![banner](img/banner-biometric-auth.svg)
 
-<center style="margin:-3rem 0 4rem;">
+<center style="margin:-1rem 0 3rem;">
 <a href="/demos/basic.html" class="btn btn-primary btn-lg mx-3 px-5">&#x27A4; Demo</a>
 <a href="/demos/playground.html" class="btn btn-primary btn-lg mx-3 px-4">&#x27A4; Playground</a>
 </center>
