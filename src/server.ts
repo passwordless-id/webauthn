@@ -1,5 +1,6 @@
-import { parseAuthentication, parseAuthenticator, parseClient, parseRegistration } from "./parsers.js";
-import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData } from "./types.js";
+import { parsers } from "./index.js";
+import { parseAuthenticator, parseClient } from "./parsers.js";
+import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo } from "./types.js";
 import * as utils from './utils.js'
 
 
@@ -25,19 +26,29 @@ interface RegistrationChecks {
 }
 
 
-export async function verifyRegistration(registrationRaw: RegistrationEncoded, expected: RegistrationChecks): Promise<RegistrationParsed> {
-    const registration = parseRegistration(registrationRaw)
+export async function verifyRegistration(registrationJson: RegistrationJSON, expected: RegistrationChecks): Promise<RegistrationInfo> {
+    const client = parseClient(registrationJson.response.clientDataJSON)
+    const authenticator = parseAuthenticator(registrationJson.response.authenticatorData);
 
-    if (registration.client.type !== "webauthn.create")
-        throw new Error(`Unexpected ClientData type: ${registration.client.type}`)
+    if (client.type !== "webauthn.create")
+        throw new Error(`Unexpected ClientData type: ${client.type}`)
 
-    if (await isNotValid(expected.origin, registration.client.origin))
-        throw new Error(`Unexpected ClientData origin: ${registration.client.origin}`)
+    if (await isNotValid(expected.origin, client.origin))
+        throw new Error(`Unexpected ClientData origin: ${client.origin}`)
 
-    if (await isNotValid(expected.challenge, registration.client.challenge))
-        throw new Error(`Unexpected ClientData challenge: ${registration.client.challenge}`)
+    if (await isNotValid(expected.challenge, client.challenge))
+        throw new Error(`Unexpected ClientData challenge: ${client.challenge}`)
 
-    return registration
+    return {
+        authenticator,
+        credential: {
+            id: registrationJson.id,
+            publicKey: registrationJson.response.publicKey,
+            algorithm: parsers.getAlgoName(registrationJson.response.publicKeyAlgorithm),
+        },
+        user: registrationJson.user as UserInfo, // That's specific to this library
+        attestation: registrationJson.response.attestationObject
+    }
 }
 
 
@@ -51,7 +62,7 @@ interface AuthenticationChecks {
 }
 
 
-export async function verifyAuthentication(authenticationJson: AuthenticationJSON, credential: CredentialKey, expected: AuthenticationChecks): Promise<AuthenticationInfo> {
+export async function verifyAuthentication(authenticationJson: AuthenticationJSON, credential: CredentialInfo, expected: AuthenticationChecks): Promise<AuthenticationInfo> {
     if (authenticationJson.id !== credential.id)
         throw new Error(`Credential ID mismatch: ${authenticationJson.id} vs ${credential.id}`)
 
@@ -68,10 +79,12 @@ export async function verifyAuthentication(authenticationJson: AuthenticationJSO
         throw new Error(`Invalid signature: ${authenticationJson.response.signature}`)
 
     const client :CollectedClientData = parseClient(authenticationJson.response.clientDataJSON);
-    const authenticator = parseAuthenticator(authenticationJson.response.authenticatorData);
+    const authenticator  = parseAuthenticator(authenticationJson.response.authenticatorData);
 
-    if(expected.verbose)
-        console.debug(authentication)
+    if(expected.verbose) {
+        console.debug(client)
+        console.debug(authenticator)
+    }
 
     if (client.type !== "webauthn.get")
         throw new Error(`Unexpected clientData type: ${client.type}`)
@@ -91,11 +104,17 @@ export async function verifyAuthentication(authenticationJson: AuthenticationJSO
     if (!authenticator.flags.userPresent)
         throw new Error(`Unexpected authenticator flags: missing userPresent`)
 
-    if (!authentication.authenticator.flags.userVerified && expected.userVerified)
+    if (!authenticator.flags.userVerified && expected.userVerified)
         throw new Error(`Unexpected authenticator flags: missing userVerified`)
 
-    if (expected.counter && authentication.authenticator.counter <= expected.counter)
-        throw new Error(`Unexpected authenticator counter: ${authentication.authenticator.counter} (should be > ${expected.counter})`)
+    if (expected.counter && authenticator.counter <= expected.counter)
+        throw new Error(`Unexpected authenticator counter: ${authenticator.counter} (should be > ${expected.counter})`)
+
+    const authentication :AuthenticationInfo = {
+        authenticator,
+        credentialId: authenticationJson.id,
+        userId: authenticationJson.response.userHandle
+    }
 
     return authentication
 }
@@ -193,11 +212,11 @@ export async function verifySignature({ algorithm, publicKey, authenticatorData,
 
 function convertASN1toRaw(signatureBuffer :ArrayBuffer) {
     // Convert signature from ASN.1 sequence to "raw" format
-    const usignature = new Uint8Array(signatureBuffer);
-    const rStart = usignature[4] === 0 ? 5 : 4;
+    const signature = new Uint8Array(signatureBuffer);
+    const rStart = signature[4] === 0 ? 5 : 4;
     const rEnd = rStart + 32;
-    const sStart = usignature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
-    const r = usignature.slice(rStart, rEnd);
-    const s = usignature.slice(sStart);
+    const sStart = signature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
+    const r = signature.slice(rStart, rEnd);
+    const s = signature.slice(sStart);
     return new Uint8Array([...r, ...s]);
 }

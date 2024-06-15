@@ -1,5 +1,5 @@
 import * as utils from './utils.js'
-import { AuthenticateOptions, AuthenticationJSON, AuthenticationResponseJSON, AuthenticatorTransport, CommonOptions, NamedAlgo, NumAlgo, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
+import { AuthenticateOptions, AuthenticationJSON, AuthenticationResponseJSON, AuthenticatorTransport, CommonOptions, NamedAlgo, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.

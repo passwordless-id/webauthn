@@ -1,7 +1,4 @@
-// TODO: although algo "-8" is currently only used optionally by a few security keys, 
-// it would not harm to support it for the sake of completeness
-export type NumAlgo = -7 | -8 | -257
-export type NamedAlgo = 'RS256' | 'Ed25519' | 'ES256'
+export type NamedAlgo = 'RS256' | 'EdDSA' | 'ES256'
 export type Base64URLString = string;
 
 
@@ -94,12 +91,12 @@ export interface RegistrationResponseJSON {
  * https://w3c.github.io/webauthn/#dictdef-authenticatorattestationresponsejson
  */
 export interface AuthenticatorAttestationResponseJSON {
-  clientDataJSON: Base64URLString;
   attestationObject: Base64URLString;
-  authenticatorData?: Base64URLString;
-  transports?: AuthenticatorTransport[];
-  publicKeyAlgorithm?: COSEAlgorithmIdentifier;
-  publicKey?: Base64URLString;
+  authenticatorData: Base64URLString;
+  clientDataJSON: Base64URLString;
+  transports: AuthenticatorTransport[];
+  publicKey: Base64URLString;
+  publicKeyAlgorithm: COSEAlgorithmIdentifier;
 }
 
 /**
@@ -175,6 +172,7 @@ export interface RegistrationInfo {
 export interface AuthenticationInfo {
   credentialId: Base64URLString
   authenticator: AuthenticatorInfo
+  userId?: Base64URLString
 }
 
 

@@ -1,6 +1,6 @@
 import * as authenticators from './authenticators.js'
 import * as utils from './utils.js'
-import { AuthenticatorInfo, RegistrationInfo, AuthenticationInfo, Base64URLString, RegistrationJSON, UserInfo, CollectedClientData } from './types'
+import { AuthenticatorInfo, RegistrationInfo, AuthenticationInfo, Base64URLString, RegistrationJSON, UserInfo, CollectedClientData, NumAlgo, NamedAlgo } from './types'
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -25,7 +25,7 @@ export function parseClient(data :Base64URLString|ArrayBuffer) :CollectedClientD
 }
 
 
-export function parseAuthenticator(data :Base64URLString|ArrayBuffer) :Authe {
+export function parseAuthenticator(data :Base64URLString|ArrayBuffer) :AuthenticatorInfo {
     if(typeof data == 'string')
         data = utils.parseBase64url(data)
     return authenticators.parseAuthBuffer(data)
@@ -41,37 +41,11 @@ export function parseAttestation(data :Base64URLString|ArrayBuffer) :unknown {
 }
 
 
-function getAlgoName(num :NumAlgo) :NamedAlgo {
+export function getAlgoName(num :COSEAlgorithmIdentifier) :NamedAlgo {
     switch(num) {
         case -7: return "ES256"
-        // case -8 ignored to to its rarity
+        case -8: return "EdDSA"
         case -257: return "RS256"
         default: throw new Error(`Unknown algorithm code: ${num}`)
-    }
-}
-
-export function parseRegistration(registration :RegistrationJSON) :RegistrationInfo {
-    const parsed :RegistrationInfo = {
-        user: registration.user as UserInfo,
-        credential: {
-            id: registration.id,
-            algorithm: registration.response.publicKeyAlgorithm
-        },
-        client:        parseClient(registration.clientData),
-        authenticator: parseAuthenticator(registration.authenticatorData),
-        attestation:   registration.attestationData ? parseAttestation(registration.attestationData) : null
-    }
-
-    // because this is more descriptive than a "backupState" flag bit
-    parsed.credential.synced = parsed.authenticator.flags.backupState
-    return parsed
-}
-
-export function parseAuthentication(authentication :AuthenticationJS) :AuthenticationParsed {
-    return {
-        credentialId:  authentication.credentialId,
-        client:        parseClient(authentication.clientData),
-        authenticator: parseAuthenticator(authentication.authenticatorData),
-        signature: authentication.signature
     }
 }
