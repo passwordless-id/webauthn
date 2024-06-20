@@ -144,7 +144,7 @@ Parameters:
 
 - `username`: The desired username.
 - `challenge`: A server-side randomly generated string.
-- `options`: See [below](#options).
+- `options`: See [below](#common-options).
 
 The `registration` object looks like this:
 
@@ -278,7 +278,7 @@ Parameters:
 
 - `credentialIds`: The list of credential IDs that can be used for signing.
 - `challenge`: A server-side randomly generated string, the base64url encoded version will be signed.
-- `options`: See [below](#options).
+- `options`: See [below](#common-options).
 
 
 ### 3. In the server, load the credential key
