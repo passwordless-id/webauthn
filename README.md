@@ -577,7 +577,7 @@ This library is a wrapper around the WebAuthn protocol.
 It is the technical foundation for strong authentication.
 No more, no less.
 
-[Passwordless.ID](https://passwordless.id) is a service. It provides is all the other things required for a complete authentication system:
+[Passwordless.ID](https://passwordless.id) is a service. It provides all the other things required for a complete authentication system:
 
 - multiple registered devices per account
 - user profile
