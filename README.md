@@ -12,7 +12,7 @@ Try out the playground to see how this library works:
 
 ### *[Testing Playground](https://webauthn.passwordless.id/demos/playground.html)*
 
-Other demos with minial examples:
+Other demos with minimal examples:
 
 - [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
 - [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
@@ -85,7 +85,7 @@ client.isAvailable()
 ```
 
 Returns `true` or `false` depending on whether the Webauthn protocol is available on this platform/browser.
-Particularly linux and "exotic" web browsers might not have support yet.
+Particularly linux and "exotic" web browsers might not have supported yet.
 
 ---
 
