@@ -1,8 +1,7 @@
-import { parsers } from "./index.js";
-import { parseAuthenticator, parseClient } from "./parsers.js";
-import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo } from "./types.js";
-import * as utils from './utils.js'
-
+import { authenticatorMetadata, parsers } from "./index";
+import { parseAuthenticator, parseClient } from "./parsers";
+import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo, AuthenticatorParsed } from "./types";
+import * as utils from './utils'
 
 async function isValid(validator :any, value :any) :Promise<boolean> {
    if(typeof validator === 'function') {
@@ -26,9 +25,14 @@ interface RegistrationChecks {
 }
 
 
+
 export async function verifyRegistration(registrationJson: RegistrationJSON, expected: RegistrationChecks): Promise<RegistrationInfo> {
     const client = parseClient(registrationJson.response.clientDataJSON)
     const authenticator = parseAuthenticator(registrationJson.response.authenticatorData);
+    const aaguid = authenticator.aaguid;
+
+    if(!aaguid) // should never happen, worst case should be a fallback to "zeroed" aaguid
+        throw new Error("Unexpected errror, no AAGUID.")
 
     if (client.type !== "webauthn.create")
         throw new Error(`Unexpected ClientData type: ${client.type}`)
@@ -40,16 +44,24 @@ export async function verifyRegistration(registrationJson: RegistrationJSON, exp
         throw new Error(`Unexpected ClientData challenge: ${client.challenge}`)
 
     return {
-        authenticator,
+        authenticator: {
+            aaguid,
+            counter: authenticator.signCount,
+            icon_light: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-light.png',
+            icon_dark: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-dark.png',
+            name: authenticatorMetadata[aaguid] ?? 'Unknown',
+        },
         credential: {
             id: registrationJson.id,
             publicKey: registrationJson.response.publicKey,
             algorithm: parsers.getAlgoName(registrationJson.response.publicKeyAlgorithm),
         },
+        synced: authenticator.flags.backupEligibility,
         user: registrationJson.user as UserInfo, // That's specific to this library
-        attestation: registrationJson.response.attestationObject
+        userVerified: authenticator.flags.userVerified
     }
 }
+
 
 
 interface AuthenticationChecks {
@@ -60,6 +72,7 @@ interface AuthenticationChecks {
     domain ?:string, // Same as `rp.id`
     verbose?: boolean
 }
+
 
 
 export async function verifyAuthentication(authenticationJson: AuthenticationJSON, credential: CredentialInfo, expected: AuthenticationChecks): Promise<AuthenticationInfo> {
@@ -79,13 +92,13 @@ export async function verifyAuthentication(authenticationJson: AuthenticationJSO
         throw new Error(`Invalid signature: ${authenticationJson.response.signature}`)
 
     const client :CollectedClientData = parseClient(authenticationJson.response.clientDataJSON);
-    const authenticator  = parseAuthenticator(authenticationJson.response.authenticatorData);
+    const authenticator :AuthenticatorParsed = parseAuthenticator(authenticationJson.response.authenticatorData);
 
     if(expected.verbose) {
         console.debug(client)
         console.debug(authenticator)
     }
-
+    
     if (client.type !== "webauthn.get")
         throw new Error(`Unexpected clientData type: ${client.type}`)
 
@@ -107,13 +120,14 @@ export async function verifyAuthentication(authenticationJson: AuthenticationJSO
     if (!authenticator.flags.userVerified && expected.userVerified)
         throw new Error(`Unexpected authenticator flags: missing userVerified`)
 
-    if (expected.counter && authenticator.counter <= expected.counter)
-        throw new Error(`Unexpected authenticator counter: ${authenticator.counter} (should be > ${expected.counter})`)
+    if (expected.counter && authenticator.signCount <= expected.counter)
+        throw new Error(`Unexpected authenticator counter: ${authenticator.signCount} (should be > ${expected.counter})`)
 
     const authentication :AuthenticationInfo = {
-        authenticator,
         credentialId: authenticationJson.id,
-        userId: authenticationJson.response.userHandle
+        userId: authenticationJson.response.userHandle,
+        coutner: authenticator.signCount,
+        userVerified: authenticator.flags.userVerified
     }
 
     return authentication

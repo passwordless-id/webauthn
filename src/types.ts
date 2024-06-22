@@ -155,6 +155,21 @@ export interface CollectedClientData {
   crossOrigin?: boolean;
 }
 
+export interface AuthenticatorParsed {
+  rpIdHash:Base64URLString,
+  flags: {
+          userPresent: boolean,
+          userVerified: boolean,
+          backupEligibility: boolean,
+          backupState: boolean,
+          attestedData: boolean,
+          extensionsIncluded: boolean
+  },
+  signCount: number,
+  aaguid: string,
+  attestation?: Base64URLString
+}
+
 /**
  * https://w3c.github.io/webauthn/#sctn-authenticator-data
  */
@@ -165,14 +180,16 @@ export interface RegistrationInfo {
   user: UserInfo
   credential: CredentialInfo
   authenticator: AuthenticatorInfo
-  attestation?: Base64URLString
+  synced: boolean
+  userVerified: boolean
 }
 
 
 export interface AuthenticationInfo {
   credentialId: Base64URLString
-  authenticator: AuthenticatorInfo
   userId?: Base64URLString
+  userVerified: boolean
+  coutner: number
 }
 
 
@@ -190,11 +207,9 @@ export interface CredentialInfo {
 }
 
 export interface AuthenticatorInfo {
-  counter: number
   aaguid: string
   name: string
-  synced: boolean
-  userVerified: boolean
   icon_light: string
   icon_dark: string
+  counter: number
 }

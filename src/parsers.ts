@@ -1,6 +1,5 @@
-import * as authenticators from './authenticators.js'
 import * as utils from './utils.js'
-import { AuthenticatorInfo, RegistrationInfo, AuthenticationInfo, Base64URLString, RegistrationJSON, UserInfo, CollectedClientData, NumAlgo, NamedAlgo } from './types'
+import { Base64URLString, CollectedClientData, NamedAlgo, AuthenticatorParsed } from './types'
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -15,7 +14,7 @@ interface ClientInfo {
       status: string
     }
     extensions?: any
-  }
+}
 
   
 export function parseClient(data :Base64URLString|ArrayBuffer) :CollectedClientData {
@@ -25,20 +24,49 @@ export function parseClient(data :Base64URLString|ArrayBuffer) :CollectedClientD
 }
 
 
-export function parseAuthenticator(data :Base64URLString|ArrayBuffer) :AuthenticatorInfo {
-    if(typeof data == 'string')
-        data = utils.parseBase64url(data)
-    return authenticators.parseAuthBuffer(data)
+export function parseAuthenticator(authData :Base64URLString|ArrayBuffer) :AuthenticatorParsed {
+    if(typeof authData == 'string')
+        authData = utils.parseBase64url(authData)
+    
+    //console.debug(authData)
+    let flags = new DataView(authData.slice(32,33)).getUint8(0)
+    //console.debug(flags)
+
+    // https://w3c.github.io/webauthn/#sctn-authenticator-data
+    return {
+        rpIdHash: extractRpIdHash(authData),
+        flags: {
+                userPresent: !!(flags & 1),
+                //reserved1: !!(flags & 2),
+                userVerified: !!(flags &  4),
+                backupEligibility: !!(flags & 8),
+                backupState: !!(flags & 16),
+                //reserved2: !!(flags & 32),
+                attestedData: !!(flags & 64),
+                extensionsIncluded: !!(flags & 128)
+        },
+        signCount: new DataView(authData.slice(33,37)).getUint32(0, false),  // Big-Endian!
+        aaguid: extractAaguid(authData),
+        //credentialId: extractCredentialId() 
+    }
 }
 
-
-export function parseAttestation(data :Base64URLString|ArrayBuffer) :unknown {
-    //if(typeof data == 'string')
-    //    data = utils.parseBase64url(data)
-    // Useless comment, let's at least provide the raw value 
-    // return "The device attestation proves the authenticity of the device model / aaguid. It's not guaranteed to be included and really complex to parse / verify. Good luck with that one!"
-    return data;
+function extractRpIdHash(authData :ArrayBuffer) :Base64URLString {
+    return utils.toBase64url(authData.slice(0,32))
 }
+
+/**
+ * Returns the AAGUID in the format "00000000-0000-0000-0000-000000000000"
+ */
+function extractAaguid(authData :ArrayBuffer) :string {
+    if(authData.byteLength < 53)
+        return "00000000-0000-0000-0000-000000000000"
+    const buffer = authData.slice(37, 53) // 16 bytes
+    const hex = utils.bufferToHex(buffer)
+    const aaguid :string = `${hex.substring(0,8)}-${hex.substring(8,12)}-${hex.substring(12,16)}-${hex.substring(16,20)}-${hex.substring(20,32)}`
+    return aaguid // example: "d41f5a69-b817-4144-a13c-9ebd6d9254d6"
+}
+
 
 
 export function getAlgoName(num :COSEAlgorithmIdentifier) :NamedAlgo {
