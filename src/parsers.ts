@@ -1,4 +1,4 @@
-import * as utils from './utils.js'
+import * as utils from './utils'
 import { Base64URLString, CollectedClientData, NamedAlgo, AuthenticatorParsed } from './types'
 
 const utf8Decoder = new TextDecoder('utf-8')

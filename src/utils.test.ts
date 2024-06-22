@@ -1,4 +1,4 @@
-import { randomChallenge } from "./utils.js";
+import { randomChallenge } from "./utils";
 
 
 console.log('Node version: ', process.version);

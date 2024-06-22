@@ -1,14 +1,15 @@
-/*
-export * from './types'
-export * from './webauthn'
-export * from './parsers'
-export * from './validation'
-*/
-import * as client from './client.js';
-import * as server from './server.js';
-import * as parsers from './parsers.js';
-import * as utils from './utils.js';
-import { authenticatorMetadata } from './authenticatorMetadata.js'
+import * as client from './client';
+import * as server from './server';
+import * as parsers from './parsers';
+import * as utils from './utils';
+import { authenticatorMetadata } from './authenticatorMetadata'
 
 export { client, server, parsers, utils, authenticatorMetadata }
-export default { client, server, parsers, utils, authenticatorMetadata }
+
+const webauthn = { client, server, parsers, utils, authenticatorMetadata }
+export default webauthn
+
+if(window) {
+    // @ts-ignore
+    window.webauthn = webauthn
+}

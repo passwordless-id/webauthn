@@ -1,4 +1,4 @@
-import { authenticatorMetadata } from './authenticatorMetadata.js'
+import { authenticatorMetadata } from './authenticatorMetadata'
 
 
 /**
@@ -12,7 +12,7 @@ export function resolveAuthenticatorName(aaguid :string) :string {
 
 let updatedAuthenticatorMetadata :any = null
 
-/**
+/**O
  * Updates the built-in metadata according to raw data available at https://mds.fidoalliance.org/
  * This service delivers a list of AAGUIDs encoded as a JWT.
  * Kept for compatibility purposes.
