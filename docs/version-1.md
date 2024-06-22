@@ -57,7 +57,7 @@ client.isAvailable()
 ```
 
 Returns `true` or `false` depending on whether the Webauthn protocol is available on this platform/browser.
-Particularly linux and "exotic" web browsers might not have support yet.
+Particularly linux and "exotic" web browsers might not support it yet.
 
 ---
 
@@ -116,7 +116,7 @@ Parameters:
 
 - `username`: The desired username.
 - `challenge`: A server-side randomly generated string.
-- `options`: See [below](#options).
+- `options`: See [below](#common-options).
 
 The `registration` object looks like this:
 
@@ -254,7 +254,7 @@ Parameters:
 
 - `credentialIds`: The list of credential IDs that can be used for signing.
 - `challenge`: A server-side randomly generated string, the base64url encoded version will be signed.
-- `options`: See [below](#options).
+- `options`: See [below](#common-options).
 
 
 ### 3. In the server, load the credential key
@@ -553,7 +553,7 @@ This library is a wrapper around the WebAuthn protocol.
 It is the technical foundation for strong authentication.
 No more, no less.
 
-[Passwordless.ID](https://passwordless.id) is a service. It provides is all the other things required for a complete authentication system:
+[Passwordless.ID](https://passwordless.id) is a service. It provides all the other things required for a complete authentication system:
 
 - multiple registered devices per account
 - user profile
