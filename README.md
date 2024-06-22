@@ -2,14 +2,16 @@ Passwordless.ID / webauthn
 ==========================
 
 ![NPM Version](https://img.shields.io/npm/v/%40passwordless-id%2Fwebauthn)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@passwordless-id/webauthn)](https://bundlephobia.com/package/@passwordless-id/webauthn)
 ![NPM Downloads](https://img.shields.io/npm/dm/%40passwordless-id%2Fwebauthn)
 ![GitHub Repo stars](https://img.shields.io/github/stars/passwordless-id/webauthn)
+![GitHub Sponsors](https://img.shields.io/github/sponsors/passwordless-id?color=pink)
 
 
 A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
-It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library (17kb only, from which 11kb is the list of authenticator aaguids/names).
+It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library.
 
-<img src="demos/img/banner-biometric-auth.svg" />
+<img src="docs/img/banner-biometric-auth.svg" />
 
 > This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider based on WebAuthn.
 
