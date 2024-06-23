@@ -4,11 +4,13 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://unpkg.com/buefy@0.9.23/dist/buefy.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@5.8.55/css/materialdesignicons.min.css">
     <link rel="stylesheet" href="theme.css">
 
     <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
     <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
-    <script defer type="module" src="js/playground.js"></script>
+    <script defer src="js/webauthn.min.js"></script>
+    <script defer src="js/playground.js"></script>
 </head>
 <body>
 
@@ -104,19 +106,23 @@
         
         <b-button class="my-3" type="is-primary" @click="register()">Register device</b-button>
 
-        <pre>{{registration.result ?? '...'}}</pre>
+        <b-collapse-card title="Registration JSON Payload sent to the server">
+            <pre>{{registration.json ?? '...'}}</pre>
+        </b-collapse-card>
         
         <hr/>
 
         <p>And on the server side, verifying the registration leads to:</p>
         
-        <pre>await server.verifyRegistration(registration, {challenge: "{{registration.challenge}}", origin: "{{origin}}"})</pre>
+        <pre>await server.verifyRegistration(registration, {challenge: "{{registration.options.challenge}}", origin: "{{origin}}"})</pre>
 
-        <p>Resulting into:</p>
+        <p>Resulting into</p>
+
+        <b-collapse-card title="Registration infos after verification" open>
+            <pre>{{registration.result ?? '...'}}</pre>
+        </b-collapse-card>
         
-        <pre>{{registration.parsed ?? '...'}}</pre>
-        
-        <div class="notification is-warning" v-if="registration.parsed">
+        <div class="notification is-warning" v-if="registration.verified">
             <p>At this point, you should store the `credential` and associate it with the user account. You will need it later to verify authentication attempts.</p>
         </div>
         
@@ -179,21 +185,22 @@
 
         <b-button type="is-primary" @click="login()">Login</b-button>
 
-        <pre>{{authentication.result ?? '...'}}</pre>
+        <pre>{{authentication.json ?? '...'}}</pre>
         
         <hr/>
 
         <p>And on the server side, verifying the authentication leads to:</p>
         
+        
         <pre>
 const credentialKey = {
-    id: "{{registration?.parsed?.credential?.id ?? '...'}}",
-    publicKey: "{{registration?.parsed?.credential?.publicKey ?? '...'}}",
-    algorithm: "{{registration?.parsed?.credential?.algorithm ?? '...'}}"
+    id: "{{registration?.result?.credential?.id ?? '...'}}",
+    publicKey: "{{registration?.result?.credential?.publicKey ?? '...'}}",
+    algorithm: "{{registration?.result?.credential?.algorithm ?? '...'}}"
 }
 
 const expected = {
-    challenge: "{{authentication?.challenge ?? '...'}}",
+    challenge: "{{authentication?.options.challenge ?? '...'}}",
     origin: "{{origin}}",
     userVerified: {{authentication?.options?.userVerification === 'required'}},
     counter: -1
@@ -204,9 +211,9 @@ const verified = await server.verifyAuthentication(res, credentialKey, expected)
 
         <p>Resulting into:</p>
         
-        <pre>{{authentication.parsed ?? '...'}}</pre>
+        <pre>{{authentication.result ?? '...'}}</pre>
 
-        <div class="notification is-success" v-if="authentication.parsed">
+        <div class="notification is-success" v-if="authentication.result">
             <p>Please note that the parsed result is returned for the sake of completeness. It is already verified, including the signature.</p>
         </div>
     </section>

@@ -1,27 +1,47 @@
-import {client, server, parsers, utils} from './webauthn.min.js'
 
- const app = new Vue({
+const app = new Vue({
     el: '#app',
+    components: {
+        'b-collapse-card': {
+            props: {
+                title: String,
+                open: Boolean,
+            },
+            template: `
+            <b-collapse class="card" :open="open">
+                <template #trigger="props">
+                    <div class="card-header">
+                        <a class="card-header-icon">
+                            <b-icon :icon="props.open ? 'menu-down' : 'menu-right'"></b-icon>
+                        </a>
+                        <p class="card-header-title">{{title}}</p>
+                    </div>
+                </template>
+                <slot></slot>   
+                </b-collapse>
+                `
+        }
+    },
     data: {
         origin: document.location.origin,
         registration: {
             options: {
                 user: "Arnaud",
-                challenge: utils.randomChallenge(),
+                challenge: webauthn.utils.randomChallenge(),
                 hints: [],
-                userVerification: 'required',
+                userVerification: 'preferred',
                 discoverable: 'preferred',
                 timeout: 60000,
                 attestation: true,
                 debug: false
             },
-            result: null,
-            parsed: null
+            json: null,
+            result: null
         },
         authentication: {
             credentialId: null,
             options: {
-                challenge: utils.randomChallenge(),
+                challenge: webauthn.utils.randomChallenge(),
                 hints: [],
                 authenticatorType: 'auto',
                 userVerification: 'required',
@@ -46,24 +66,24 @@ import {client, server, parsers, utils} from './webauthn.min.js'
     },
     methods: {
         newChallenge() {
-            return utils.randomChallenge()
+            return webauthn.utils.randomChallenge()
         },
         async register() {
             try {
-                let res = await client.register(this.registration.options)
+                const json = await webauthn.client.register(this.registration.options)
                 this.$buefy.toast.open({
                     message: 'Registered!',
                     type: 'is-success'
                 })
-                console.log(res)
+                console.log(json)
+                this.registration.json = json
 
-                this.registration.result = res
-                this.registration.parsed = await server.verifyRegistration(res, {
-                    challenge: this.registration.challenge,
+                const result = await webauthn.server.verifyRegistration(json, {
+                    challenge: this.registration.options.challenge,
                     origin: this.origin,
                 })
-
-                this.authentication.credentialId = res.credential.id
+                console.log(result)
+                this.registration.result = result
             }
             catch(e) {
                 console.warn(e)
@@ -76,28 +96,21 @@ import {client, server, parsers, utils} from './webauthn.min.js'
         },
         async login() {
             this.authentication.result = null
-            this.authentication.parsed = null
+            this.authentication.json = null
             try {
-                const credentialId = this.authentication.credentialId
-                const res = await client.authenticate(this.authentication.options)
-                console.log(res)
+                const json = await webauthn.client.authenticate(this.authentication.options)
+                console.log(json)
+                this.authentication.json = json
 
-                this.authentication.result = res
-
-                const credentialKey = {
-                    id: this.registration.parsed.credential.id,
-                    publicKey: this.registration.parsed.credential.publicKey,
-                    algorithm: this.registration.parsed.credential.algorithm
-                }
-                
-                const parsed = await server.verifyAuthentication(res, credentialKey, {
+                const credentialKey = this.registration.result.credential
+                const result = await webauthn.server.verifyAuthentication(res, credentialKey, {
                     challenge: this.authentication.challenge,
                     origin: this.origin,
                     userVerified: this.authentication.userVerification === 'required',
                     counter: -1 // Fixes #27 since counter is 0 on first auth with ios/macos
                 })
-                console.log(parsed)
-                this.authentication.parsed = parsed
+                console.log(result)
+                this.authentication.result = result
             }
             catch(e) {
                 console.warn(e)
@@ -109,7 +122,7 @@ import {client, server, parsers, utils} from './webauthn.min.js'
         },
         async verifySignature() {
             try {
-                this.verification.isValid = await server.verifySignature(this.verification)
+                this.verification.isValid = await webauthn.server.verifySignature(this.verification)
             }
             catch(e) {
                 console.warn(e)
@@ -121,10 +134,10 @@ import {client, server, parsers, utils} from './webauthn.min.js'
             }
         },
         parseAuthData(authData) {
-            return parsers.parseAuthenticator(authData)
+            return webauthn.parsers.parseAuthenticator(authData)
         },
         parseClientData(clientData) {
-            return parsers.parseClient(clientData)
+            return webauthn.parsers.parseClient(clientData)
         }
     }
  })
