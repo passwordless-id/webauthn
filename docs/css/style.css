@@ -19,3 +19,9 @@ h3 {
     margin-top: 1rem;
     margin-bottom: 2rem;
 }
+
+img[alt="screenshot-small"] {
+    display: block;
+    width: 50% !important;
+    margin: 0 auto;
+}

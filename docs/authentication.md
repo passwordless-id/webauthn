@@ -4,19 +4,30 @@ Authentication
 Overview
 --------
 
-There are *three* possible way to trigger authentication.
+There are actually *three* possible way to trigger authentication.
 
-### 1. The default, calling `authenticate(...)`.
+### Using the platform's passkey selector
 
-This will trigger a native UI, which allows the user to select any "discoverable" passkey registered for that domain.
+This is the default authentication, without any options.
 
-Above is the windows example. Of course it varies according to platftorm.
+```js
+client.authenticate({
+  challenge: ...
+})
+```
 
-This is shown in this demo.
+It will trigger a native UI, which allows the user to select any "discoverable" passkey registered for that domain.
 
-### 2. Calling `authenticate(...)` with `allowCredentials` option
+![screenshot-small](screenshots/windows-passkeys-selection.png)
 
-If you know what credential IDs the user has registered, either by polling the server or storing it locally, you can provide it as parameter.
+Above is the windows example. Of course it varies according to the platform.
+
+*Works in most platforms and browsers.*
+
+
+### Invoking authentication with known credential IDs
+
+If you know the credential ID(s), either by polling the server or storing it locally as a "remember me" feature, you can provide it as parameter.
 
 ```js
 client.authenticate({
@@ -24,27 +35,34 @@ client.authenticate({
   allowCredentials: ['list-of', 'credential-id', 'from-user']
 })
 ```
+
 It has the following benefits:
 
-- the passkey selection is skipped, it goes straight to the user verification (if required)
-- non-discoverable credentials can also be used
-- edge cases with "incomplete registrations" leaving an orphan passkey do not harm UX
-
-This is shown in this demo.
+- The passkey selection is skipped, it goes straight to the user verification (if required)
+- Non-discoverable credentials can also be used
+- Edge cases with "incomplete registrations" leaving an orphan passkey do not harm UX
 
 
-### 3. Calling `authenticate(...)` with `conditional: true` option
+### Using the input autofill feature
+
+...also known as *Conditional UI*.
+
+![screenshot-small](screenshots/windows-passkeys-autofill.png)
 
 Unlike the previous methods, which invokes the protocol "directly", this one is triggered during page load.
 It activates autocomplete of passkey for input fields having the attribute `autocomplete="username webauthn"`.
 
+```js
+client.authenticate({
+  challenge: ...,
+  conditional: true
+})
+```
 
 Since there is no way to programmatically know if the user has credentials/passkeys already registered for this domain,
 it offers an alternative by skipping the "authenticate" button click. Once selected, the promise will return with the authentication result.
 
 > While this feature is present in Chrome and Safari, it is still very experimental and not available on all browsers.
-
-This is shown in this demo.
 
 
 
@@ -177,7 +195,7 @@ Besides the required `challenge`, following options are avialable.
 | `userVerification`| `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
 | `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
 | `domain` | `window.location.hostname` | By default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
-| `mediation` | See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
+| `mediation` | | See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
 
 
 
@@ -187,15 +205,11 @@ Remarks
 
 Sadly, there are a few things you cannot do.
 
-### You cannot know if a user already registered a passkey
+- ❌ You cannot know if a user already registered a passkey
+- ❌ You cannot decide if the passkey should be hardware-bound or synced
+- ❌ You cannot delete a passkey
 
-### You cannot decide if the passkey should be hardware-bound or synced
-
-### You cannot delete a passkey
-
-Perhaps this one will be coming.
-
-### *Beware of platform/browser quirks!*
+> *And beware of platform/browser quirks!*
 
 The specification is complex, areas like UX are left to platform's discretion and browser vendors have their own quirks. As such, I would highly recommend one thing: **test it out with a variety of browsers/platforms**. It's far from a consitent experience.
 
