@@ -177,12 +177,7 @@ Besides the required `challenge`, following options are avialable.
 | `userVerification`| `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
 | `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
 | `domain` | `window.location.hostname` | By default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
-| `debug` | `false` | If enabled, parses the "data" objects and provide it in a "debug" properties.
-
-
-### Authentication options
-
-- `mediation`: See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
+| `mediation` | See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
 
 
 

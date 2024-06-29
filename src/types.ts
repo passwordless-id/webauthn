@@ -30,7 +30,6 @@ export interface CommonOptions {
   userVerification?: UserVerificationRequirement
   hints?: PublicKeyCredentialHints[]
   timeout?: number
-  debug?: boolean
 }
 
 export interface RegisterOptions extends CommonOptions {

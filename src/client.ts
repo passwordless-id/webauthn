@@ -95,8 +95,7 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
         attestation: "direct"
     }
 
-    if (options.debug)
-        console.debug(creationOptions)
+    console.debug(creationOptions)
 
     if (ongoingAuth != null)
         ongoingAuth.abort('Stopping ongoing conditional UI authentication')
@@ -110,8 +109,7 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
 
     ongoingAuth = null;
 
-    if (options.debug)
-        console.debug(raw)
+    console.debug(raw)
 
     if (raw.type != "public-key")
         throw "Unexpected credential type!";
@@ -137,7 +135,6 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
         },
         user, // That's our own addition 
     }
-
     return json
 }
 
@@ -170,8 +167,7 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
         timeout: options.timeout,
     }
 
-    if (options.debug)
-        console.debug(authOptions)
+    console.debug(authOptions)
 
     if (ongoingAuth != null)
         ongoingAuth.abort('Stopping ongoing conditional UI authentication')
@@ -188,8 +184,7 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
 
     ongoingAuth = null;
 
-    if (options.debug)
-        console.debug(raw)
+    console.debug(raw)
 
     const response = raw.response as AuthenticatorAssertionResponse
 
