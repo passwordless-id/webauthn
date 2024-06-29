@@ -1,5 +1,6 @@
 import * as utils from './utils'
-import { Base64URLString, CollectedClientData, NamedAlgo, AuthenticatorParsed } from './types'
+import { Base64URLString, CollectedClientData, NamedAlgo, AuthenticatorParsed, RegistrationJSON, RegistrationInfo, UserInfo, AuthenticationInfo, AuthenticationJSON } from './types'
+import { authenticatorMetadata } from './authenticatorMetadata'
 
 const utf8Decoder = new TextDecoder('utf-8')
 
@@ -61,7 +62,7 @@ function extractRpIdHash(authData :ArrayBuffer) :Base64URLString {
 function extractAaguid(authData :ArrayBuffer) :string {
     if(authData.byteLength < 53)
         return "00000000-0000-0000-0000-000000000000"
-    const buffer = authData.slice(37, 53) // 16 bytes
+    const buffer = authData.slice(37, 53) // 16 byte
     const hex = utils.bufferToHex(buffer)
     const aaguid :string = `${hex.substring(0,8)}-${hex.substring(8,12)}-${hex.substring(12,16)}-${hex.substring(16,20)}-${hex.substring(20,32)}`
     return aaguid // example: "d41f5a69-b817-4144-a13c-9ebd6d9254d6"
@@ -76,4 +77,46 @@ export function getAlgoName(num :COSEAlgorithmIdentifier) :NamedAlgo {
         case -257: return "RS256"
         default: throw new Error(`Unknown algorithm code: ${num}`)
     }
+}
+
+
+export function parseRegistration(registrationJson :RegistrationJSON) :RegistrationInfo {
+    const authenticator = parseAuthenticator(registrationJson.response.authenticatorData);
+    return toRegistrationInfo(registrationJson, authenticator);
+}
+
+export function toRegistrationInfo(registrationJson :RegistrationJSON, authenticator :AuthenticatorParsed) :RegistrationInfo {
+    const aaguid = authenticator.aaguid
+    return {
+        authenticator: {
+            aaguid,
+            counter: authenticator.signCount,
+            icon_light: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-light.png',
+            icon_dark: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-dark.png',
+            name: authenticatorMetadata[aaguid] ?? 'Unknown',
+        },
+        credential: {
+            id: registrationJson.id,
+            publicKey: registrationJson.response.publicKey,
+            algorithm: getAlgoName(registrationJson.response.publicKeyAlgorithm),
+        },
+        synced: authenticator.flags.backupEligibility,
+        user: registrationJson.user as UserInfo, // That's specific to this library
+        userVerified: authenticator.flags.userVerified,
+    }
+}
+
+export function toAuthenticationInfo(authenticationJson :AuthenticationJSON, authenticator :AuthenticatorParsed) :AuthenticationInfo {
+    return {
+        credentialId: authenticationJson.id,
+        userId: authenticationJson.response.userHandle,
+        coutner: authenticator.signCount,
+        userVerified: authenticator.flags.userVerified
+    }
+}
+
+
+export function parseAuthentication(authenticationJson :AuthenticationJSON) :AuthenticationInfo {
+    const authenticator = parseAuthenticator(authenticationJson.response.authenticatorData);
+    return toAuthenticationInfo(authenticationJson, authenticator);
 }

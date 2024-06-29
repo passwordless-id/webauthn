@@ -34,8 +34,13 @@
     </p>
     <p>
       <b>Synced?</b>
-      <b-tag type="is-primary" v-if="registrationParsed.credential.synced === true">Synced / multi-device credential</b-tag>
-      <b-tag type="is-primary" v-if="registrationParsed.credential.synced === false">Device-bound credential</b-tag>
+      <b-tag type="is-primary" v-if="registrationParsed.synced === true">Synced / multi-device credential</b-tag>
+      <b-tag type="is-primary" v-if="registrationParsed.synced === false">Device-bound credential</b-tag>
+    </p>
+    <p>
+      <b>User verified?</b>
+      <b-tag type="is-success" v-if="registrationParsed.userVerified === true">Yes</b-tag>
+      <b-tag type="is-danger" v-if="registrationParsed.userVerified === false">No</b-tag>
     </p>
     <hr/>
     <p><b>Credential ID:</b> {{registrationParsed.credential.id}}</p>
@@ -44,6 +49,11 @@
   </section>
 
   <section v-if="authenticationParsed" class="has-text-left">
+    <p>
+      <b>User verified?</b>
+      <b-tag type="is-success" v-if="authenticationParsed.userVerified === true">Yes</b-tag>
+      <b-tag type="is-danger" v-if="authenticationParsed.userVerified === false">No</b-tag>
+    </p>
     <p><b>Credential ID:</b> {{authenticationParsed.credentialId}}</p>
     <p><b>Signature:</b> {{authenticationParsed.signature.substring(0,32)}}...</p>
   </section>

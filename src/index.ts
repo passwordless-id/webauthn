@@ -8,8 +8,3 @@ export { client, server, parsers, utils, authenticatorMetadata }
 
 const webauthn = { client, server, parsers, utils, authenticatorMetadata }
 export default webauthn
-
-if(window) {
-    // @ts-ignore
-    window.webauthn = webauthn
-}

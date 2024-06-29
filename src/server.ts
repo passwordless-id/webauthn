@@ -1,5 +1,5 @@
 import { authenticatorMetadata, parsers } from "./index";
-import { parseAuthenticator, parseClient } from "./parsers";
+import { parseAuthenticator, parseClient, toAuthenticationInfo } from "./parsers";
 import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo, AuthenticatorParsed } from "./types";
 import * as utils from './utils'
 
@@ -43,23 +43,7 @@ export async function verifyRegistration(registrationJson: RegistrationJSON, exp
     if (await isNotValid(expected.challenge, client.challenge))
         throw new Error(`Unexpected ClientData challenge: ${client.challenge}`)
 
-    return {
-        authenticator: {
-            aaguid,
-            counter: authenticator.signCount,
-            icon_light: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-light.png',
-            icon_dark: 'https://webauthn.passwordless.id/authenticators/' + aaguid + '-dark.png',
-            name: authenticatorMetadata[aaguid] ?? 'Unknown',
-        },
-        credential: {
-            id: registrationJson.id,
-            publicKey: registrationJson.response.publicKey,
-            algorithm: parsers.getAlgoName(registrationJson.response.publicKeyAlgorithm),
-        },
-        synced: authenticator.flags.backupEligibility,
-        user: registrationJson.user as UserInfo, // That's specific to this library
-        userVerified: authenticator.flags.userVerified
-    }
+    return parsers.toRegistrationInfo(registrationJson, authenticator)
 }
 
 
@@ -123,14 +107,7 @@ export async function verifyAuthentication(authenticationJson: AuthenticationJSO
     if (expected.counter && authenticator.signCount <= expected.counter)
         throw new Error(`Unexpected authenticator counter: ${authenticator.signCount} (should be > ${expected.counter})`)
 
-    const authentication :AuthenticationInfo = {
-        credentialId: authenticationJson.id,
-        userId: authenticationJson.response.userHandle,
-        coutner: authenticator.signCount,
-        userVerified: authenticator.flags.userVerified
-    }
-
-    return authentication
+    return toAuthenticationInfo(authenticationJson, authenticator)
 }
 
 
