@@ -62,7 +62,7 @@ sequenceDiagram
 📦 Installation
 ----------------
 
-**Modules**
+### Modules (recommended)
 
 ```bash
 npm install @passwordless-id/webauthn
@@ -77,19 +77,21 @@ import {server} from '@passwordless-id/webauthn'
 
 *Note: the brackets in the import are important!*
 
-**Browser**
+### Browser
 
-Alternatively, the client-side can be imported directly imported in a static page as a `webauthn.client` browser global.
+Alternatively, it can be imported using a script directly on the page.
 
 ```html
-<script src="https://unpkg.com/@passwordless-id/webauthn@1.6.1/dist/browser/webauthn.min.js"></script>
+<script type="module">
+  import {client} from src="https://cdn.jsdelivr.net/npm/@passwordless-id/webauthn@2.0.0/dist/webauthn.min.js"
+</script>
 ```
 
-**CommonJS**
+### CommonJS
 
 Lastly, a CommonJS variant is also available for old Node stacks. It's usage is discouraged though, in favor of the default ES modules.
 
-Note that at least NodeJS **19+** is necessary. For older Node versions, take a look at [Arch0125's fork](https://github.com/Arch0125/webauthn/tree/nodev14-v16-support). (The reason of the Node 19+ compatibility is basically `WebCrypto` being globally available, making it possible to have a "universal build")
+Note that at least NodeJS **19+** is necessary. (The reason is that previous Node versions had no `WebCrypto` being globally available, making it impossible to have a "universal build")
 
 
 🚀 Getting started

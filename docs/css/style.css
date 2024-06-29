@@ -6,6 +6,11 @@ h2 {
     margin-top: 3rem;
 }
 
+h3 {
+    font-size: 1.5rem;
+    font-style: italic;
+}
+
 .navbar.bg-primary {
     background-image: none;
 }
