@@ -15,32 +15,30 @@ sequenceDiagram
   Browser->>User: `webauthn.register(...)`
   User->>User: Local authentication <br> using device PIN, biometrics...
   User->>Browser: New key pair created
-  Browser->>Server: Send public key credential
-  Server->>Server: Store public key for later
+  Browser->>Server: Send JSON payload
+  Server->>Server: Verify payload and challenge
+  Server->>Server: Store credential with public key for later
   Server->>Browser: Account created
 ```
 
-The registration process occurs in four steps:
 
-1. The browser requests a `challenge` (a nonce) from the server
-2. The browser triggers `client.register(...)` and sends the result to the server
-3. The server parses the JSON payload, verifies it, and ensures the `challenge` matches
-4. The server stores the public key credential for this device for the user account
-
-> Note that unlike traditional authentication, it is often useful for a single user account to register multiple credentials passkeys.
-
-
-### 1. Requesting challenge
+1. Requesting the challenge from the server
+-------------------------------------------
 
 The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks.
+This challenge should truly random and not deterministic.
 
 ```
 const challenge = /* request it from server */
 ```
 
-Remember it on the server side during a certain amount of time and "consume" it once used.
+Remember the request on the server side during a certain amount of time and "consume" it once used.
 
-### 2. Trigger registration in browser
+> There are two ways to deal with remembering the challenge. Either store it in a global cache containing all challenges, or by creating a (cookie based) session directly and storing it as part of the session data.
+
+
+2. Trigger the registration in browser
+--------------------------------------
 
 Example call:
 
@@ -54,7 +52,22 @@ const registration = await client.register({
 })
 ```
 
-### 3. Send the payload to the server
+Besides the required `user` and `challenge`, it has following options.
+
+| option | default | description |
+|--------|---------|-------------|
+| `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
+| `userVerification` | `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
+| `discoverable` | `preferred` | If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. Possible values are `required`, `preferred` and `discouraged`.
+| `timeout` | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
+| `attestation` | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple), it might be anonymized, and its verification is complex.
+| `domain` | `window.location.hostname` | This can be set to a parent domain, to have the passkey valid for all subdomains.
+
+
+
+
+3. Send the payload to the server
+---------------------------------
 
 > By default, the native WebAuthn protocol does not result in a serializable object. The protocol in its third iteration provided a `toJSON()` function but its support is [not widespread](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/toJSON#browser_compatibility). This library results in the same format, with the addition of a `user` property for more comfort.
 
@@ -82,24 +95,23 @@ Then simply send this object as JSON to the server.
 
 
 
-Options
+4. Verifying the registration on the server
+-------------------------------------------
+
+
+
+
+
+
+Remarks
 -------
 
+### Register one or multiple passkeys per account?
+Note that unlike traditional authentication, it is often useful for a single user account to register multiple credentials passkeys.
+While it is not strictly required, it is often more convenient for users with devices using different platforms or hardware-bound authenticators like security keys.
 
-Besides the required `user` and `challenge`, it has following options.
+### What's the use of `user.id`?
 
-| option | default | description |
-|--------|---------|-------------|
-| `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
-| `userVerification` | `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
-| `discoverable` | `preferred` | If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. Possible values are `required`, `preferred` and `discouraged`.
-| `timeout` | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
-| `attestation` | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple), it might be anonymized, and its verification is complex.
-| `domain` | `window.location.hostname` | This can be set to a parent domain, to have the passkey valid for all subdomains.
-
-
-
-
-### Replacing a credential or updating the user name
+Replacing a credential or updating the user name.
 
 Regarding the `user`, you can either provide a name as string, or an object like `{id: '...', name: '...', displayName: '...'}`. By default, `name` and `displayName` will be the same. The `id` should not disclose personal information as it can be exposed. Providing the ID can be used to override a credential with a new one, including an updated `name`/`username`.
