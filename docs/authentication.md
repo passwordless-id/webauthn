@@ -22,7 +22,7 @@ It will trigger a native UI, which allows the user to select any "discoverable" 
 
 Above is the windows example. Of course it varies according to the platform.
 
-*Works in most platforms and browsers.*
+> Works in most platforms and browsers.
 
 
 ### Invoking authentication with known credential IDs
@@ -41,6 +41,8 @@ This way, the passkey selection process is skipped and it goes straight to the u
 ![screenshot-small](screenshots/windows-passkeys-touch.png)
 
 Moreover, another benefit is that non-discoverable credentials can also be used, which is especially handy for security keys.
+
+> Works in most platforms and browsers.
 
 
 ### Using the input autofill feature

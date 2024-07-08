@@ -25,3 +25,8 @@ img[alt="screenshot-small"] {
     width: 50% !important;
     margin: 0 auto;
 }
+
+blockquote {
+    background-color: var(--light);
+    border-left: 3px solid var(--primary);
+}
