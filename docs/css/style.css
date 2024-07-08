@@ -27,7 +27,7 @@ img[alt="screenshot-small"] {
 }
 
 blockquote {
-    background-color: #eeddff;
+    background-color: #f4f0ff;
     border-left: 3px solid var(--primary);
-    padding-left: 1rem;
+    padding: 1rem;
 }
