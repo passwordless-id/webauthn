@@ -38,7 +38,7 @@ client.authenticate({
 
 This way, the passkey selection process is skipped and it goes straight to the user verification or direct authentication, depending on `userVerification` preference and authenticator.
 
-![windows-passkeys-touch](screenshots/windows-passkeys-touch.png)
+![screenshot-small](screenshots/windows-passkeys-touch.png)
 
 Moreover, another benefit is that non-discoverable credentials can also be used, which is especially handy for security keys.
 
