@@ -10,7 +10,6 @@ plugins:
 nav:
   - registration.md
   - authentication.md
-  - verification.md
   - faq.md
 
 theme:

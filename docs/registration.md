@@ -22,7 +22,7 @@ sequenceDiagram
 ```
 
 
-➊ Requesting the challenge from the server
+1️⃣ Requesting the challenge from the server
 -------------------------------------------
 
 The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks.
@@ -37,7 +37,7 @@ Remember the request on the server side during a certain amount of time and "con
 > There are two ways to deal with remembering the challenge. Either store it in a global cache containing all challenges, or by creating a (cookie based) session directly and storing it as part of the session data.
 
 
-➋ Trigger the registration in browser
+2️⃣ Trigger the registration in browser
 --------------------------------------
 
 Example call:
@@ -66,7 +66,7 @@ Besides the required `user` and `challenge`, it has following options.
 
 
 
-➌ Send the payload to the server
+3️⃣ Send the payload to the server
 ---------------------------------
 
 > By default, the native WebAuthn protocol does not result in a serializable object. The protocol in its third iteration provided a `toJSON()` function but its support is [not widespread](https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredential/toJSON#browser_compatibility). This library results in the same format, with the addition of a `user` property for more comfort.
@@ -96,7 +96,7 @@ Then simply send this object as JSON to the server.
 > The JSON payload may seem strange and complex. That's because it is mirroring the native WebAuthn API's result. That way, it is also compatible with most other WebAuthn server libraries also "consuming" this format. In other words, while you can use this library for server-side verification, other libraries should work fine too.
 
 
-➍ Verifying the registration on the server
+4️⃣ Verifying the registration on the server
 -------------------------------------------
 
 To verify it server side, call the `verifyRegistration(...)` function. While registration is basically "thrust on first use", some basic checks are necessary. The most important one is to check if it matches the expected `challenge` used when initiating the registration procedure, and if the `origin` is the expected one. 
@@ -113,7 +113,7 @@ const registrationParsed = await server.verifyRegistration(registration, expecte
 
 While this is the minial verification, further verifications are possilbe.
 
-| Check | Description |
+| Verification options | Description |
 |-------|-------------|
 | `userVerified` | To ensure that the user has been verified by the authenticator.
 | `counter` | This should be an incrementing value on each authentication, but it was made optional according to https://github.com/passwordless-id/webauthn/issues/38 since some authenticators (like Apple) do not increment it! 
@@ -146,11 +146,12 @@ Example result:
 }
 ```
 
-Note that the credential now has a `synced` variable added. This information was extracted from authenticator bit flags and indicates if the corresponding *private key* is a "multi-device" key, typically synced in the cloud, or a "device-bound" key, typically stored on a dedicated hardware chip.
+Using that call, the JSON payload is verifyied and parsed. 
 
-> **NOTE:** Currently, the *attestation* which proves the exact model type of the authenticator is *not verified*. [Do I need attestation?](https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651)
+> **NOTE:** Currently, the *attestation* that proves the exact model type of the authenticator is *not verified*. [Do I need attestation?](https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651). While accepting any authenticator is the generic use case, relying parties that want to only allow specific authenticators would need another library to perform the *attestation* verification. Note that authenticators using synced passkeys, like Apple or Google, do not provide *attestation* at all.
 
-➎ Store the credential / key
+
+5️⃣ Store the credential / key
 -----------------------------
 
 The credential containing the public key is the most important part. It should be stored in a database for later since it will be used to verify the authentication signature.

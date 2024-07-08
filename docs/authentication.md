@@ -96,7 +96,8 @@ sequenceDiagram
 4. The server parses and verifies the authentication payload
 
 
-### 1. Requesting challenge
+1️⃣ Requesting challenge
+------------------------
 
 The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks.
 
@@ -106,7 +107,8 @@ const challenge = /* request it from server */
 
 Remember it on the server side during a certain amount of time and "consume" it once used.
 
-### 2. Trigger authentication in browser
+2️⃣ Trigger authentication in browser
+-------------------------------------
 
 Example call:
 
@@ -134,7 +136,8 @@ Example response:
 ```
 
 
-### 3. In the server, load the credential key
+3️⃣ In the server, load the credential key
+------------------------------------------
 
 ```js
 import { server } from '@passwordless-id/webauthn' 
@@ -172,7 +175,8 @@ const expected = {
 }
 ```
 
-### 4. Verify the authentication
+4️⃣ Verify the authentication
+-----------------------------
 
 ```js
 const authenticationParsed = await server.verifyAuthentication(authentication, credentialKey, expected)
