@@ -36,11 +36,11 @@ client.authenticate({
 })
 ```
 
-It has the following benefits:
+This way, the passkey selection process is skipped and it goes straight to the user verification or direct authentication, depending on `userVerification` preference and authenticator.
 
-- The passkey selection is skipped, it goes straight to the user verification (if required)
-- Non-discoverable credentials can also be used
-- Edge cases with "incomplete registrations" leaving an orphan passkey do not harm UX
+![windows-passkeys-touch](screenshots/windows-passkeys-touch.png)
+
+Moreover, another benefit is that non-discoverable credentials can also be used, which is especially handy for security keys.
 
 
 ### Using the input autofill feature
