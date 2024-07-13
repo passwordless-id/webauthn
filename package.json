@@ -1,10 +1,11 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
   "type": "module",
   "main": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
+  "browser": "dist/webauthn.min.js",
   "unpkg": "dist/webauthn.min.js",
   "scripts": {
     "build": "tsc && esbuild src/index.ts --platform=neutral --bundle --sourcemap --minify --target=es2022 --outfile=dist/webauthn.min.js",
@@ -27,6 +28,7 @@
     "url": "https://github.com/passwordless-id/webauthn/issues"
   },
   "homepage": "https://webauthn.passwordless.id",
+  "funding": "https://github.com/sponsors/passwordless-id",
   "devDependencies": {
     "@babel/preset-typescript": "^7.21.4",
     "@types/jest": "^29.2.3",
