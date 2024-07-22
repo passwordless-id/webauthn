@@ -594,6 +594,9 @@ No more, no less.
 - user profile
 - e-mail verification (phone should come too at some point)
 - account recovery mechanisms
+- good security practices
+- handle browser quirks
+- always up-to-date
 - OAuth2/OpenID integration
 - ...
 

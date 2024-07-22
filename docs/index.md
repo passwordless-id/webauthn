@@ -13,49 +13,15 @@
 > This library is provided by [Passwordless.ID](https://passwordless.id), a free public identity provider.
 
 
-👀 More demos
---------------
+👀 Demos
+---------
 
 - [Basic Demo](/demos/basic.html)
 - [Conditional UI](/demos/conditional-ui.html)
 - [Testing Playground](/demos/playground.html)
 - [Authenticators list](/demos/authenticators.html)
-- Parser/Verifier: TODO
   
 These demos are plain HTML/JS, not minimized. Just open the sources in your browser if you are curious.
-
-
-💡 Concepts
-------------
-
-Passkeys and the WebAuthn protocol are not purely client side or server side.
-It relies on [asymmetric cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography) involving both sides.
-
-Asymmetric cryptography's foundation is based on a "key pair", but a more suitable layman analogy would be an key and a lock. The private key 🔑 is used to encrypt a message, while the corresponding public key 🔒 is used to decrypt the message.
-
-Upon registration, a cryptographic key pair (🔑+🔒) is created by the authenticator, for the given domain and user. The public key (🔒) is then sent to the server while the private key (🔑) is safely stored by the authenticator. 
-
-> This private key can either be hardware-bound (if a security key is used for example) or synced in the cloud (if a password manager is used for example). It can also require local user verification or not, depending on the authenticator and the options. Check out the [F.A.Q.](/faq) for more information.
-
-During authentication, the server will request that the authenticator *signs* a "challenge" (a nonce) using its private key (🔑). Then, the server can verify the signature using the previously stored public key (🔒) and confirm the user is the rightful owner of that key pair.
-
-The logical flow which can be summarized as follows.
-
-```mermaid
-sequenceDiagram
-  Browser ->> Server: Get challenge
-  Server ->> Browser: Here you go
-  Browser ->> Browser: Register or authenticate<br> with WebAuthn
-  Browser ->> Server: Here is the JSON payload
-  Server ->> Server: Verify the payload,<br> including the challenge
-  Server ->> Browser: Welcome!
-```
-
-> **Security tip**
-> 
-> The `challenge` *must be randomly generated* on each call.
-> Using a constant challenge would make authentication vulnerable to replay attacks.
-> Guessable challenges, while harder to exploit, would still weaken the security properties of the protocol.
 
 
 
@@ -77,9 +43,9 @@ import {server} from '@passwordless-id/webauthn'
 
 *Note: the brackets in the import are important!*
 
-### Browser
+### Alternatives
 
-Alternatively, it can be imported using a script directly on the page.
+For **browsers**, it can be imported using a CDN link in the page, or even inside the script itself.
 
 ```html
 <script type="module">
@@ -87,9 +53,7 @@ Alternatively, it can be imported using a script directly on the page.
 </script>
 ```
 
-### CommonJS
-
-Lastly, a CommonJS variant is also available for old Node stacks. It's usage is discouraged though, in favor of the default ES modules.
+Lastly, a **CommonJS** variant is also available for old Node stacks, to be imported using `require('@passwordless-id/webauthn')`. It's usage is discouraged though, in favor of the default ES modules.
 
 Note that at least NodeJS **19+** is necessary. (The reason is that previous Node versions had no `WebCrypto` being globally available, making it impossible to have a "universal build")
 
@@ -110,7 +74,7 @@ await client.register({
 })
 ```
 
-[&rarr; Registration docs](/registration/)
+By default, this registers a passkey on any authenticator (local or roaming) with `preferred` user verification. For further options, see [&rarr; Registration docs](/registration/)
 
 
 ### Authentication
@@ -122,7 +86,7 @@ await client.authenticate({
 })
 ```
 
-[&rarr; Authentication docs](/authentication/)
+By default, this triggers the native passkey selection dialog, for any authenticator (local or roaming) and with  `preferred` user verification. For further options, see [&rarr; Authentication docs](/authentication/)
 
 
 ### Verification

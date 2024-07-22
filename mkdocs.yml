@@ -8,6 +8,7 @@ plugins:
   - mermaid2
 
 nav:
+  - concepts.md
   - registration.md
   - authentication.md
   - faq.md
