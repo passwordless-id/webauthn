@@ -9,8 +9,7 @@
 
     <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
     <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
-    <script defer src="js/webauthn.min.js"></script>
-    <script defer src="js/playground.js"></script>
+    <script defer type="module" src="js/playground.js"></script>
 </head>
 <body>
 
@@ -34,11 +33,6 @@
             <h2 class="title">Registration</h2>
         </header>
 
-        <b-field label="Username" horizontal custom-class="required">
-            <b-input v-model="registration.options.user" placeholder="User name"></b-input>
-            <div class="hint">A username, email or other identifier</div>
-        </b-field>
-
         <b-field label="Challenge" horizontal custom-class="required">
             <b-field>
                 <b-input v-model="registration.options.challenge" placeholder="Challenge" expanded></b-input>
@@ -49,6 +43,10 @@
             <div class="hint">A server-side randomly generated nonce, base64url encoded.</div>
         </b-field>
 
+        <b-field label="Username" horizontal custom-class="required">
+            <b-input v-model="registration.options.user" placeholder="User name"></b-input>
+            <div class="hint">A username, email or other identifier</div>
+        </b-field>
 
         <b-field label="Hints" horizontal>
             <b-taginput expanded
@@ -90,10 +88,6 @@
             <div class="hint">Number of milliseconds the user has to respond to the biometric/PIN check.</div>
         </b-field>
 
-        <b-field label="debug" horizontal>
-            <b-checkbox v-model="registration.options.debug" expanded></b-checkbox>
-        </b-field>
-
         <b-field label="attestation" horizontal>
             <b-checkbox v-model="registration.options.attestation" expanded></b-checkbox>
             <div class="hint">
@@ -102,24 +96,28 @@
             </div>
         </b-field>
 
-        <pre>await client.register({{registration.options}})</pre>
-        
-        <b-button class="my-3" type="is-primary" @click="register()">Register device</b-button>
+        <b-field horizontal>
+            <b-button type="is-primary" @click="register()" expanded>Register device</b-button>
+            <div></div>
+        </b-field>
 
-        <b-collapse-card title="Registration JSON Payload sent to the server">
-            <pre>{{registration.json ?? '...'}}</pre>
+
+        <b-collapse-card title="Browser-side registration">
+            <div class="card-content content">
+                <p>Browser-side registration code:</p>
+                <pre>await client.register({{registration.options}})</pre>
+                <p>Will result in the following JSON to be sent to the server.</p>
+                <pre>{{registration.json ?? '...'}}</pre>
+            </div>
         </b-collapse-card>
         
-        <hr/>
-
-        <p>And on the server side, verifying the registration leads to:</p>
-        
-        <pre>await server.verifyRegistration(registration, {challenge: "{{registration.options.challenge}}", origin: "{{origin}}"})</pre>
-
-        <p>Resulting into</p>
-
-        <b-collapse-card title="Registration infos after verification" open>
-            <pre>{{registration.result ?? '...'}}</pre>
+        <b-collapse-card title="Server-side verification">
+            <div class="card-content content">
+                <p>Server-side verification code:</p>
+                <pre>await server.verifyRegistration(registration, {challenge: "{{registration.options.challenge}}", origin: "{{origin}}"})</pre>
+                <p>Resulting into:</p>
+                <pre>{{registration.result ?? '...'}}</pre>
+            </div>
         </b-collapse-card>
         
         <div class="notification is-warning" v-if="registration.verified">
@@ -134,11 +132,6 @@
             <img src="img/icon_authenticate.svg"/>
             <h2 class="title">Authentication</h2>
         </header>
-
-        <b-field label="credentialId" horizontal custom-class="required">
-            <b-input v-model="authentication.credentialId" placeholder="Credential ID"></b-input>
-            <div></div>
-        </b-field>
 
         <b-field label="challenge" horizontal custom-class="required">
             <b-field>
@@ -177,22 +170,29 @@
             <div class="hint">Whether a biometric/PIN check is required or not. This filters out security keys not having this capability.</div>
         </b-field>
 
-        <b-field label="debug" horizontal>
-            <b-checkbox v-model="authentication.options.debug" expanded></b-checkbox>
+        <b-field label="allowCredentials" horizontal >
+            <b-taginput v-model="authentication.options.allowCredentials"></b-taginput>
+            <div>Here, you can place a list of allowed credentials. This can be used to skip the credentials selection process if the credntial IDs are known.</div>
         </b-field>
 
-        <pre>webauthn.authenticate({{authentication.options}})</pre>
+        <b-field horizontal>
+            <b-button type="is-primary" @click="login()" expanded>Login</b-button>
+            <div></div>
+        </b-field>
 
-        <b-button type="is-primary" @click="login()">Login</b-button>
-
-        <pre>{{authentication.json ?? '...'}}</pre>
+        <b-collapse-card title="Browser-side authentication">
+            <div class="card-content content">
+                <p>Browser-side authentication code:</p>
+                <pre>webauthn.authenticate({{authentication.options}})</pre>
+                <p>Will result in the following JSON to be sent to the server.</p>
+                <pre>{{authentication.json ?? '...'}}</pre>
+            </div>
+        </b-collapse-card>
+        <b-collapse-card title="Server-side verification">
+            <div class="card-content content">
+                <p>Server-side code to verify the authentication:</p>
         
-        <hr/>
-
-        <p>And on the server side, verifying the authentication leads to:</p>
-        
-        
-        <pre>
+                <pre>
 const credentialKey = {
     id: "{{registration?.result?.credential?.id ?? '...'}}",
     publicKey: "{{registration?.result?.credential?.publicKey ?? '...'}}",
@@ -207,15 +207,19 @@ const expected = {
 }
 
 const verified = await server.verifyAuthentication(res, credentialKey, expected)
-        </pre>
+                </pre>
 
-        <p>Resulting into:</p>
-        
-        <pre>{{authentication.result ?? '...'}}</pre>
-
-        <div class="notification is-success" v-if="authentication.result">
-            <p>Please note that the parsed result is returned for the sake of completeness. It is already verified, including the signature.</p>
-        </div>
+                <div class="notification is-warning" v-if="!registration?.result?.credential">
+                    <p>⚠️ In this demo, verification will only work if the same passkey as the one previoulsy registered is used.
+                        Information is not persisted.</p>
+                </div>
+                <div v-if="registration?.result?.credential">
+                    <p>Resulting into:</p>
+            
+                    <pre>{{authentication.result ?? '...'}}</pre>
+                </div>
+            </div>
+        </b-collapse-card>
     </section>
 
 

@@ -99,6 +99,7 @@ await server.verifyAuthentication(registration, expected)
 
 [&rarr; Verification docs](/verification/)
 
+<!--
 
 🛠️ A tool vs a solution
 ------------------------
@@ -115,7 +116,7 @@ This library is a tool to implement passkeys for your website. Whether it is the
 
 Basically, this library is just a tool to realize something bigger. If you just want to "register" and "authenticate" users without dealing with the intricacies, a "solution" like [Passwordless.ID](https://passwordless.id) would be more suited. It's free and (soon) open source too, so there is no need for you to re-invent the wheel.
 
-
+-->
 
 📃 Changelog
 -------------

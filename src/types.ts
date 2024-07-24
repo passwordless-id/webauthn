@@ -27,15 +27,15 @@ export interface WebAuthnGetOptions extends PublicKeyCredentialRequestOptions {
 export interface CommonOptions {
   challenge: string
   domain?: string // used for parent/subdomain auth and other exotic use cases
-  userVerification?: UserVerificationRequirement
   hints?: PublicKeyCredentialHints[]
   timeout?: number
+  userVerification?: UserVerificationRequirement
 }
 
 export interface RegisterOptions extends CommonOptions {
-  user: string | User
   attestation?: boolean
   discoverable?: ResidentKeyRequirement
+  user: string | User
 }
 
 

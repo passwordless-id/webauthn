@@ -1,3 +1,7 @@
+:root {
+    --font-family-sans-serif: sans-serif;
+}
+
 h1 {
     text-align: center;
 }
@@ -35,5 +39,10 @@ blockquote {
 
 h1,h2,h3,h4,h5,h6 {
     line-height: 1.3;
-    margin-bottom: 0.7rem;
+    margin-bottom: 1rem;
 }
+
+blockquote > p:last-child {
+    margin-bottom: 0;
+}
+

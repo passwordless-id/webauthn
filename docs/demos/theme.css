@@ -1,11 +1,17 @@
+/*
+body {
+  background-color: #eeeeee;
+}
+*/
+
 label.required::after {
     content: "*";
     color: red;
 }
 
 .field .field {
-  flex-basis: 0;
-  overflow: auto;
+  flex: 1;
+  overflow-x: auto;
 }
 
 
@@ -31,4 +37,17 @@ label.required::after {
 
 section {
   padding: 1rem;
+}
+
+
+.field:hover .hint {
+  color: #7957d5;
+}
+
+.field:hover label {
+  color: #7957d5;
+}
+
+.field:has(.taginput) {
+  overflow-x: unset;
 }

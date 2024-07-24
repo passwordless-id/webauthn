@@ -98,7 +98,7 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
     console.debug(creationOptions)
 
     if (ongoingAuth != null)
-        ongoingAuth.abort('Stopping ongoing conditional UI authentication')
+        ongoingAuth.abort('Cancel ongoing authentication')
     ongoingAuth = new AbortController();
 
     const raw = await navigator.credentials.create({
@@ -170,7 +170,7 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
     console.debug(authOptions)
 
     if (ongoingAuth != null)
-        ongoingAuth.abort('Stopping ongoing conditional UI authentication')
+        ongoingAuth.abort('Cancel ongoing authentication')
     ongoingAuth = new AbortController();
 
     const raw = await navigator.credentials.get({

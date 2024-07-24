@@ -2,27 +2,6 @@ import webauthn from './webauthn.min.js'
 
 const app = new Vue({
     el: '#app',
-    components: {
-        'b-collapse-card': {
-            props: {
-                title: String,
-                open: Boolean,
-            },
-            template: `
-            <b-collapse class="card my-4" :open="open">
-                <template #trigger="props">
-                    <div class="card-header">
-                        <a class="card-header-icon">
-                            <b-icon :icon="props.open ? 'menu-down' : 'menu-right'"></b-icon>
-                        </a>
-                        <p class="card-header-title">{{title}}</p>
-                    </div>
-                </template>
-                <slot></slot>   
-                </b-collapse>
-                `
-        }
-    },
     data: {
         origin: document.location.origin,
         registration: {

@@ -4,73 +4,6 @@ Authentication
 Overview
 --------
 
-There are actually *three* possible way to trigger authentication.
-
-### Using the platform's passkey selector
-
-This is the default authentication, without any options.
-
-```js
-client.authenticate({
-  challenge: ...
-})
-```
-
-It will trigger a native UI, which allows the user to select any "discoverable" passkey registered for that domain.
-
-![screenshot-small](screenshots/windows-passkeys-selection.png)
-
-Above is the windows example. Of course it varies according to the platform.
-
-> Works in most platforms and browsers.
-
-
-### Invoking authentication with known credential IDs
-
-If you know the credential ID(s), either by polling the server or storing it locally as a "remember me" feature, you can provide it as parameter.
-
-```js
-client.authenticate({
-  challenge: ...,
-  allowCredentials: ['list-of', 'credential-id', 'from-user']
-})
-```
-
-This way, the passkey selection process is skipped and it goes straight to the user verification or direct authentication, depending on `userVerification` preference and authenticator.
-
-![screenshot-small](screenshots/windows-passkeys-touch.png)
-
-Moreover, another benefit is that non-discoverable credentials can also be used, which is especially handy for security keys.
-
-> Works in most platforms and browsers.
-
-
-### Using the input autofill feature
-
-...also known as *Conditional UI*.
-
-![screenshot-small](screenshots/windows-passkeys-autofill.png)
-
-Unlike the previous methods, which invokes the protocol "directly", this one is triggered during page load.
-It activates autocomplete of passkey for input fields having the attribute `autocomplete="username webauthn"`.
-
-```js
-client.authenticate({
-  challenge: ...,
-  conditional: true
-})
-```
-
-Since there is no way to programmatically know if the user has credentials/passkeys already registered for this domain,
-it offers an alternative by skipping the "authenticate" button click. Once selected, the promise will return with the authentication result.
-
-> While this feature is present in Chrome and Safari, it is still very experimental and not available on all browsers.
-
-
-
-How does it work
-----------------
-
 The authentication procedure is similar to the procedure and divided in four steps.
 
 ```mermaid
@@ -124,7 +57,24 @@ const authentication = await client.authenticate({
 })
 ```
 
-Example response:
+
+The following options are available.
+
+| option | default | description |
+|--------|---------|-------------|
+| `timeout` | 60000 | Number of milliseconds the user has to respond to the biometric/PIN check. *(Default: 60000)*
+| `userVerification`| `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
+| `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
+| `domain` | `window.location.hostname` | By default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
+| `mediation` | | See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
+
+
+
+
+3️⃣ Send the payload to the server
+---------------------------------
+
+The authentication payload will look like this:
 
 ```json
 {
@@ -136,7 +86,7 @@ Example response:
 ```
 
 
-3️⃣ In the server, load the credential key
+4️⃣ In the server, load the credential key
 ------------------------------------------
 
 ```js
@@ -175,7 +125,7 @@ const expected = {
 }
 ```
 
-4️⃣ Verify the authentication
+5️⃣ Verify the authentication
 -----------------------------
 
 ```js
@@ -185,23 +135,6 @@ const authenticationParsed = await server.verifyAuthentication(authentication, c
 Either this operation fails and throws an Error, or the verification is successful and returns the parsed authentication payload.
 
 Please note that this parsed result `authenticationParsed` has no real use. It is solely returned for the sake of completeness. The `verifyAuthentication` already verifies the payload, including the signature.
-
-
-
-Options
--------
-
-The following options are available for both `register` and `authenticate`.
-
-Besides the required `challenge`, following options are avialable.
-
-| option | default | description |
-|--------|---------|-------------|
-| `timeout` | 60000 | Number of milliseconds the user has to respond to the biometric/PIN check. *(Default: 60000)*
-| `userVerification`| `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
-| `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
-| `domain` | `window.location.hostname` | By default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
-| `mediation` | | See https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/get#mediation
 
 
 
