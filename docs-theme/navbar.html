@@ -1,0 +1,112 @@
+<div class="navbar fixed-top navbar-expand-lg navbar-{% if config.theme.nav_style == "light" %}light{% else %}dark{% endif %} bg-{{ config.theme.nav_style }}">
+  <div class="container-fluid">
+    {%- block site_name %}
+      <a class="navbar-brand" href="{{ nav.homepage.url|url }}">
+        <img src="{{ config.theme.logo|url }}" alt="Logo" width="32" height="32" class="d-inline-block align-text-top">
+        {{ config.site_name }}
+      </a>
+    {%- endblock %}
+
+    {%- if nav|length>1 or (page and (page.next_page or page.previous_page)) or config.repo_url %}
+      <!-- Expander button -->
+      <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbar-collapse" aria-controls="navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+      </button>
+    {%- endif %}
+
+    <!-- Expanded navigation -->
+    <div id="navbar-collapse" class="navbar-collapse collapse">
+      
+      {%- block site_nav %}
+        {%- if nav|length>1 %}
+          <!-- Main navigation -->
+          <ul class="nav navbar-nav">
+          {%- for nav_item in nav %}
+            {%- if nav_item.children %}
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle{% if nav_item.active %} active" aria-current="page{% endif %}" role="button" data-bs-toggle="dropdown"  aria-expanded="false">{{ nav_item.title }}</a>
+                    <ul class="dropdown-menu">
+                    {%- for nav_item in nav_item.children %}
+                        {% include "nav-sub.html" %}
+                    {%- endfor %}
+                    </ul>
+                </li>
+            {%- else %}
+                <li class="nav-item">
+                    <a href="{{ nav_item.url|url }}" class="nav-link{% if nav_item.active %} active" aria-current="page{% endif %}">{{ nav_item.title }}</a>
+                </li>
+            {%- endif %}
+          {%- endfor %}
+          </ul>
+        {%- endif %}
+      {%- endblock %}
+
+
+      <ul class="nav navbar-nav ms-md-auto">
+        {%- block search_button %}
+          {%- if 'search' in config.plugins %}
+          <li class="nav-item">
+              <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal">
+                  <i class="fa fa-search"></i> {% trans %}Search{% endtrans %}
+              </a>
+          </li>
+          {%- endif %}
+        {%- endblock %}
+        
+        
+        {%- block repo %}  
+          {%- if config.repo_url %}
+            <li class="nav-item">
+              <a href="{{ config.repo_url }}" class="nav-link">
+                  {%- if config.repo_name == 'GitHub' -%}
+                      <i class="fa-brands fa-github"></i> {{ config.repo_name }}
+                  {%- elif config.repo_name == 'Bitbucket' -%}
+                      <i class="fa-brands fa-bitbucket"></i> {{ config.repo_name }}
+                  {%- elif config.repo_name == 'GitLab' -%}
+                      <i class="fa-brands fa-gitlab"></i> {{ config.repo_name }}
+                  {%- else -%}
+                  {{ config.repo_name }}
+                  {%- endif -%}
+              </a>
+            </li>
+          {%- endif %}
+        {%- endblock %}
+
+        {%- block toggler %}
+          {%- if config.theme.user_color_mode_toggle %}
+            <li class="nav-item dropdown">
+              <button id="theme-menu" aria-expanded="false" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Toggle theme" class="nav-link dropdown-toggle">
+                <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                <span class="d-lg-none ms-2">Toggle theme</span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="light" aria-pressed="{% if config.theme.color_mode == 'light' %}true{% else %}false{% endif %}">
+                    <i class="fa-solid fa-sun fa-fw"></i>
+                    <span class="ms-2">Light</span>
+                    <i class="fa-solid fa-check ms-auto{% if config.theme.color_mode != 'light' %} d-none{% endif %}"></i>
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark" aria-pressed="{% if config.theme.color_mode == 'dark' %}true{% else %}false{% endif %}">
+                    <i class="fa-solid fa-moon fa-fw"></i>
+                    <span class="ms-2">Dark</span>
+                    <i class="fa-solid fa-check ms-auto{% if config.theme.color_mode != 'dark' %} d-none{% endif %}"></i>
+                  </button>
+                </li>
+                <li>
+                  <button class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto" aria-pressed="{% if config.theme.color_mode == 'auto' %}true{% else %}false{% endif %}">
+                    <i class="fa-solid fa-circle-half-stroke fa-fw"></i>
+                    <span class="ms-2">Auto</span>
+                    <i class="fa-solid fa-check ms-auto{% if config.theme.color_mode != 'auto' %} d-none{% endif %}"></i>
+                  </button>
+                </li>
+              </ul>
+            </li>
+          {%- endif %}
+        {%- endblock %}
+
+      </ul>
+    </div>
+  </div>
+</div>

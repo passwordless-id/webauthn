@@ -1,0 +1,20 @@
+main.container {
+    margin-top: 6rem;
+}
+
+.bs-sidebar.affix {
+    position: sticky;
+    top: 10rem;
+}
+
+#navbar-collapse {
+    justify-content: space-between;
+}
+
+.navbar-nav .nav-item:hover {
+    filter: brightness(1.2);
+}
+
+main.container img {
+    width: 100%;
+}

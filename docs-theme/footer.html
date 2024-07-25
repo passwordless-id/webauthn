@@ -1,0 +1,37 @@
+
+<footer class="container text-center">
+    {%- block next_prev %}
+      {%- if page and (page.next_page or page.previous_page) %}
+          <div class="d-flex justify-content-around">
+              <a rel="prev" {% if page.previous_page %}href="{{ page.previous_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
+                  <i class="fa fa-arrow-left"></i> {% trans %}Previous{% endtrans %}
+              </a>
+              {%- if page and page.edit_url %}
+                  <a href="{{ page.edit_url }}" class="nav-link">
+                    {%- if config.repo_name == 'GitHub' -%}
+                        <i class="fa-brands fa-github"></i> {% trans repo_name=config.repo_name %}Edit on {{ repo_name }}{% endtrans %}
+                    {%- elif config.repo_name == 'Bitbucket' -%}
+                        <i class="fa-brands fa-bitbucket"></i> {% trans repo_name=config.repo_name %}Edit on {{ repo_name }}{% endtrans %}
+                    {%- elif config.repo_name == 'GitLab' -%}
+                        <i class="fa-brands fa-gitlab"></i> {% trans repo_name=config.repo_name %}Edit on {{ repo_name }}{% endtrans %}
+                    {%- elif config.repo_name -%}
+                        {% trans repo_name=config.repo_name%}Edit on {{ repo_name }}{% endtrans %}
+                    {% else %}
+                        {% trans repo_name=config.repo_name%}Edit{% endtrans %}
+                    {%- endif -%}
+              {%- endif %}
+          
+              <a rel="next" {% if page.next_page %}href="{{ page.next_page.url|url }}" class="nav-link"{% else %}class="nav-link disabled"{% endif %}>
+                  {% trans %}Next{% endtrans %} <i class="fa fa-arrow-right"></i>
+              </a>
+            </div>
+      {%- endif %}
+    {%- endblock %}
+    {%- block footer %}
+      <hr>
+      {%- if config.copyright %}
+          <p>{{ config.copyright }}</p>
+      {%- endif %}
+      <p>{% trans mkdocs_link='<a href="https://www.mkdocs.org/">MkDocs</a>' %}Documentation built with {{ mkdocs_link }}.{% endtrans %}</p>
+    {%- endblock %}
+  </footer>

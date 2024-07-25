@@ -2,6 +2,8 @@
      Encoding/Decoding Utils
 ********************************/
 
+import { Base64URLString } from "./types"
+
 export function randomChallenge() {
     return crypto.randomUUID()
 }
@@ -20,12 +22,12 @@ export function isBase64url(txt :string) :boolean {
     return txt.match(/^[a-zA-Z0-9\-_]+=*$/) !== null
 }
 
-export function toBase64url(buffer :ArrayBuffer) :string {
+export function toBase64url(buffer :ArrayBuffer) :Base64URLString {
     const txt = btoa(parseBuffer(buffer)) // base64
     return txt.replaceAll('+', '-').replaceAll('/', '_')
 }
 
-export function parseBase64url(txt :string) :ArrayBuffer {
+export function parseBase64url(txt :Base64URLString) :ArrayBuffer {
     txt = txt.replaceAll('-', '+').replaceAll('_', '/') // base64url -> base64
     return toBuffer(atob(txt))
 }

@@ -1,0 +1,44 @@
+site_name: '@passwordless-id/webauthn'
+site_url: https://webauthn.passwordless.id
+repo_url: https://github.com/passwordless-id/webauthn
+extra_css:
+  - css/style.css
+plugins:
+  - search
+  - mermaid2
+
+nav:
+  - concepts.md
+  - registration.md
+  - authentication.md
+  - faq.md
+
+theme:
+  #name: readthedocs
+  name: mkdocs
+  logo: /img/passkeys-logo-dark.svg
+  color_mode: light
+  hljs_style: dark
+  user_color_mode_toggle: false
+  custom_dir: docs-theme
+
+
+  #name: material
+  #locale: en
+  #logo: img/passkeys-logo-dark.svg
+  #palette:
+  #  primary: '#7957d5'
+  #features:
+  #- content.code.copy
+  #- navigation.tabs
+  #- navigation.tabs.sticky
+  #- toc.integrate
+
+#markdown_extensions:
+#  - pymdownx.highlight:
+#      anchor_linenums: true
+#      line_spans: __span
+#      pygments_lang_class: true
+#  - pymdownx.inlinehilite
+#  - pymdownx.snippets
+#  - pymdownx.superfences

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+    <style>
+        code {
+            text-wrap: nowrap;
+        }
+        th {
+            text-align: center !important;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+    </style>
+        <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
+        <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
+        <script defer type="module">
+            import { authenticatorMetadata } from './js/webauthn.min.js'
+            console.log(authenticatorMetadata)
+    
+            const app = new Vue({
+            el: '#app',
+            data: {
+                authenticatorMetadata
+            }})
+        </script>
+</head>
+
+<body>
+    <a class="button is-primary" href="/">&larr; Back to docs</a>
+    <main id="app" class="section container has-text-centered">
+
+        <h1 class="title">Authenticators list</h1>
+        
+        <p>This list includes both hardware and software authenticators and all icons are available as png 64x64.</p>
+        <ul>
+            <li><code>https://webauthn.passwordless.id/authenticators/{aaguid}-light.png</code></li>
+            <li><code>https://webauthn.passwordless.id/authenticators/{aaguid}-dark.png&nbsp;</code></li>
+        </ul>
+
+
+        <hr/>
+
+        <table class="authenticators table is-striped is-narrow is-hoverable is-fullwidth">
+            <thead>
+                <th>Light</th>
+                <th>Dark</th>
+                <th>AAGUID</th>
+                <th>Name</th>
+            </thead>
+            <tbody>
+                <tr v-for="(name, aaguid) in authenticatorMetadata">
+                    <td class="has-background-light">
+                        <img :src="'/authenticators/' + aaguid + '-light.png'" />
+                    </td>
+                    <td class="has-background-dark">
+                        <img :src="'/authenticators/' + aaguid + '-dark.png'" />
+                    </td>
+                    <td style="font-family: monospace">
+                        <code>{{aaguid}}</code>
+                    </td>
+                    <td>
+                        {{name}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+
+</html>

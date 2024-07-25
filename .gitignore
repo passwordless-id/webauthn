@@ -1,3 +1,8 @@
 /node_modules
 /.vscode
-/dist/esm
+/dist
+/docs/dist
+/docs/authenticators
+/site
+/authenticators
+/misc/authenticators

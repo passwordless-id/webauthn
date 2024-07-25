@@ -1,0 +1,53 @@
+/*
+body {
+  background-color: #eeeeee;
+}
+*/
+
+label.required::after {
+    content: "*";
+    color: red;
+}
+
+.field .field {
+  flex: 1;
+  overflow-x: auto;
+}
+
+
+
+.with-big-icon {
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.with-big-icon img {
+  height: 4rem;
+  margin: 0 1rem;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+section {
+  padding: 1rem;
+}
+
+
+.field:hover .hint {
+  color: #7957d5;
+}
+
+.field:hover label {
+  color: #7957d5;
+}
+
+.field:has(.taginput) {
+  overflow-x: unset;
+}

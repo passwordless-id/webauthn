@@ -8,6 +8,9 @@ from PIL import Image
 from PIL import ImageOps
 import sys
 
+out_path = sys.argv[1] if len(sys.argv) == 2 else 'authenticators'
+os.makedirs(out_path, exist_ok=True)
+
 ICON_SIZE=64
 
 authenticators = requests.get('https://raw.githubusercontent.com/passkeydeveloper/passkey-authenticator-aaguids/main/combined_aaguid.json').json()
@@ -58,7 +61,7 @@ for key, item in sorted(authenticators.items()):
             continue
 
         # Save the image to a file
-        save_as = f'../authenticators/{key}-{mode}.png'
+        save_as = f'{out_path}/{key}-{mode}.png'
         try:
             if img_format == 'svg':
                 print(f'Converting SVG to PNG {save_as}...')
@@ -76,9 +79,10 @@ for key, item in sorted(authenticators.items()):
                 img.save(save_as)
                 #with open(save_as, 'wb') as img:            
                 #    img.write(img_bytes)
-        except:
+        except e:
             print(f'Failed to convert/resize {key}')
             failed += [key]
+            raise e
             continue
 
 

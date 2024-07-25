@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://unpkg.com/buefy@0.9.23/dist/buefy.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@5.8.55/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="theme.css">
+
+    <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
+    <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
+    <script defer type="module" src="js/playground.js"></script>
+</head>
+<body>
+
+<a class="button is-primary" href="/">&larr; Back to docs</a>
+
+<main id="app" class="container">
+
+    <header class="m-3" style="display:flex; justify-content: center; flex-wrap: wrap;">
+        <img src="img/banner-playground.svg" alt="banner" style="max-height: 300px" />
+        <div class="col p-3">
+            <h1 class="title">JSON Payloads Debugger</h1>
+        </div>
+    </header>
+
+    <section>
+        <header class="with-big-icon">
+            <img src="img/icon_validate.svg"/>
+            <h2 class="title">Signature validation</h2>
+        </header>
+        <p>This part is mainly for debugging purposes or validation.</p>
+        <hr/>
+
+
+        <b-field label="Algorithm" horizontal>
+            <b-select v-model="verification.algorithm" expanded>
+                <option>RS256</option>
+                <option>ES256</option>
+            </b-select>
+            <div class="hint">The algorithm used for the public key created during registration.</div>
+        </b-field>
+
+        <b-field label="PublicKey" horizontal>
+            <b-input v-model="verification.publicKey" type="textarea"></b-input>
+            <div class="hint">The public key created during registration.</div>
+        </b-field>
+
+        <hr/>
+
+        <b-field label="AuthenticatorData" horizontal>
+            <b-input v-model="verification.authenticatorData" type="textarea"></b-input>
+            <div class="hint"><pre v-if="verification.authenticatorData">{{parseAuthData(verification.authenticatorData)}}</pre></div>
+        </b-field>
+
+        <b-field label="ClientData" horizontal>
+            <b-input v-model="verification.clientData" type="textarea"></b-input>
+            <div class="hint"><pre v-if="verification.clientData">{{parseClientData(verification.clientData)}}</pre></div>
+        </b-field>
+
+        <b-field label="Signature" horizontal>
+            <b-input v-model="verification.signature" type="textarea"></b-input>
+            <div class="hint">
+                <p>signature = sign(algorithm, publicKey, authenticatorData + sha256(clientData))</p>
+            </div>
+        </b-field>
+
+        <b-field horizontal>
+            <b-button type="is-primary" @click="verifySignature()">Verify</b-button>
+            <div class="hint message" :class="{'is-success': verification.isValid, 'is-danger': !verification.isValid}"
+            v-if="verification.isValid !== null">
+            <div class="message-body">
+                Signature is {{verification.isValid ? 'valid' : 'invalid'}}
+            </div>
+        </div>
+        </b-field>
+
+        
+    </section>
+
+</main>
+</body>
+</html>

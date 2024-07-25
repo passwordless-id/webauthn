@@ -1,44 +1,9 @@
-Passwordless.ID / webauthn
-==========================
+Version 1.x
+===========
 
-![NPM Version](https://img.shields.io/npm/v/%40passwordless-id%2Fwebauthn)
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@passwordless-id/webauthn)](https://bundlephobia.com/package/@passwordless-id/webauthn)
-![NPM Downloads](https://img.shields.io/npm/dm/%40passwordless-id%2Fwebauthn)
-![GitHub Repo stars](https://img.shields.io/github/stars/passwordless-id/webauthn)
-![GitHub Sponsors](https://img.shields.io/github/sponsors/passwordless-id?color=pink)
-
-
-A greatly simplified and opinionated wrapper to invoke the [webauthn protocol](https://w3c.github.io/webauthn/) more conveniently.
-It is an [open source](https://github.com/passwordless-id/webauthn), dependency-free and minimalistic library.
-
-<img src="docs/img/banner-biometric-auth.svg" />
-
-> This library is used in [Passwordless.ID](https://passwordless.id), a free public identity provider based on WebAuthn.
-
-Try out the playground to see how this library works:
-
-### *[Testing Playground](https://webauthn.passwordless.id/demos/playground.html)*
-
-Other demos with minimal examples:
-
-- [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
-- [Minimal Example (CDN)](https://webauthn.passwordless.id/demos/example-cdn.html)
-- [Minimal Example (repository)](https://webauthn.passwordless.id/demos/example-raw.html)
-- [Authenticators list](https://webauthn.passwordless.id/demos/authenticators.html)
-
-The source of all demos is on [GitHub](https://github.com/passwordless-id/webauthn)
-
-
-How does the protocol work?
----------------------------
-
-This diagram shows how the webauthn protocol works, slightly simplified.
-
-![diagram](https://passwordless.id/protocols/webauthn/overview.svg)
-
-Further documentation about the protocol can be found in the webauthn guide at [Passwordless.ID](https://passwordless.id).
-
-
+<div class="alert alert-danger">
+<b>This is the documentation of the older legacy version 1.x!</b>
+</div>
 
 Installation / Usage
 --------------------
@@ -594,9 +559,6 @@ No more, no less.
 - user profile
 - e-mail verification (phone should come too at some point)
 - account recovery mechanisms
-- good security practices
-- handle browser quirks
-- always up-to-date
 - OAuth2/OpenID integration
 - ...
 

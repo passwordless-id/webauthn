@@ -1,0 +1,48 @@
+:root {
+    --font-family-sans-serif: sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    margin-top: 3rem;
+}
+
+h3 {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    font-style: italic;
+}
+
+.navbar.bg-primary {
+    background-image: none;
+}
+
+.mermaid {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+img[alt="screenshot-small"] {
+    display: block;
+    width: 50% !important;
+    margin: 0 auto;
+}
+
+blockquote {
+    background-color: #f4f0ff;
+    border-left: 3px solid var(--primary);
+    padding: 1rem;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    line-height: 1.3;
+    margin-bottom: 1rem;
+}
+
+blockquote > p:last-child {
+    margin-bottom: 0;
+}
+
