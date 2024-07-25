@@ -138,7 +138,7 @@ Basically, this library is just a tool to realize something bigger. If you just 
 > Same goes for user verification, it is now `preferred`, like the native WebAuthn protocol.
 > While this reduces security, it supports a wider range of security keys.
 >
-> Lastly, the response format has been changed completely to be compatible with the output as the `PublicKeyCredential.toJson()` method. Currently only FireFox implements this method though. We hope this will increase compatibility cross-libraries in the long term.
+> Lastly, the response format has been changed completely to be compatible with the output as the `PublicKeyCredential.toJson()` method. An official part of the spec that only FireFox implements. Using the same intermediate format increases compatibility cross-libraries in the long term.
 
 - Use platform authenticator by default => authenticator selection pops up by default
 - `authenticatorType` was removed => use `hints` instead
