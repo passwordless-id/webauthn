@@ -188,7 +188,7 @@ export interface AuthenticationInfo {
   credentialId: Base64URLString
   userId?: Base64URLString
   userVerified: boolean
-  coutner: number
+  counter: number
 }
 
 
