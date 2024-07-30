@@ -32,6 +32,7 @@
   ],
   "author": "Arnaud Dagnelies",
   "license": "MIT",
+  "funding": "https://github.com/sponsors/passwordless-id",
   "bugs": {
     "url": "https://github.com/passwordless-id/webauthn/issues"
   },
