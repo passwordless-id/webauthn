@@ -50,11 +50,11 @@ export interface User {
  */
 export interface CredentialDescriptor {
   id: Base64URLString,
-  transports?: AuthenticatorTransport[]
+  transports: ExtendedAuthenticatorTransport[]
 }
 
 export interface AuthenticateOptions extends CommonOptions {
-  allowCredentials?: CredentialDescriptor[]
+  allowCredentials?: (CredentialDescriptor | string)[]
   conditional?: boolean
 }
 
@@ -93,7 +93,7 @@ export interface AuthenticatorAttestationResponseJSON {
   attestationObject: Base64URLString;
   authenticatorData: Base64URLString;
   clientDataJSON: Base64URLString;
-  transports: AuthenticatorTransport[];
+  transports: ExtendedAuthenticatorTransport[];
   publicKey: Base64URLString;
   publicKeyAlgorithm: COSEAlgorithmIdentifier;
 }
@@ -130,15 +130,10 @@ export interface AuthenticatorAssertionResponseJSON {
 /**
  * WebAuthn added transports that are not yet defined in the DOM definitions.
  * However, it's partly obsoleted by the `hints` in the registration/authentication request.
+ * 
+ * https://w3c.github.io/webauthn/#enumdef-authenticatortransport
  */
-export type AuthenticatorTransport =
-  | 'ble'
-  | 'cable'
-  | 'hybrid'
-  | 'internal'
-  | 'nfc'
-  | 'smart-card'
-  | 'usb';
+export type ExtendedAuthenticatorTransport = AuthenticatorTransport | 'smart-card'; // missing in the current DOM types
 
 
 /************************** PARSED **************************/
@@ -203,6 +198,7 @@ export interface CredentialInfo {
   id: string
   publicKey: string
   algorithm: NamedAlgo
+  transports: ExtendedAuthenticatorTransport[]
 }
 
 export interface AuthenticatorInfo {

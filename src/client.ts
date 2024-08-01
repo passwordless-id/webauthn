@@ -1,4 +1,4 @@
-import { AuthenticateOptions, AuthenticationJSON, AuthenticatorTransport, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
+import { AuthenticateOptions, AuthenticationJSON, Base64URLString, CredentialDescriptor, ExtendedAuthenticatorTransport, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
 import * as utils from './utils'
 
 /**
@@ -155,13 +155,7 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
     let authOptions: WebAuthnGetOptions = {
         challenge: utils.parseBase64url(options.challenge),
         rpId: options.domain ?? window.location.hostname,
-        allowCredentials: options.allowCredentials?.map(cred => {
-            return {
-                id: utils.parseBase64url(cred.id),
-                type: 'public-key',
-                transports: cred.transports as any,
-            }
-        }),
+        allowCredentials: options.allowCredentials?.map(toPublicKeyCredentialDescriptor),
         hints: options.hints,
         userVerification: options.userVerification,
         timeout: options.timeout,
@@ -204,4 +198,20 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
     }
 
     return json
+}
+
+function toPublicKeyCredentialDescriptor(cred: Base64URLString | CredentialDescriptor): PublicKeyCredentialDescriptor {
+    if(typeof cred === 'string') {
+        return {
+            id: utils.parseBase64url(cred),
+            type: 'public-key'
+        }
+    }
+    else {
+        return {
+            id: utils.parseBase64url(cred.id),
+            type: 'public-key',
+            transports: cred.transports as AuthenticatorTransport[]
+        }
+    }
 }

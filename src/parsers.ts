@@ -99,6 +99,7 @@ export function toRegistrationInfo(registrationJson :RegistrationJSON, authentic
             id: registrationJson.id,
             publicKey: registrationJson.response.publicKey,
             algorithm: getAlgoName(registrationJson.response.publicKeyAlgorithm),
+            transports: registrationJson.response.transports
         },
         synced: authenticator.flags.backupEligibility,
         user: registrationJson.user as UserInfo, // That's specific to this library
