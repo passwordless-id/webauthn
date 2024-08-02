@@ -32,7 +32,7 @@ sequenceDiagram
 1️⃣ Requesting challenge
 ------------------------
 
-The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks. It should be a byte array encoded as *base64url* string.
+The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks. It must be a byte array encoded as *base64url* string.
 
 ```
 const challenge = /* request it from server */
