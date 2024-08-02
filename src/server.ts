@@ -1,7 +1,8 @@
 import { authenticatorMetadata, parsers } from "./index";
 import { parseAuthenticator, parseClient, toAuthenticationInfo } from "./parsers";
 import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo, AuthenticatorParsed } from "./types";
-import * as utils from './utils'
+import * as utils from './utils';
+import * as crypto from 'crypto';
 
 async function isValid(validator :any, value :any) :Promise<boolean> {
    if(typeof validator === 'function') {
