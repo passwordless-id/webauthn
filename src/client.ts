@@ -35,7 +35,7 @@ function getAuthAttachment(hints?: PublicKeyCredentialHints[]): AuthenticatorAtt
 
 
 /**
- * For conditional UI, the ongoing "authentication" must be aborted when triggering a registration.
+ * For autocomplete / conditional mediation, the ongoing "authentication" must be aborted when triggering a registration.
  * It should also be aborted when triggering authentication another time.
  */
 let ongoingAuth: AbortController | null = null;
@@ -138,6 +138,9 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
     return json
 }
 
+export async function isAutocompleteAvailable() {
+    return PublicKeyCredential.isConditionalMediationAvailable && PublicKeyCredential.isConditionalMediationAvailable();
+}
 
 /**
  * Signs a challenge using one of the provided credentials IDs in order to authenticate the user.
@@ -152,6 +155,9 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
     if (!utils.isBase64url(options.challenge))
         throw new Error('Provided challenge is not properly encoded in Base64url')
 
+    if (options.autocomplete && !(await isAutocompleteAvailable()))
+        throw new Error('PAsskeys autocomplete with conditional mediation is not available in this browser.')
+
     let authOptions: WebAuthnGetOptions = {
         challenge: utils.parseBase64url(options.challenge),
         rpId: options.domain ?? window.location.hostname,
@@ -163,13 +169,15 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
 
     console.debug(authOptions)
 
-    if (ongoingAuth != null)
-        ongoingAuth.abort('Cancel ongoing authentication')
-    ongoingAuth = new AbortController();
-
+    if (options.autocomplete) {
+        if(ongoingAuth != null)
+            ongoingAuth.abort('Cancel ongoing authentication')
+        ongoingAuth = new AbortController();
+    }
+    
     const raw = await navigator.credentials.get({
         publicKey: authOptions,
-        mediation: options.conditional ? 'conditional' : undefined,
+        mediation: options.autocomplete ? 'conditional' : undefined,
         signal: ongoingAuth?.signal
     }) as PublicKeyCredential
 

@@ -49,13 +49,13 @@ User enters username and requests allowed credential IDs from server.
 
 
 
-Per conditional UI
-------------------
+Per autocomplete (a.k.a. conditional mediation)
+-------------------------------------------
 
 ### How?
 
 - Use `discoverable: 'required'` during registration.
-- Call authentication with `conditional: true` when input is mounted in DOM.
+- Call authentication with `autocomplete: true` when input is mounted in DOM.
 
 ### Advantages
 

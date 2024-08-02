@@ -4,7 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Passkeys authenticators list</title>
     <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
+
     <style>
         code {
             text-wrap: nowrap;
@@ -16,18 +18,18 @@
             vertical-align: middle;
         }
     </style>
-        <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
-        <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
-        <script defer type="module">
-            import { authenticatorMetadata } from './js/webauthn.min.js'
-            console.log(authenticatorMetadata)
-    
-            const app = new Vue({
-            el: '#app',
-            data: {
-                authenticatorMetadata
-            }})
-        </script>
+    <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
+    <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
+    <script defer type="module">
+        import { authenticatorMetadata } from './js/webauthn.min.js'
+        console.log(authenticatorMetadata)
+
+        const app = new Vue({
+        el: '#app',
+        data: {
+            authenticatorMetadata
+        }})
+    </script>
 </head>
 
 <body>

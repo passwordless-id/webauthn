@@ -10,7 +10,8 @@ const app = new Vue({
   data: {
     username: null,
     registrationParsed: null,
-    authenticationParsed: null
+    authenticationParsed: null,
+    autocompleteAvailable: null
   },
   methods: {
 
@@ -65,6 +66,10 @@ const app = new Vue({
     async authenticate() {
       this.clear();
 
+      this.autocompleteAvailable = await client.isAutocompleteAvailable()
+      if(!this.autocompleteAvailable)
+        return
+
       try {
         // 1. Get a challenge from the server
         const challenge = window.crypto.randomUUID(); // faking it here of course
@@ -72,7 +77,7 @@ const app = new Vue({
         // 2. Invoking WebAuthn in the browser
         const authentication = await client.authenticate({
           challenge,
-          conditional: true,
+          autocomplete: true,
           debug: true
         })
 

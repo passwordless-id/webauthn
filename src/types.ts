@@ -55,7 +55,7 @@ export interface CredentialDescriptor {
 
 export interface AuthenticateOptions extends CommonOptions {
   allowCredentials?: (CredentialDescriptor | string)[]
-  conditional?: boolean
+  autocomplete?: boolean
 }
 
 

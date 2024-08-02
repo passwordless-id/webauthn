@@ -70,7 +70,7 @@ The following options are available.
 | `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
 | `domain` | `window.location.hostname` | By default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
 | `allowedCredentials` | The list of credentials and the transports it supports. Used to skip passkey selection. Either a list of credential ids (discouraged) or list of credential objects with `id` and supported `transports` (recommended).
-| `autofill` | `false` | See concepts
+| `autocomplete` | `false` | See concepts
 
 
 

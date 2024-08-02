@@ -19,7 +19,7 @@
 ---------
 
 - [Basic Demo](https://webauthn.passwordless.id/demos/basic.html)
-- [Conditional UI](https://webauthn.passwordless.id/demos/conditional-ui.html)
+- [Passkeys autocomplete](https://webauthn.passwordless.id/demos/conditional-ui.html)
 - [Testing Playground](https://webauthn.passwordless.id/demos/playground.html)
 - [Authenticators list](https://webauthn.passwordless.id/demos/authenticators.html)
 - [Docs](https://webauthn.passwordless.id)

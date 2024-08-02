@@ -17,7 +17,7 @@
 ---------
 
 - [Basic Demo](/demos/basic.html)
-- [Conditional UI](/demos/conditional-ui.html)
+- [Autocomplete with conditional mediation](/demos/conditional-ui.html)
 - [Testing Playground](/demos/playground.html)
 - [Authenticators list](/demos/authenticators.html)
   

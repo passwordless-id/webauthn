@@ -84,11 +84,11 @@ Moreover, another benefit is that non-discoverable credentials can also be used,
 *✅ Works in most platforms and browsers.*
 
 
-### Using the input autofill feature
+### Using the input autocomplete feature
 
-...also known as *Conditional UI*.
+...also known as *Conditional mediation*.
 
-![screenshot-small](screenshots/windows-passkeys-autofill.png)
+![screenshot-small](screenshots/windows-passkeys-autocomplete.png)
 
 Unlike the previous methods, which invokes the protocol "directly", this one is triggered during page load.
 It activates autocomplete of passkey for input fields having the attribute `autocomplete="username webauthn"`.
@@ -96,16 +96,17 @@ It activates autocomplete of passkey for input fields having the attribute `auto
 ```js
 client.authenticate({
   challenge: ...,
-  conditional: true
+  autocomplete: true
 })
 ```
 
 Since there is no way to programmatically know if the user has credentials/passkeys already registered for this domain,
 it offers an alternative by skipping the "authenticate" button click. Once selected, the promise will return with the authentication result.
+Calling the registration or authentication afterwards will abord the previous pending one.
 
 *⚠️ While this feature is present in Chrome and Safari, it is still very experimental and not available on all browsers.*
 
-
+Therefore, the usage of `await client.isAutocompleteAvailable()` is advised.
 
 
 🛡️ Security considerations
@@ -196,7 +197,7 @@ Whether the platform can create or use a Passkey using the local device or a roa
 
 
 
-### Autofill with conditional-UI
+### autocomplete with "conditional mediation"
 
 - ✅ Chrome
 - ✅/❌ Edge: kind of buggy!

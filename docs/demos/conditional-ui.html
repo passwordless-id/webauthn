@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Passkeys autocomplete / conditional mediation demo</title>
   <link rel="stylesheet" href="https://unpkg.com/buefy/dist/buefy.min.css">
   <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
   <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
@@ -17,19 +18,26 @@
     <img src="/img/banner-biometric-auth.svg" style="max-width: 600px;"/>
     <p><b-tag>Please note: this is a demo. Nothing is stored server side, only locally.</b-tag></p>
     <br/>
+    <article class="message is-warning has-text-left">
+      <div class="message-body">
+        Passkeys autocomplete, also known as "conditional mediation" triggers authentication when selecting a username from the autocomplete.<br>
+        However, note that it does not work "smoothly" (or at all) on every browser / platform / authenticators. <br>
+        Therefore, it is recommended to provide a fallback to trigger authentication without <code>autocomplete: true</code> too.
+      </div>
+    </article>  
+
+    <p>
+      <code>isAutocompleteAvailable()</code> ?
+      <b-tag type="is-success" v-if="autocompleteAvailable === true">true</b-tag>
+      <b-tag type="is-danger" v-if="autocompleteAvailable === false">false</b-tag>
+    </p>
+
     <br/>
     <b-input v-model="username" placeholder="Username" autocomplete="username webauthn"></b-input>
     <div class="my-3">
       <b-button type="is-primary" @click="register()" :disabled="!username">Register</b-button>
       <b-button type="is-primary" @click="logout()" :disabled="!registrationParsed && !authenticationParsed">Sign Out</b-button>
     </div>
-    <article class="message is-warning">
-      <div class="message-body">
-        Conditional UI triggers authentication when selecting a username from the autocomplete. <br>
-        However, note that it does not work on every browser / platform / authenticators. <br>
-        Therefore, it is recommended to provide a fallback to trigger authentication without <code>conditional: true</code> too.
-      </div>
-    </article>  
   </section>
   
   <section v-if="registrationParsed" class="has-text-left">
@@ -41,8 +49,8 @@
     <p>
       <b>Synced?</b>
       <template v-if="registrationParsed.authenticator">
-        <b-tag type="is-primary" v-if="registrationParsed.credential.synced === true">Synced / multi-device credential</b-tag>
-        <b-tag type="is-primary" v-if="registrationParsed.credential.synced === false">Device-bound credential</b-tag>
+        <b-tag type="is-primary" v-if="registrationParsed.synced === true">Synced / multi-device credential</b-tag>
+        <b-tag type="is-primary" v-if="registrationParsed.synced === false">Device-bound credential</b-tag>
       </template>
     </p>
     <hr/>
