@@ -29,13 +29,16 @@ sequenceDiagram
 4. The server parses and verifies the authentication payload
 
 
-1️⃣ Requesting challenge
-------------------------
+1️⃣ Requesting a challenge from the server
+-----------------------------------------
 
-The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks. It must be a byte array encoded as *base64url* string.
+The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks.
+It must be a truly random and non-deterministic byte buffer encoded as *byte64url*.
 
-```
-const challenge = /* request it from server */
+```js
+import { server } from '@passwordless-id/webauthn'
+
+const challenge = server.randomChallenge()
 ```
 
 Remember it on the server side during a certain amount of time and "consume" it once used.

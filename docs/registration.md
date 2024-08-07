@@ -22,17 +22,19 @@ sequenceDiagram
 ```
 
 
-1️⃣ Requesting the challenge from the server
--------------------------------------------
+1️⃣ Requesting a challenge from the server
+-----------------------------------------
 
 The challenge is basically a [nonce](https://en.wikipedia.org/wiki/nonce) to avoid replay attacks.
-This challenge should truly random and not deterministic.
+It must be a truly random and non-deterministic byte buffer encoded as *byte64url*.
 
-```
-const challenge = /* request it from server */
+```js
+import { server } from '@passwordless-id/webauthn'
+
+const challenge = server.randomChallenge()
 ```
 
-Remember the request on the server side during a certain amount of time and "consume" it once used.
+Remember the challenge on the server side during a certain amount of time and "consume" it once used.
 
 > There are two ways to deal with remembering the challenge. Either store it in a global cache containing all challenges, or by creating a (cookie based) session directly and storing it as part of the session data.
 

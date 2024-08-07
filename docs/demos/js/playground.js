@@ -28,7 +28,7 @@ const app = new Vue({
         registration: {
             options: {
                 user: "Arnaud",
-                challenge: webauthn.utils.randomChallenge(),
+                challenge: webauthn.server.randomChallenge(),
                 hints: [],
                 userVerification: 'preferred',
                 discoverable: 'preferred',
@@ -41,7 +41,7 @@ const app = new Vue({
         authentication: {
             credentialId: null,
             options: {
-                challenge: webauthn.utils.randomChallenge(),
+                challenge: webauthn.server.randomChallenge(),
                 hints: [],
                 authenticatorType: 'auto',
                 userVerification: 'required',

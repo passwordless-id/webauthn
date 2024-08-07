@@ -3,6 +3,14 @@ import { parseAuthenticator, parseClient, toAuthenticationInfo } from "./parsers
 import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo, AuthenticatorParsed } from "./types";
 import * as utils from './utils'
 
+
+export async function randomChallenge() {
+    const buffer = crypto.getRandomValues(new Uint8Array(16)); // 128 bits
+    return utils.toBase64url(buffer);
+}
+
+
+
 async function isValid(validator :any, value :any) :Promise<boolean> {
    if(typeof validator === 'function') {
         const res = validator(value)

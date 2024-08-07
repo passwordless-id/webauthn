@@ -4,10 +4,6 @@
 
 import { Base64URLString } from "./types"
 
-export function randomChallenge() {
-    return crypto.randomUUID()
-}
-
 
 export function toBuffer(txt :string) :ArrayBuffer {
     return Uint8Array.from(txt, c => c.charCodeAt(0)).buffer
