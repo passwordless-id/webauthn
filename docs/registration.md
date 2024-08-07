@@ -145,11 +145,12 @@ Example result:
     "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
     "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png"
   },
+  synced: true,
   ...
 }
 ```
 
-Using that call, the JSON payload is verifyied and parsed. 
+Using that call, the JSON payload is verified and parsed. 
 
 > **NOTE:** Currently, the *attestation* that proves the exact model type of the authenticator is *not verified*. [Do I need attestation?](https://medium.com/webauthnworks/webauthn-fido2-demystifying-attestation-and-mds-efc3b3cb3651). While accepting any authenticator is the generic use case, relying parties that want to only allow specific authenticators would need another library to perform the *attestation* verification. Note that authenticators using synced passkeys, like Apple or Google, do not provide *attestation* at all.
 
@@ -164,7 +165,7 @@ The credential containing the public key is the most important part. It should b
   "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
   "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
   "algorithm": "ES256",
-  "synced": true
+  "transports": ["internal", "hybrid"]
 },
 ```
 

@@ -110,7 +110,7 @@ const credentialKey = { // obtained from database by looking up `authentication.
     id: "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
     publicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
     algorithm: "ES256",
-    synced: true
+    transports: ['internal']
 } as const
 
 const expected = {
