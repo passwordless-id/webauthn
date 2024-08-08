@@ -1,4 +1,4 @@
-import { client, parsers } from './webauthn.min.js'
+import { client, parsers, server } from './webauthn.min.js'
 
 Vue.prototype.$buefy.config.setOptions({
   defaultProgrammaticPromise : true
@@ -27,7 +27,7 @@ const app = new Vue({
 
       try {
           // 1. Get a challenge from the server
-          const challenge = window.crypto.randomUUID(); // faking it here of course
+          const challenge = server.randomChallenge(); // should be remotely fetched of course
 
           // 2. Invoking WebAuthn in the browser
           const registration = await client.register({
@@ -66,7 +66,7 @@ const app = new Vue({
 
       try {
         // 1. Get a challenge from the server
-        const challenge = window.crypto.randomUUID(); // faking it here of course
+        const challenge = server.randomChallenge(); // should be remotely fetched of course
 
         // 2. Invoking WebAuthn in the browser
         const authentication = await client.authenticate({
