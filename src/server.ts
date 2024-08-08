@@ -4,7 +4,7 @@ import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, Auth
 import * as utils from './utils'
 
 
-export async function randomChallenge() {
+export function randomChallenge() {
     const buffer = crypto.getRandomValues(new Uint8Array(16)); // 128 bits
     return utils.toBase64url(buffer);
 }
