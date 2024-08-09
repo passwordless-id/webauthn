@@ -54,6 +54,7 @@ const app = new Vue({
       }
       catch(e) {
         // This might happen when there is something wrong or the user cancelled it
+        console.warn(e)
         this.$buefy.toast.open({
           message: e,
           type: 'is-danger'
@@ -88,6 +89,7 @@ const app = new Vue({
       }
       catch(e) {
         // This might happen when there is something wrong or the user cancelled it
+        console.warn(e)
         this.$buefy.toast.open({
           message: e,
           type: 'is-danger'
