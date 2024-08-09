@@ -96,8 +96,8 @@ import {server} from '@passwordless-id/webauthn'
 await server.verifyRegistration(registration, expected)
 await server.verifyAuthentication(registration, expected)
 ```
-
-[&rarr; Verification docs](/verification/)
+Look at the docs for [registration](/registration/) and [authentication](/authentication/) for the corresponding verification examples.
+Or simply interact with real-life examples in the [Testing Playground](/demos/playground.html).
 
 <!--
 

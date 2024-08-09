@@ -114,7 +114,7 @@ Therefore, the usage of `await client.isAutocompleteAvailable()` is advised.
 
 > For a better understanding of "public key credentials", we recommend reading the [F.A.Q.](/faq) first.
 
-### The `challenge` is crucial !!!
+### The `challenge` is crucial!
 
 It must be:
 
