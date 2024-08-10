@@ -61,7 +61,7 @@ Besides the required `user` and `challenge`, it has following options.
 | `hints` | `[]` | Which device to use as authenticator, by order of preference. Possible values: `client-device`, `security-key`, `hybrid` (delegate to smartphone).
 | `userVerification` | `preferred` | Whether the user verification (using local authentication like fingerprint, PIN, etc.) is `required`, `preferred` or `discouraged`.
 | `discoverable` | `preferred` | If the credential is "discoverable", it can be selected using `authenticate` without providing credential IDs. In that case, a native pop-up will appear for user selection. This may have an impact on the "passkeys" user experience and syncing behavior of the key. Possible values are `required`, `preferred` and `discouraged`.
-| `timeout` | `60000` |  How long the native authentication popup stays open before aborting the authentication process.
+| `timeout` | - |  How long the native authentication popup stays open before aborting the authentication process.
 | `attestation` | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple), it might be anonymized, and its verification is complex.
 | `domain` | `window.location.hostname` | This can be set to a parent domain, to have the passkey valid for all subdomains.
 
