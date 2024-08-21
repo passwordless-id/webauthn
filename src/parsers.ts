@@ -112,7 +112,8 @@ export function toAuthenticationInfo(authenticationJson :AuthenticationJSON, aut
         credentialId: authenticationJson.id,
         userId: authenticationJson.response.userHandle,
         counter: authenticator.signCount,
-        userVerified: authenticator.flags.userVerified
+        userVerified: authenticator.flags.userVerified,
+        authenticatorAttachment: authenticationJson.authenticatorAttachment
     }
 }
 

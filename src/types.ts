@@ -184,6 +184,7 @@ export interface AuthenticationInfo {
   userId?: Base64URLString
   userVerified: boolean
   counter: number
+  authenticatorAttachment?: AuthenticatorAttachment
 }
 
 

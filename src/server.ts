@@ -5,7 +5,7 @@ import * as utils from './utils'
 
 
 export function randomChallenge() {
-    const buffer = crypto.getRandomValues(new Uint8Array(16)); // 128 bits
+    const buffer = crypto.getRandomValues(new Uint8Array(18)); // > 128 bits, a multiple of 3 bytes to have base64 encoding without padding
     return utils.toBase64url(buffer);
 }
 
