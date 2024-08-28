@@ -10,7 +10,7 @@
 ![banner](docs/img/banner-biometric-auth.svg)
 
 
-> This library greatly simplifies the usage of **passkeys** by invoking the [WebAuthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is [open source](https://github.com/passwordless-id/webauthn), opinionated, dependency-free and minimalistic (20kb only, from which 13kb is the list of authenticator AAGUIDs/names).
+> This library greatly simplifies the usage of **passkeys** by invoking the [WebAuthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is [open source](https://github.com/passwordless-id/webauthn), opinionated, dependency-free and minimalistic.
 >
 > This library is provided by [Passwordless.ID](https://passwordless.id), a free public identity provider.
 
