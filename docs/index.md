@@ -1,6 +1,14 @@
 @passwordless-id/webauthn
 =========================
 
+
+[![NPM Version](https://img.shields.io/npm/v/%40passwordless-id%2Fwebauthn)](https://www.npmjs.com/package/@passwordless-id/webauthn)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/@passwordless-id/webauthn)](https://bundlephobia.com/package/@passwordless-id/webauthn)
+[![NPM Downloads](https://img.shields.io/npm/dm/%40passwordless-id%2Fwebauthn)](https://www.npmjs.com/package/@passwordless-id/webauthn)
+[![GitHub Repo stars](https://img.shields.io/github/stars/passwordless-id/webauthn)](https://github.com/passwordless-id/webauthn)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/passwordless-id?style=social&logo=githubsponsors)](https://github.com/sponsors/passwordless-id)
+
+
 ![banner](img/banner-biometric-auth.svg)
 
 <center style="margin:-1rem 0 3rem;">
@@ -8,7 +16,7 @@
 <a href="/demos/playground.html" class="btn btn-primary btn-lg m-3 px-4">&#x27A4; Playground</a>
 </center>
 
-> This library greatly simplifies the usage of **passkeys** by invoking the [WebAuthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is [open source](https://github.com/passwordless-id/webauthn), opinionated, dependency-free and minimalistic (20kb only, from which 13kb is the list of authenticator AAGUIDs/names).
+> This library greatly simplifies the usage of **passkeys** by invoking the [WebAuthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is [open source](https://github.com/passwordless-id/webauthn), opinionated, dependency-free and minimalistic.
 >
 > This library is provided by [Passwordless.ID](https://passwordless.id), a free public identity provider.
 
