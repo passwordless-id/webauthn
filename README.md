@@ -5,7 +5,7 @@
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/@passwordless-id/webauthn)](https://bundlephobia.com/package/@passwordless-id/webauthn)
 [![NPM Downloads](https://img.shields.io/npm/dm/%40passwordless-id%2Fwebauthn)](https://www.npmjs.com/package/@passwordless-id/webauthn)
 [![GitHub Repo stars](https://img.shields.io/github/stars/passwordless-id/webauthn)](https://github.com/passwordless-id/webauthn)
-[![GitHub Sponsors](https://img.shields.io/github/sponsors/passwordless-id)](https://github.com/sponsors/passwordless-id)
+[![GitHub Sponsors](https://img.shields.io/github/sponsors/passwordless-id?style=social&logo=githubsponsors)](https://github.com/sponsors/passwordless-id)
 
 ![banner](docs/img/banner-biometric-auth.svg)
 
