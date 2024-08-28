@@ -77,7 +77,7 @@ await client.register({
 })
 ```
 
-By default, this registers a passkey on any authenticator (local or roaming) with `preferred` user verification. For further options, see [&rarr; Registration docs](/registration/)
+By default, this registers a passkey on any authenticator (local or roaming) with `preferred` user verification. For further options, see [&rarr; Registration docs](https://webauthn.passwordless.id/registration/)
 
 
 ### Authentication
