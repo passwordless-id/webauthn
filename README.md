@@ -97,7 +97,7 @@ By default, this triggers the native passkey selection dialog, for any authentic
 ```
 import {server} from '@passwordless-id/webauthn'
 await server.verifyRegistration(registration, expected)
-await server.verifyAuthentication(registration, expected)
+await server.verifyAuthentication(authentication, expected)
 ```
 
 [&rarr; Verification docs](https://webauthn.passwordless.id/verification/)
@@ -124,21 +124,9 @@ Basically, this library is just a tool to realize something bigger. If you just 
 📃 Changelog
 -------------
 
-> The "Version 2" is a complete overhaul of the first version.
-> While it still strives for simplicity and ease of use, it also differs from the previous mainly regarding its default behavior.
->
-> Previously, this lib defaulted to using the platform as authenticator if possible.
-> The user experience was improved that way, going straight to user verification instead of intermediate popup(s) to select the authenticator.
-> 
-> Now, letting the user select the authenticator is the default.
-> Why this change of mind? Because many platform authenticators now sync credentials in the cloud, with the built-in password manager.
-> While this is certainly convenient, the security and privacy guarantees using synced credentials are not as strong as when using security keys with hardware-bound credentials.
-> That is why security keys now deserve some love.
->
-> Same goes for user verification, it is now `preferred`, like the native WebAuthn protocol.
-> While this reduces security, it supports a wider range of security keys.
->
-> Lastly, the response format has been changed completely to be compatible with the output as the `PublicKeyCredential.toJson()` method. An official part of the spec that only FireFox implements. Using the same intermediate format increases compatibility cross-libraries in the long term.
+The version 2 introduced breaking changes, different default behavior and different intermediate format. Basically, it's a complete overhaul and to understand "why" this version 2 was made, I recommend reading this [blog post](https://blog.passwordless.id/passkeys-webauthn-library-v20-is-there#heading-why-a-version-2). In a very summarized way, it is to enhance support for security keys by default, reflect latest changes in the underlying specs and improve cross-compatibility with other server side libraries.
+
+Some core changes are:
 
 - Use platform authenticator by default => authenticator selection pops up by default
 - `authenticatorType` was removed => use `hints` instead
