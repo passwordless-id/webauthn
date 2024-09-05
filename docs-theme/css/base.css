@@ -15,6 +15,6 @@ main.container {
     filter: brightness(1.2);
 }
 
-main.container img {
+main.container > img {
     width: 100%;
 }
