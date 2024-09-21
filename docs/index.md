@@ -13,10 +13,10 @@
 
 ![banner](img/banner-biometric-auth.svg)
 
-<center style="margin:-1rem 0 3rem;">
-<a href="/demos/basic.html" class="btn btn-primary btn-lg m-3 px-5">&#x27A4; Demo</a>
-<a href="/demos/playground.html" class="btn btn-primary btn-lg m-3 px-4">&#x27A4; Playground</a>
-</center>
+<div style="margin: -1rem 0 3rem; display: flex; justify-content: space-evenly;">
+  <a href="/demos/basic.html"      class="btn btn-primary btn-lg px-5">&#x27A4; Demo</a>
+  <a href="/demos/playground.html" class="btn btn-primary btn-lg px-4">&#x27A4; Playground</a>
+</div>
 
 > This library greatly simplifies the usage of **passkeys** by invoking the [WebAuthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is [open source](https://github.com/passwordless-id/webauthn), opinionated, dependency-free and minimalistic.
 >
