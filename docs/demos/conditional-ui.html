@@ -55,13 +55,13 @@
     </p>
     <hr/>
     <p><b>Credential ID:</b> {{registrationParsed.credential.id}}</p>
-    <p><b>Public Key:</b> {{registrationParsed.credential.publicKey.substring(0,32)}}...</p>
+    <p><b>Public Key:</b> {{registrationParsed.credential.publicKey}}</p>
     <p><b>Algorithm:</b> {{registrationParsed.credential.algorithm}}</p>
   </section>
 
   <section v-if="authenticationParsed" style="text-align: left;">
     <p><b>Credential ID:</b> {{authenticationParsed.credentialId}}</p>
-    <p><b>Signature:</b> {{authenticationParsed.signature.substring(0,32)}}...</p>
+    <p><b>Counter:</b> {{authenticationParsed.counter}}</p>
   </section>
 
   <hr/>

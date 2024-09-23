@@ -243,19 +243,22 @@ const verified = await server.verifyAuthentication(res, credentialKey, expected)
 
         <b-field label="PublicKey" horizontal>
             <b-input v-model="verification.publicKey" type="textarea"></b-input>
-            <div class="hint">The public key created during registration.</div>
+            <div class="hint">
+                <p>The public key created during registration.</p>
+                <p><b-button @click="verifyPublicKey()">Verify public key</b-button></p>
+            </div>
         </b-field>
 
         <hr/>
 
         <b-field label="AuthenticatorData" horizontal>
             <b-input v-model="verification.authenticatorData" type="textarea"></b-input>
-            <div class="hint"><pre v-if="verification.authenticatorData">{{parseAuthData(verification.authenticatorData)}}</pre></div>
+            <div class="hint"><pre v-if="verification.authenticatorData">{{parsedAuthData}}</pre></div>
         </b-field>
 
         <b-field label="ClientData" horizontal>
             <b-input v-model="verification.clientData" type="textarea"></b-input>
-            <div class="hint"><pre v-if="verification.clientData">{{parseClientData(verification.clientData)}}</pre></div>
+            <div class="hint"><pre v-if="verification.clientData">{{parsedClientData}}</pre></div>
         </b-field>
 
         <b-field label="Signature" horizontal>

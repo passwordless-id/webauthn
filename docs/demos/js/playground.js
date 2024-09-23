@@ -64,6 +64,32 @@ const app = new Vue({
             isValid: null
         }
     },
+    computed: {
+        parsedAuthData() {
+            const authData = this.verification.authenticatorData
+            if(!authData)
+                return null
+            try {
+                return webauthn.parsers.parseAuthenticator(authData)
+            }
+            catch(e) {
+                console.warn(e)
+                return "ERROR: failed to parse authenticator data. See console logs for more details."
+            }
+        },
+        parsedClientData() {
+            const clientData = this.verification.clientData
+            if(!clientData)
+                return null
+            try {
+                return webauthn.parsers.parseClient(clientData)
+            }
+            catch(e) {
+                console.warn(e)
+                return "ERROR: failed to parse client data. See console logs for more details."
+            }
+        }
+    },
     methods: {
         newChallenge() {
             return webauthn.server.randomChallenge()
@@ -126,6 +152,22 @@ const app = new Vue({
                 })
             }
         },
+        async verifyPublicKey() {
+            const algorithm = this.verification.algorithm
+            const publicKey = this.verification.publicKey
+            if(!algorithm)
+                return window.alert('No algorithm defined!')
+            if(!publicKey)
+                return window.alert('Public key not defined!')
+            try {
+                const parsedKey = await webauthn.server.parseCryptoKey(algorithm, publicKey)
+                console.log(parsedKey)
+                return window.alert('Public key is VALID')
+            } catch (error) {
+                console.warn(error)
+                return window.alert('INVALID public key: see details in console logs')   
+            }
+        },
         async verifySignature() {
             try {
                 this.verification.isValid = await webauthn.server.verifySignature(this.verification)
@@ -138,12 +180,6 @@ const app = new Vue({
                 })
                 this.verification.isValid = false
             }
-        },
-        parseAuthData(authData) {
-            return webauthn.parsers.parseAuthenticator(authData)
-        },
-        parseClientData(clientData) {
-            return webauthn.parsers.parseClient(clientData)
         }
     }
 })

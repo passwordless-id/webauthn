@@ -171,7 +171,9 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
 
     if(ongoingAuth != null)
         ongoingAuth.abort('Cancel ongoing authentication')
-    ongoingAuth = new AbortController();
+    
+    if(options.autocomplete)
+        ongoingAuth = new AbortController();
     
     const raw = await navigator.credentials.get({
         publicKey: authOptions,

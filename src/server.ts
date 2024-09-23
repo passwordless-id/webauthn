@@ -130,7 +130,7 @@ User agents MUST be able to return a non-null value for getPublicKey() when the 
 
 -8 (EdDSA), where crv is 6 (Ed25519).
 */
-function getAlgoParams(algorithm: NamedAlgo): any {
+function getAlgoParams(algorithm: NamedAlgo): AlgoParams {
     switch (algorithm) {
         case 'RS256':
             return {
@@ -149,9 +149,10 @@ function getAlgoParams(algorithm: NamedAlgo): any {
     }
 }
 
-type AlgoParams = AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm
+type AlgoParams = RsaPssParams | EcKeyImportParams | EcdsaParams
 
-async function parseCryptoKey(algoParams: AlgoParams, publicKey: string): Promise<CryptoKey> {
+export async function parseCryptoKey(algorithm: NamedAlgo, publicKey: string): Promise<CryptoKey> {
+    const algoParams = getAlgoParams(algorithm)
     const buffer = utils.parseBase64url(publicKey)
     return crypto.subtle.importKey('spki', buffer, algoParams, false, ['verify'])
 }
@@ -180,8 +181,7 @@ type VerifyParams = {
 */
 // see also https://gist.github.com/philholden/50120652bfe0498958fd5926694ba354
 export async function verifySignature({ algorithm, publicKey, authenticatorData, clientData, signature, verbose }: VerifyParams): Promise<boolean> {
-    const algoParams = getAlgoParams(algorithm)
-    let cryptoKey = await parseCryptoKey(algoParams, publicKey)
+    let cryptoKey = await parseCryptoKey(algorithm, publicKey)
 
     if(verbose) {
         console.debug(cryptoKey)
@@ -193,7 +193,7 @@ export async function verifySignature({ algorithm, publicKey, authenticatorData,
     let comboBuffer = utils.concatenateBuffers(utils.parseBase64url(authenticatorData), clientHash)
 
     if(verbose) {
-        console.debug('Crypto Algo: ' + JSON.stringify(algoParams))
+        console.debug('Algorithm: ' + algorithm)
         console.debug('Public key: ' + publicKey)
         console.debug('Data: ' + utils.toBase64url(comboBuffer))
         console.debug('Signature: ' + signature)
@@ -204,6 +204,7 @@ export async function verifySignature({ algorithm, publicKey, authenticatorData,
     if(algorithm == 'ES256')
         signatureBuffer = convertASN1toRaw(signatureBuffer)
 
+    const algoParams = getAlgoParams(algorithm)
     const isValid = await crypto.subtle.verify(algoParams, cryptoKey, signatureBuffer, comboBuffer)
 
     return isValid
