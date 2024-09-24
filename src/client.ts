@@ -156,7 +156,7 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
         throw new Error('Provided challenge is not properly encoded in Base64url')
 
     if (options.autocomplete && !(await isAutocompleteAvailable()))
-        throw new Error('PAsskeys autocomplete with conditional mediation is not available in this browser.')
+        throw new Error('Passkeys autocomplete with conditional mediation is not available in this browser.')
 
     let authOptions: WebAuthnGetOptions = {
         challenge: utils.parseBase64url(options.challenge),
@@ -172,8 +172,7 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
     if(ongoingAuth != null)
         ongoingAuth.abort('Cancel ongoing authentication')
     
-    if(options.autocomplete)
-        ongoingAuth = new AbortController();
+    ongoingAuth = new AbortController();
     
     const raw = await navigator.credentials.get({
         publicKey: authOptions,
