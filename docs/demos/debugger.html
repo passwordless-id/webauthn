@@ -10,7 +10,7 @@
 
     <script defer src="https://unpkg.com/vue@2.7.14/dist/vue.min.js"></script>
     <script defer src="https://unpkg.com/buefy@0.9.23/dist/buefy.min.js"></script>
-    <script defer type="module" src="js/playground.js"></script>
+    <script defer type="module" src="js/debugger.js"></script>
 </head>
 <body>
 
@@ -43,20 +43,24 @@
         </b-field>
 
         <b-field label="PublicKey" horizontal>
-            <b-input v-model="verification.publicKey" type="textarea"></b-input>
-            <div class="hint">The public key created during registration.</div>
+            <b-input v-model="verification.publicKey" type="textarea" @input="isKeyValid = null"></b-input>
+            <div class="hint">
+                <b-button @click="verifyKey()">Verify key</b-button>
+                <b-message type="is-success" v-if="isKeyValid === true">Valid {{verification.algorithm}} key</b-message>
+                <b-message type="is-danger" v-if="isKeyValid === false">Invalid {{verification.algorithm}} key</b-message>
+            </div>
         </b-field>
 
         <hr/>
 
         <b-field label="AuthenticatorData" horizontal>
             <b-input v-model="verification.authenticatorData" type="textarea"></b-input>
-            <div class="hint"><pre v-if="verification.authenticatorData">{{parseAuthData(verification.authenticatorData)}}</pre></div>
+            <div class="hint"><pre v-if="verification.authenticatorData">{{parsedAuthData}}</pre></div>
         </b-field>
 
         <b-field label="ClientData" horizontal>
             <b-input v-model="verification.clientData" type="textarea"></b-input>
-            <div class="hint"><pre v-if="verification.clientData">{{parseClientData(verification.clientData)}}</pre></div>
+            <div class="hint"><pre v-if="verification.clientData">{{parsedClientData}}</pre></div>
         </b-field>
 
         <b-field label="Signature" horizontal>

@@ -4,32 +4,7 @@ const app = new Vue({
     el: '#app',
     data: {
         origin: document.location.origin,
-        registration: {
-            options: {
-                user: "Arnaud",
-                challenge: webauthn.server.randomChallenge(),
-                hints: [],
-                userVerification: 'preferred',
-                discoverable: 'preferred',
-                timeout: 60000,
-                attestation: true
-            },
-            json: null,
-            result: null
-        },
-        authentication: {
-            credentialId: null,
-            options: {
-                challenge: webauthn.server.randomChallenge(),
-                hints: [],
-                authenticatorType: 'auto',
-                userVerification: 'required',
-                timeout: 60000,
-                allowCredentials: []
-            },
-            json: null,
-            result: null
-        },
+        isKeyValid: null,
         verification: {
             publicKey: "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEWyyMt1l16_1rzDP63Ayw9EFpn1VbSt4NSJ7BOsDzqed5Z3aTfQSvzPBPHb4uYQuuckOKRbdoH9S0fEnSvNxpRg==", // null, 
                      //"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAzXUir6UgELFeM9il6id2vgZ1sWbZTk4C5JLIiMpg7lywwTRdp0i+lPP9rEdzcmwKwRLh5QT8DlPFQuKrUc8eXb9r+RPq/CvVOxVCqdK6A9fg0PDnvA3k7c5Ax5V5n/HcSw/uXVAzwstxQsbV5pOk0JDtys7rKiPjdO+XH5TbANNJE7PsS5j90zHLKNQaSybgF8V0v4Oz4I9u7IjVQKEz2V56E4Qfj/D7g0PCu63M5mNz5bGsmUzg5XwSRIaG3J3kDTuyTTGjPYhTnYFyWYXuMu1ZQ7JCe5FUv9m4oj3jH33VQEW3sorea7UOBjnSsLWp8MyE08M4tlY2xgyFL59obQIDAQAB",
@@ -43,68 +18,34 @@ const app = new Vue({
             isValid: null
         }
     },
+    computed: {
+        parsedAuthData() {
+            const authData = this.verification.authenticatorData
+            if(!authData)
+                return null
+            try {
+                return webauthn.parsers.parseAuthenticator(authData)
+            }
+            catch(e) {
+                console.warn(e)
+                return "ERROR: failed to parse authenticator data. See console logs for more details."
+            }
+        },
+        parsedClientData() {
+            const clientData = this.verification.clientData
+            if(!clientData)
+                return null
+            try {
+                return webauthn.parsers.parseClient(clientData)
+            }
+            catch(e) {
+                console.warn(e)
+                return "ERROR: failed to parse client data. See console logs for more details."
+            }
+        }
+    },
     methods: {
-        newChallenge() {
-            return webauthn.utils.randomChallenge()
-        },
-        async register() {
-            try {
-                const json = await webauthn.client.register(this.registration.options)
-                console.log(json)
-                this.$buefy.toast.open({
-                    message: 'Registered!',
-                    type: 'is-success'
-                })
-                this.registration.json = json
-
-                const result = await webauthn.server.verifyRegistration(json, {
-                    challenge: this.registration.options.challenge,
-                    origin: this.origin,
-                })
-                console.log(result)
-                this.registration.result = result
-            }
-            catch(e) {
-                console.warn(e)
-                this.$buefy.toast.open({
-                    message: e,
-                    type: 'is-danger'
-                })
-                this.registration.result = {}
-            }
-        },
-        async login() {
-            this.authentication.result = null
-            this.authentication.json = null
-            try {
-                const json = await webauthn.client.authenticate(this.authentication.options)
-                console.log(json)
-                this.$buefy.toast.open({
-                    message: 'Authenticated!',
-                    type: 'is-success'
-                })
-                this.authentication.json = json
-
-                const credential = this.registration?.result?.credential
-                if(credential) {
-                    const result = await webauthn.server.verifyAuthentication(json, credential, {
-                        challenge: this.authentication.options.challenge,
-                        origin: this.origin,
-                        userVerified: this.authentication.userVerification === 'required',
-                        counter: -1 // Fixes #27 since counter is 0 on first auth with ios/macos
-                    })
-                    console.log(result)
-                    this.authentication.result = result
-                }
-            }
-            catch(e) {
-                console.warn(e)
-                this.$buefy.toast.open({
-                    message: e,
-                    type: 'is-danger'
-                })
-            }
-        },
+        
         async verifySignature() {
             try {
                 this.verification.isValid = await webauthn.server.verifySignature(this.verification)
@@ -118,11 +59,20 @@ const app = new Vue({
                 this.verification.isValid = false
             }
         },
-        parseAuthData(authData) {
-            return webauthn.parsers.parseAuthenticator(authData)
-        },
-        parseClientData(clientData) {
-            return webauthn.parsers.parseClient(clientData)
+        async verifyKey() {
+            try {
+                this.isKeyValid = null
+                const key = await webauthn.server.parseCryptoKey(this.verification.algorithm, this.verification.publicKey)
+                this.isKeyValid = true
+            }
+            catch(e) {
+                console.warn(e)
+                this.$buefy.toast.open({
+                    message: e,
+                    type: 'is-danger'
+                })
+                this.isKeyValid = false
+            }
         }
     }
  })
