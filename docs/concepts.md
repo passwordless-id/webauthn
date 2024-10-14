@@ -126,7 +126,7 @@ This is very important to ensure protection against replay attacks. Such an atta
  
 By verifying server-side, that the signed authentication payload contains the freshly generated challenge, it ensures a copied and reused payload will not work since the challenge.
 
-
+You can use `server.randomChallenge()` to generate a cryptographically strong password.
 
 
 ### Device-bound vs synced
@@ -148,6 +148,23 @@ While device-bound keys offer a higher security level, synced software-based key
 
 [1] Might vary depending on Windows version, Browser and options.
 I'm not quite sure of all factors that might affect this, but I had both kind of keys in Windows. 
+
+
+## `userVerification` behavior depends on platform
+
+| **iCloud Keychain**      | `discouraged` | `preferred` |	`required`
+| Biometrics available	   | ✅ | ✅ | ✅
+| Biometrics not available | ❌ | ❌ | ✅
+
+| **Google password manager (desktop)** | `discouraged` | `preferred` |	`required`
+| Biometrics available                  | ❌ | ✅	| ✅	
+| Biometrics not available              | ❌ | ❌ | ✅	
+
+| **Windows Hello**        | `discouraged` | `preferred` |	`required`
+| Biometrics available	   | ✅	| ✅	| ✅
+| Biometrics not available | ✅	| ✅	| ✅
+
+> ⚠️ Be warry of most password managers. As you will see below, most of them even lie about the `userVerified` flag in the response.
 
 
 
