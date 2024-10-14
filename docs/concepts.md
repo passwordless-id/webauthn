@@ -152,15 +152,18 @@ I'm not quite sure of all factors that might affect this, but I had both kind of
 
 ## `userVerification` behavior depends on platform
 
-| **iCloud Keychain**      | `discouraged` | `preferred` |	`required`
+| **iCloud Keychain**      | `discouraged` | `preferred` |	`required` |
+|--------------------------|---------------|-------------|-------------|
 | Biometrics available	   | ✅ | ✅ | ✅
 | Biometrics not available | ❌ | ❌ | ✅
 
-| **Google password manager (desktop)** | `discouraged` | `preferred` |	`required`
+| **Google password manager (desktop)** | `discouraged` | `preferred` |	`required` |
+|--------------------------------------|---------------|-------------|-------------|
 | Biometrics available                  | ❌ | ✅	| ✅	
 | Biometrics not available              | ❌ | ❌ | ✅	
 
-| **Windows Hello**        | `discouraged` | `preferred` |	`required`
+| **Windows Hello**        | `discouraged` | `preferred` |	`required` |
+|--------------------------|---------------|-------------|-------------|
 | Biometrics available	   | ✅	| ✅	| ✅
 | Biometrics not available | ✅	| ✅	| ✅
 
