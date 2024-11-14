@@ -35,6 +35,7 @@ export interface CommonOptions {
 export interface RegisterOptions extends CommonOptions {
   attestation?: boolean
   discoverable?: ResidentKeyRequirement
+  signal?: AbortSignal
   user: string | User
 }
 
@@ -56,6 +57,7 @@ export interface CredentialDescriptor {
 export interface AuthenticateOptions extends CommonOptions {
   allowCredentials?: (CredentialDescriptor | string)[]
   autocomplete?: boolean
+  signal?: AbortSignal
 }
 
 

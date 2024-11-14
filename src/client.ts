@@ -1,4 +1,4 @@
-import { AuthenticateOptions, AuthenticationJSON, Base64URLString, CredentialDescriptor, ExtendedAuthenticatorTransport, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
+import { AuthenticateOptions, AuthenticationJSON, Base64URLString, CredentialDescriptor, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
 import * as utils from './utils'
 
 /**
@@ -53,6 +53,9 @@ let ongoingAuth: AbortController | null = null;
  * @param {'discouraged'|'preferred'|'required'} [discoverable] A "discoverable" credential can be selected using `authenticate(...)` without providing credential IDs.
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
+ * @param {AbortSignal} [signal] An optional AbortSignal to allow aborting the registration process.
+ * If not provided, an `AbortController` (stored in `ongoingAuth`) is used to cancel any previous ongoing authentication or registration 
+ * if another `authenticate()` or `register()` call is made.
  */
 export async function register(options: RegisterOptions): Promise<RegistrationJSON> {
 
@@ -97,14 +100,23 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
 
     console.debug(creationOptions)
 
-    if (ongoingAuth != null)
-        ongoingAuth.abort('Cancel ongoing authentication')
-    ongoingAuth = new AbortController();
+    let signal: AbortSignal;
+    if (options.signal) {
+        // Use the provided signal
+        signal = options.signal;
+    } else {
+        // Use the global ongoingAuth
+        if (ongoingAuth != null) {
+            ongoingAuth.abort('Cancel ongoing authentication');
+        }
+        ongoingAuth = new AbortController();
+        signal = ongoingAuth.signal;
+    }
 
     const raw = await navigator.credentials.create({
         publicKey: creationOptions,
-        signal: ongoingAuth?.signal
-    }) as PublicKeyCredential
+        signal: signal,
+    }) as PublicKeyCredential;
     const response = raw.response as AuthenticatorAttestationResponse
 
     ongoingAuth = null;
@@ -150,6 +162,9 @@ export async function isAutocompleteAvailable() {
  * @param {number} [timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
  * @param {'required'|'preferred'|'discouraged'} [userVerification='required'] Whether to prompt for biometric/PIN check or not.
  * @param {boolean} [conditional] Does not return directly, but only when the user has selected a credential in the input field with `autocomplete="username webauthn"`
+ * @param {AbortSignal} [signal] An optional signal to abort the authentication request.
+ * If not provided, an `AbortController` (stored in `ongoingAuth`) is used to cancel any previous ongoing authentication or registration 
+ * if another `authenticate()` or `register()` call is made.
  */
 export async function authenticate(options: AuthenticateOptions): Promise<AuthenticationJSON> {
     if (!utils.isBase64url(options.challenge))
@@ -169,16 +184,24 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
 
     console.debug(authOptions)
 
-    if(ongoingAuth != null)
-        ongoingAuth.abort('Cancel ongoing authentication')
-    
-    ongoingAuth = new AbortController();
+    let signal: AbortSignal;
+    if (options.signal) {
+        // Use the provided signal
+        signal = options.signal;
+    } else {
+        // Use the global ongoingAuth
+        if (ongoingAuth != null) {
+            ongoingAuth.abort('Cancel ongoing authentication');
+        }
+        ongoingAuth = new AbortController();
+        signal = ongoingAuth.signal;
+    }
     
     const raw = await navigator.credentials.get({
         publicKey: authOptions,
         mediation: options.autocomplete ? 'conditional' : undefined,
-        signal: ongoingAuth?.signal
-    }) as PublicKeyCredential
+        signal: signal,
+    }) as PublicKeyCredential;
 
     if (raw.type != "public-key")
         throw "Unexpected credential type!";
