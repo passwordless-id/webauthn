@@ -114,7 +114,7 @@ const expected = {
 const registrationParsed = await server.verifyRegistration(registration, expected)
 ```
 
-While this is the minial verification, further verifications are possilbe.
+While this is the minimal verification, further verifications are possible.
 
 | Verification options | Description |
 |-------|-------------|
