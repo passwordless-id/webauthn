@@ -102,7 +102,7 @@ Then simply send this object as JSON to the server.
 4️⃣ Verifying the registration on the server
 -------------------------------------------
 
-To verify it server side, call the `verifyRegistration(...)` function. While registration is basically "thrust on first use", some basic checks are necessary. The most important one is to check if it matches the expected `challenge` used when initiating the registration procedure, and if the `origin` is the expected one. 
+To verify it server side, call the `verifyRegistration(...)` function. While registration is basically "trust on first use", some basic checks are necessary. The most important one is to check if it matches the expected `challenge` used when initiating the registration procedure, and if the `origin` is the expected one.
 
 ```js
 import { server } from '@passwordless-id/webauthn' 

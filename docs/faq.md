@@ -61,14 +61,14 @@ Not by default. Passkeys are a single step 2FA only if:
 
 When using synced "multi-device" passkeys, the "cloud" has the key, your devices have the key, and the key is in-transit over the wire. While vendors go to great length to secure every aspect, it is still exposed to more risk. All security guarantees are hereby delegated to the software authenticator, whether it's built-in in the platform or a password manager. At best, these passkeys are as safe as the main account itself. If the account is hacked, whether it's by a stolen password, temporary access to your device or a lax recovery procedure, all the passkeys would come along with the hacked account. While it offers convenience, the security guarantees are not as strong as with hardware bound authenticators.
 
-The privacy concerns are similar. It is a matter of thrust with the vendor.
+The privacy concerns are similar. It is a matter of trust with the vendor.
 
 
 ## How to deal with recovery when using hardware-bound credentials?
 
 A device can be lost, broken, or stolen. You must deal with it. The most straightforward way is to offer the user a way to register multiple passkeys, so that losing one device does not imply locking oneself out.
 
-Another alternative is to provide a recovery procedure per SMS or some other thrusted means.
+Another alternative is to provide a recovery procedure per SMS or some other trusted means.
 Relying on solely a password as recovery is discouraged, since the recovery per password then becomes the "weakest link" of the authentication system.
 
 
