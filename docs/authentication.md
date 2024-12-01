@@ -166,4 +166,4 @@ Sadly, there are a few things you cannot do.
 
 The specification is complex, areas like UX are left to platform's discretion and browser vendors have their own quirks. As such, I would highly recommend one thing: **test it out with a variety of browsers/platforms**. It's far from a consitent experience.
 
-Moreover, otpions like `hints`, `allowCredentials`, `userVerification` and `discoverable` may interact with each other and provide different UX depending on their combination and the time of the year. The protocol evolved dramatically in the last years, with changes to the UX every couple of months.
+Moreover, options like `hints`, `allowCredentials`, `userVerification` and `discoverable` may interact with each other and provide different UX depending on their combination and the time of the year. The protocol evolved dramatically in the last years, with changes to the UX every couple of months.
