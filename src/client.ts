@@ -92,7 +92,7 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
             residentKey: options.discoverable ?? 'preferred', // see https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions#residentkey
             requireResidentKey: (options.discoverable === 'required') // mainly for backwards compatibility, see https://www.w3.org/TR/webauthn/#dictionary-authenticatorSelection
         },
-        excludeCredentials: options?.excludeCredentials?.map(toPublicKeyCredentialDescriptor),
+        excludeCredentials: options?.excludeCredentials?.map(toPublicKeyCredentialDescriptor), // see https://www.w3.org/TR/webauthn/#dictionary-makecredentialoptions
         attestation: "direct"
     }
 
