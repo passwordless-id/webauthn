@@ -33,9 +33,10 @@ export interface CommonOptions {
 }
 
 export interface RegisterOptions extends CommonOptions {
-  attestation?: boolean
-  discoverable?: ResidentKeyRequirement
-  user: string | User
+  attestation?: boolean;
+  discoverable?: ResidentKeyRequirement;
+  excludeCredentials?: (CredentialDescriptor | string)[];
+  user: string | User;
 }
 
 
