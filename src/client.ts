@@ -53,6 +53,20 @@ let ongoingAuth: AbortController | null = null;
  * @param {'discouraged'|'preferred'|'required'} [discoverable] A "discoverable" credential can be selected using `authenticate(...)` without providing credential IDs.
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
+ *@param {Record<string, any>} [options.customProperties] - **Advanced usage**: An object of additional
+ *     properties that will be merged into the WebAuthn creation options. This can be used to 
+ *     explicitly set fields such as `excludeCredentials`.
+ * 
+ * @example
+ * const registration = await register({
+ *   user: { id: 'user-id', name: 'john', displayName: 'John' },
+ *   challenge: 'base64url-encoded-challenge',
+ *   customProperties: {
+ *     excludeCredentials: [
+ *       { id: 'base64url-credential-id', type: 'public-key' },
+ *     ],
+ *   },
+ * });
  */
 export async function register(options: RegisterOptions): Promise<RegistrationJSON> {
 
