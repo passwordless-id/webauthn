@@ -1,3 +1,4 @@
+import { NamedAlgo } from "./types";
 import {
     toBuffer,
     parseBuffer,
@@ -7,7 +8,11 @@ import {
     sha256,
     bufferToHex,
     concatenateBuffers,
+    parseCryptoKey,
+    verifySignature,
 } from "./utils";
+
+const ES256_SPKI_KEY = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEol4zrYnJVbFPkOCqeWV5NCPnmzyfC-l0xsDQDIxBsA0RvfMi_KLqC7ksZyMXHqspq37pGPOxBwmhY3h6DGYrKQ";
 
 describe("Encoding/Decoding utils", () => {
     test("toBuffer & parseBuffer", () => {
@@ -58,5 +63,53 @@ describe("Encoding/Decoding utils", () => {
         const buf2 = toBuffer("World");
         const combined = concatenateBuffers(buf1, buf2);
         expect(parseBuffer(combined)).toBe("Hello World");
+    });
+
+    describe("parseCryptoKey()", () => {
+        test("throws on unsupported algorithm", async () => {
+            await expect(parseCryptoKey("FOO" as any, "SOME_KEY"))
+                .rejects
+                .toThrow("Unknown or unsupported crypto algorithm: FOO. Only 'RS256' and 'ES256' are supported.");
+        });
+
+        test("imports ES256 key", async () => {
+            const result = await parseCryptoKey("ES256", ES256_SPKI_KEY);
+
+            // Expect a CryptoKey object
+            expect(result).toBeDefined();
+            expect(result.type).toBe("public");
+            expect(result.algorithm).toBeDefined();
+            expect(result.usages).toContain("verify");
+        });
+    });
+
+    describe("verifySignature()", () => {
+        test("returns true for valid signature", async () => {
+            jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
+
+            const params = {
+                algorithm: "ES256" as NamedAlgo,
+                publicKey: ES256_SPKI_KEY,
+                authenticatorData: "FAKE_AUTH_DATA",
+                clientData: "FAKE_CLIENT_DATA",
+                signature: "FAKE_SIGNATURE"
+            };
+            const result = await verifySignature(params);
+            expect(result).toBe(true);
+        });
+
+        test("returns false for invalid signature", async () => {
+            jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(false);
+
+            const params = {
+                algorithm: "ES256" as NamedAlgo,
+                publicKey: ES256_SPKI_KEY,
+                authenticatorData: "FAKE_AUTH_DATA",
+                clientData: "FAKE_CLIENT_DATA",
+                signature: "FAKE_SIGNATURE"
+            };
+            const result = await verifySignature(params);
+            expect(result).toBe(false);
+        });
     });
 });
