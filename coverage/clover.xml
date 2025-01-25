@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1737780154184" clover="3.2.0">
-  <project timestamp="1737780154184" name="All files">
+<coverage generated="1737780498659" clover="3.2.0">
+  <project timestamp="1737780498659" name="All files">
     <metrics statements="216" coveredstatements="199" conditionals="83" coveredconditionals="65" methods="36" coveredmethods="35" elements="335" coveredelements="299" complexity="0" loc="216" ncloc="216" packages="1" files="6" classes="6"/>
     <file name="authenticatorMetadata.ts" path="/Users/pauladedokun/Documents/others/webauthn/src/authenticatorMetadata.ts">
       <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>

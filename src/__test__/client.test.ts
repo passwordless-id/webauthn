@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as client from "./client";
+import * as client from "../client";
 
 describe("client.ts tests", () => {
   afterEach(() => {

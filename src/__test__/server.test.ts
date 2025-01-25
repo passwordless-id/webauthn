@@ -1,5 +1,5 @@
 // Mocking parseClient and parseAuthenticator from `parsers`
-jest.mock("./parsers", () => ({
+jest.mock("../parsers", () => ({
   parseClient: jest.fn().mockImplementation((clientDataJSON: string) => {
     // Return minimal valid "client" data
     return {
@@ -43,9 +43,9 @@ jest.mock("./parsers", () => ({
     }),
 }));
 
-import * as server from "./server";
-import * as utils from "./utils";
-import { AuthenticationJSON } from "./types";
+import * as server from "../server";
+import * as utils from "../utils";
+import { AuthenticationJSON } from "../types";
 
 describe("server.ts tests", () => {
   describe("randomChallenge()", () => {
@@ -72,7 +72,7 @@ describe("server.ts tests", () => {
 
     test("throws error if aaguid is missing", async () => {
       // Override parseAuthenticator mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseAuthenticator.mockReturnValueOnce({
         aaguid: null, // Force it to be missing
       });
@@ -84,7 +84,7 @@ describe("server.ts tests", () => {
 
     test("throws error if client.type is not 'webauthn.create'", async () => {
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "unknown", // Force it to be missing
       });
@@ -96,7 +96,7 @@ describe("server.ts tests", () => {
 
     test("throws error if origin is not valid", async () => {
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.create",
         origin: "https://wrong.com",
@@ -109,7 +109,7 @@ describe("server.ts tests", () => {
 
     test("throws error if challenge is not valid", async () => {
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.create",
         origin: expected.origin,
@@ -186,7 +186,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "unknown", // Force it to be missing
       });
@@ -205,7 +205,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: "https://wrong.com",
@@ -225,7 +225,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: expected.origin,
@@ -246,7 +246,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: expected.origin,
@@ -274,7 +274,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: expected.origin,
@@ -301,7 +301,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: expected.origin,
@@ -328,7 +328,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: expected.origin,
@@ -356,7 +356,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: expected.origin,
@@ -384,7 +384,7 @@ describe("server.ts tests", () => {
       jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
-      const parsers = require("./parsers");
+      const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "webauthn.get",
         origin: expected.origin,

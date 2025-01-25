@@ -1,5 +1,5 @@
-import { parsers } from "./index";
-import { AuthenticationJSON, RegistrationJSON } from "./types";
+import { parsers } from "../index";
+import { AuthenticationJSON, RegistrationJSON } from "../types";
 
 describe("Parsers Tests", () => {
   describe("parseAuthenticator", () => {
