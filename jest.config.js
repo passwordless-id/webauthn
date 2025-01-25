@@ -3,10 +3,11 @@
 //import { TextDecoder } from 'util';
 
 export default {
-  preset: 'ts-jest',
-  testEnvironment: 'node', // 'jsdom', //'node',
+  preset: "ts-jest",
+  testEnvironment: "node", // 'jsdom', //'node',
   moduleDirectories: ["node_modules", "src"],
-  resolver: "jest-ts-webcompat-resolver"
+  resolver: "jest-ts-webcompat-resolver",
+  setupFilesAfterEnv: ["<rootDir>/jest_config/jest.setup.js"],
   /*
    globals: {
     crypto,
