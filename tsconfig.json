@@ -15,7 +15,8 @@
 
   },
   "include": [
-    "./src/**/*.ts"
+    "./src/**/*.ts",
+    "global.d.ts"
   ],
   "exclude": [
     "./src/**/*.test.ts",
