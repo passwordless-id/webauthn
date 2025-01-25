@@ -53,7 +53,7 @@ let ongoingAuth: AbortController | null = null;
  * @param {'discouraged'|'preferred'|'required'} [discoverable] A "discoverable" credential can be selected using `authenticate(...)` without providing credential IDs.
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
- *@param {Record<string, any>} [options.customProperties] - **Advanced usage**: An object of additional
+ * @param {Record<string, any>} [options.customProperties] - **Advanced usage**: An object of additional
  *     properties that will be merged into the WebAuthn creation options. This can be used to 
  *     explicitly set fields such as `excludeCredentials`.
  * 
@@ -165,6 +165,21 @@ export async function isAutocompleteAvailable() {
  * @param {number} [timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
  * @param {'required'|'preferred'|'discouraged'} [userVerification='required'] Whether to prompt for biometric/PIN check or not.
  * @param {boolean} [conditional] Does not return directly, but only when the user has selected a credential in the input field with `autocomplete="username webauthn"`
+ * @param {Record<string, any>} [options.customProperties] - **Advanced usage**: An object of additional
+ *     properties that will be merged into the WebAuthn authenticate options. This can be used to 
+ *     explicitly set fields such as `extensions`.
+ * 
+ * @example
+ * const authentication = await authenticate({
+ *   challenge: 'base64url-encoded-challenge',
+ *   allowCredentials: [],
+ *   customProperties: {
+ *     extensions: {
+ *      uvm: true, // User verification methods extension
+ *      appid: "https://legacy-app-id.example.com", // App ID extension for backward compatibility
+ *     },
+ *   },
+ * });
  */
 export async function authenticate(options: AuthenticateOptions): Promise<AuthenticationJSON> {
     if (!utils.isBase64url(options.challenge))
@@ -180,6 +195,7 @@ export async function authenticate(options: AuthenticateOptions): Promise<Authen
         hints: options.hints,
         userVerification: options.userVerification,
         timeout: options.timeout,
+        ...options.customProperties,
     }
 
     console.debug(authOptions)

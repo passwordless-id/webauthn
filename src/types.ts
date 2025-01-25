@@ -54,6 +54,7 @@ export interface CredentialDescriptor {
 export interface AuthenticateOptions extends CommonOptions {
   allowCredentials?: (CredentialDescriptor | string)[];
   autocomplete?: boolean;
+  customProperties?: Record<string, any>;
 }
 
 /********************************** JSON PAYLOADS **********************/
