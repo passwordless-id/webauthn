@@ -391,7 +391,7 @@ describe("server.ts tests", () => {
         challenge: "test_challenge",
       });
 
-      // Spy on console
+      // spy on console.debug
       const debugSpy = jest.spyOn(console, "debug");
 
       // Mock out rpIdHash comparison so it passes

@@ -88,15 +88,37 @@ describe("Encoding/Decoding utils", () => {
     test("returns true for valid signature", async () => {
       jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
+      // spy on console.debug
+      const debugSpy = jest.spyOn(console, "debug");
+
       const params = {
         algorithm: "ES256" as NamedAlgo,
         publicKey: ES256_SPKI_KEY,
         authenticatorData: "FAKE_AUTH_DATA",
         clientData: "FAKE_CLIENT_DATA",
         signature: "FAKE_SIGNATURE",
+        verbose: true,
       };
+
       const result = await verifySignature(params);
       expect(result).toBe(true);
+      expect(debugSpy).toHaveBeenCalledTimes(5);
+      expect(debugSpy.mock.calls).toEqual([
+        [
+          expect.objectContaining({
+            algorithm: { name: "ECDSA", namedCurve: "P-256" },
+            extractable: false,
+            type: "public",
+            usages: ["verify"],
+          }),
+        ],
+        ["Algorithm: ES256"],
+        [
+          "Public key: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEol4zrYnJVbFPkOCqeWV5NCPnmzyfC-l0xsDQDIxBsA0RvfMi_KLqC7ksZyMXHqspq37pGPOxBwmhY3h6DGYrKQ",
+        ],
+        ["Data: FAKE_AUTH_DATMTf4DoKP8RlZmw-3HUKDfA83kIeG7pCNKTwDQDRoLGo"],
+        ["Signature: FAKE_SIGNATURE"],
+      ]);
     });
 
     test("returns false for invalid signature", async () => {
