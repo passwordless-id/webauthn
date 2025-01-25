@@ -2,22 +2,22 @@
   "name": "@passwordless-id/webauthn",
   "version": "2.1.2",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
-  
   "type": "module",
-  "files": ["dist/"],
+  "files": [
+    "dist/"
+  ],
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
   "main": "dist/cjs/webauthn.cjs",
   "browser": "dist/browser/webauthn.min.js",
-  
-  
   "scripts": {
     "build": "npm run build-module && npm run build-nodejs && npm run build-browser && npm run build-demos",
     "build-module": "tsc",
-    "build-nodejs":  "esbuild src/index.ts --platform=node    --bundle --banner:js=/*passwordless-id/webauthn@2.1.2*/ --outfile=dist/cjs/webauthn.cjs",
+    "build-nodejs": "esbuild src/index.ts --platform=node    --bundle --banner:js=/*passwordless-id/webauthn@2.1.2*/ --outfile=dist/cjs/webauthn.cjs",
     "build-browser": "esbuild src/index.ts --platform=browser --bundle --banner:js=/*passwordless-id/webauthn@2.1.2*/ --format=esm --minify --sourcemap --outfile=dist/browser/webauthn.min.js",
     "build-demos": "cp dist/browser/*.js docs/demos/js; cp dist/browser/*.js.map docs/demos/js",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "dev": "mkdocs serve"
   },
   "repository": {
@@ -42,6 +42,7 @@
     "esbuild": "^0.21.3",
     "http-server": "^14.1.1",
     "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
     "jest-ts-webcompat-resolver": "^1.0.0",
     "ts-jest": "^29.1.3",
     "typescript": "^5.4.5"
