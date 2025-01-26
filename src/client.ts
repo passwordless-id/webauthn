@@ -54,7 +54,7 @@ let ongoingAuth: AbortController | null = null;
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
  * @param {Record<string, any>} [options.customProperties] - **Advanced usage**: An object of additional
- *     properties that will be merged into the WebAuthn creation options. This can be used to 
+ *     properties that will be merged into the WebAuthn create options. This can be used to 
  *     explicitly set fields such as `excludeCredentials`.
  * 
  * @example
