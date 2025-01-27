@@ -1,4 +1,4 @@
-// global.d.ts
+// global.mock.d.ts
 import "jest";
 
 declare global {
