@@ -157,6 +157,7 @@ describe("client.ts tests", () => {
 
       const result = await client.register({
         challenge: validChallenge,
+        hints: ["client-device", "hybrid"],
         user: { id: "some-user-id", name: "alice" },
       });
 

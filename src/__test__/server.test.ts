@@ -44,8 +44,7 @@ jest.mock("../parsers", () => ({
 }));
 
 import * as server from "../server";
-import * as utils from "../utils";
-import { AuthenticationJSON, NamedAlgo } from "../types";
+import { NamedAlgo } from "../types";
 
 const ES256_SPKI_KEY =
   "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEol4zrYnJVbFPkOCqeWV5NCPnmzyfC-l0xsDQDIxBsA0RvfMi_KLqC7ksZyMXHqspq37pGPOxBwmhY3h6DGYrKQ";
@@ -61,6 +60,12 @@ describe("server.ts tests", () => {
   });
 
   describe("verifyRegistration()", () => {
+    const originValidator = (originVal: string) => {
+      return (
+        originVal === "https://example.com" || originVal === "https://localhost:3000"
+      );
+    };
+
     const registrationJson = {
       id: "test_id",
       response: {
@@ -70,6 +75,11 @@ describe("server.ts tests", () => {
     };
     const expected = {
       origin: "https://example.com",
+      challenge: "test_challenge",
+    };
+
+    const fnExpected = {
+      origin: originValidator,
       challenge: "test_challenge",
     };
 
@@ -106,7 +116,7 @@ describe("server.ts tests", () => {
       });
 
       await expect(
-        server.verifyRegistration(registrationJson as any, expected)
+        server.verifyRegistration(registrationJson as any, fnExpected)
       ).rejects.toThrow("Unexpected ClientData origin: https://wrong.com");
     });
 
