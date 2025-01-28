@@ -45,7 +45,10 @@ jest.mock("../parsers", () => ({
 
 import * as server from "../server";
 import * as utils from "../utils";
-import { AuthenticationJSON } from "../types";
+import { AuthenticationJSON, NamedAlgo } from "../types";
+
+const ES256_SPKI_KEY =
+  "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEol4zrYnJVbFPkOCqeWV5NCPnmzyfC-l0xsDQDIxBsA0RvfMi_KLqC7ksZyMXHqspq37pGPOxBwmhY3h6DGYrKQ";
 
 describe("server.ts tests", () => {
   describe("randomChallenge()", () => {
@@ -129,15 +132,36 @@ describe("server.ts tests", () => {
     });
   });
 
+  describe("parseCryptoKey()", () => {
+    test("throws on unsupported algorithm", async () => {
+      await expect(server.parseCryptoKey("FOO" as any, "SOME_KEY")).rejects.toThrow(
+        "Unknown or unsupported crypto algorithm: FOO. Only 'RS256' and 'ES256' are supported."
+      );
+    });
+
+    test("imports ES256 key", async () => {
+      const result = await server.parseCryptoKey("ES256", ES256_SPKI_KEY);
+
+      // Expect a CryptoKey object
+      expect(result).toBeDefined();
+      expect(result.type).toBe("public");
+      expect(result.algorithm).toBeDefined();
+      expect(result.usages).toContain("verify");
+    });
+  });
+
   describe("verifyAuthentication()", () => {
     const authenticationJson = {
       id: "EXPECTED_ID",
       response: {
-        authenticatorData: "FAKE_AUTH_DATA",
-        clientDataJSON: "FAKE_CLIENT_DATA_JSON",
+        authenticatorData:
+          "c46cef82ad1b546477591d008b08759ec3e6d2ecb4f39474bfea6969925d03b71d00000000",
+        clientDataJSON:
+          "7b2274797065223a22776562617574686e2e676574222c226368616c6c656e6765223a22555377465a65357038734452766d304e55536b4a5941222c226f726967696e223a2268747470733a2f2f64656d6f2e79756269636f2e636f6d222c2263726f73734f726967696e223a66616c73657d",
         signature: "FAKE_SIGNATURE",
       },
     };
+
     const wrongAuthenticationJson = {
       id: "WRONG_ID",
       response: {
@@ -149,9 +173,10 @@ describe("server.ts tests", () => {
 
     const credential = {
       id: "EXPECTED_ID",
-      algorithm: "ES256",
-      publicKey: "FAKE_PUBLIC_KEY",
+      algorithm: "ES256" as NamedAlgo,
+      publicKey: ES256_SPKI_KEY,
     };
+
     const expected = {
       origin: "https://example.com",
       challenge: "test_challenge",
@@ -169,8 +194,8 @@ describe("server.ts tests", () => {
     });
 
     test("fails if signature is invalid", async () => {
-      // Force verifySignature() to return false
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(false);
+      // Force crypto.subtle.verify to return false
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(false);
 
       await expect(
         server.verifyAuthentication(
@@ -182,8 +207,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if client.type is not 'webauthn.get'", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -201,8 +226,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if origin is not valid", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -221,8 +246,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if challenge is not valid", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -242,8 +267,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if RpIdHash does not match", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -270,8 +295,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if missing userPresent", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -297,8 +322,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if missing userVerified", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -324,8 +349,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if counter is less expected counter", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -352,8 +377,8 @@ describe("server.ts tests", () => {
     });
 
     test("throws error if counter is less expected counter", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -380,8 +405,8 @@ describe("server.ts tests", () => {
     });
 
     test("succeeds if signature is valid and checks pass", async () => {
-      // Force verifySignature() to return true
-      jest.spyOn(utils, "verifySignature").mockResolvedValueOnce(true);
+      // Force crypto.subtle.verify to return true
+      jest.spyOn(global.crypto.subtle, "verify").mockResolvedValueOnce(true);
 
       // Override parseClient mock for this test
       const parsers = require("../parsers");
@@ -391,21 +416,14 @@ describe("server.ts tests", () => {
         challenge: "test_challenge",
       });
 
+      parsers.parseAuthenticator.mockReturnValueOnce({
+        rpIdHash: "o3mm9u6vuaVeN4wRgDTidR5oL6ufLTCrE9ISVYbOGUc=",
+        flags: { userPresent: true, userVerified: true },
+        signCount: 999,
+      });
+
       // spy on console.debug
       const debugSpy = jest.spyOn(console, "debug");
-
-      // Mock out rpIdHash comparison so it passes
-      jest.spyOn(utils, "sha256").mockResolvedValueOnce(utils.toBuffer("FAKE_RP_ID"));
-      jest.spyOn(utils, "toBase64url").mockReturnValueOnce("FAKE_RP_ID_HASH");
-
-      const authenticationJson = {
-        id: "EXPECTED_ID",
-        response: {
-          authenticatorData: "FAKE_AUTH_DATA",
-          clientDataJSON: "FAKE_CLIENT_DATA_JSON",
-          signature: "FAKE_SIGNATURE",
-        },
-      };
 
       const result = await server.verifyAuthentication(
         authenticationJson as any,
@@ -415,8 +433,24 @@ describe("server.ts tests", () => {
 
       expect(result.credentialId).toBe("EXPECTED_ID");
       expect(result.counter).toBe(999);
-      expect(debugSpy).toHaveBeenCalledTimes(2);
+      expect(debugSpy).toHaveBeenCalledTimes(7);
       expect(debugSpy.mock.calls).toEqual([
+        [
+          expect.objectContaining({
+            algorithm: { name: "ECDSA", namedCurve: "P-256" },
+            extractable: false,
+            type: "public",
+            usages: ["verify"],
+          }),
+        ],
+        ["Algorithm: ES256"],
+        [
+          "Public key: MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEol4zrYnJVbFPkOCqeWV5NCPnmzyfC-l0xsDQDIxBsA0RvfMi_KLqC7ksZyMXHqspq37pGPOxBwmhY3h6DGYrKQ",
+        ],
+        [
+          "Data: c46cef82ad1b546477591d008b08759ec3e6d2ecb4f39474bfea6969925d03b71d0000000_eSupQc16dKPLnVuclrY5qAH5n6YFArWLnfSQ9bmOHb",
+        ],
+        ["Signature: FAKE_SIGNATURE"],
         [
           {
             challenge: "test_challenge",
@@ -426,9 +460,8 @@ describe("server.ts tests", () => {
         ],
         [
           {
-            aaguid: "test_aaguid",
             flags: { userPresent: true, userVerified: true },
-            rpIdHash: "FAKE_RP_ID_HASH",
+            rpIdHash: "o3mm9u6vuaVeN4wRgDTidR5oL6ufLTCrE9ISVYbOGUc=",
             signCount: 999,
           },
         ],
