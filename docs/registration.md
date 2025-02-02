@@ -64,7 +64,7 @@ Besides the required `user` and `challenge`, it has following options.
 | `timeout` | - |  How long the native authentication popup stays open before aborting the authentication process.
 | `attestation` | `true` | Whether or not to provide "attestation" in the result. The attestation can be used to prove the authenticator device model's authenticity. Note that not all authenticators provide this (looking at you apple), it might be anonymized, and its verification is complex.
 | `domain` | `window.location.hostname` | This can be set to a parent domain, to have the passkey valid for all subdomains.
-| `customProperties` | `{}` | An object of additional properties that will be merged into the WebAuthn create options. This can be used to explicitly set fields such as `excludeCredentials`.
+| `customProperties` | `{}` | An object of additional properties that will be merged into the WebAuthn create options. This can be used to explicitly set fields such as `extensions`.
 
 
 
