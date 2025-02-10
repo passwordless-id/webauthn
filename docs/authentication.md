@@ -74,8 +74,7 @@ The following options are available.
 | `domain` | `window.location.hostname` | By default, the current domain name is used. Also known as "relying party id". You may want to customize it for ...
 | `allowedCredentials` | The list of credentials and the transports it supports. Used to skip passkey selection. Either a list of credential ids (discouraged) or list of credential objects with `id` and supported `transports` (recommended).
 | `autocomplete` | `false` | See concepts
-
-
+| `customProperties` | `{}` | An object of additional properties that will be merged into the WebAuthn authenticate options. This can be used to explicitly set fields such as `extensions`.
 
 
 3️⃣ Send the payload to the server
