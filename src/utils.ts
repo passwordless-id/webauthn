@@ -2,7 +2,7 @@
      Encoding/Decoding Utils
 ********************************/
 
-import { Base64URLString } from "./types"
+import { Base64URLString, NamedAlgo } from "./types"
 
 
 export function toBuffer(txt :string) :ArrayBuffer {
@@ -45,4 +45,4 @@ export function concatenateBuffers(buffer1 :ArrayBuffer, buffer2  :ArrayBuffer) 
     tmp.set(new Uint8Array(buffer1), 0);
     tmp.set(new Uint8Array(buffer2), buffer1.byteLength);
     return tmp;
-  };
+};

@@ -1,4 +1,4 @@
-import { authenticatorMetadata, parsers } from "./index";
+import { parsers } from "./index";
 import { parseAuthenticator, parseClient, toAuthenticationInfo } from "./parsers";
 import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo, AuthenticatorParsed } from "./types";
 import * as utils from './utils'
@@ -40,7 +40,7 @@ export async function verifyRegistration(registrationJson: RegistrationJSON, exp
     const aaguid = authenticator.aaguid;
 
     if(!aaguid) // should never happen, worst case should be a fallback to "zeroed" aaguid
-        throw new Error("Unexpected errror, no AAGUID.")
+        throw new Error("Unexpected error, no AAGUID.")
 
     if (client.type !== "webauthn.create")
         throw new Error(`Unexpected ClientData type: ${client.type}`)
