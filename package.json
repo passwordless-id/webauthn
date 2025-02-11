@@ -39,7 +39,7 @@
   "homepage": "https://webauthn.passwordless.id",
   "devDependencies": {
     "@types/jest": "^29.5.12",
-    "esbuild": "^0.21.3",
+    "esbuild": "^0.25.0",
     "http-server": "^14.1.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
