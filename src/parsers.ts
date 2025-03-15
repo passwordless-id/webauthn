@@ -1,6 +1,6 @@
-import * as utils from './utils'
-import { Base64URLString, CollectedClientData, NamedAlgo, AuthenticatorParsed, RegistrationJSON, RegistrationInfo, UserInfo, AuthenticationInfo, AuthenticationJSON } from './types'
-import { authenticatorMetadata } from './authenticatorMetadata'
+import * as utils from './utils.js'
+import { Base64URLString, CollectedClientData, NamedAlgo, AuthenticatorParsed, RegistrationJSON, RegistrationInfo, UserInfo, AuthenticationInfo, AuthenticationJSON } from './types.js'
+import { authenticatorMetadata } from './authenticatorMetadata.js'
 
 const utf8Decoder = new TextDecoder('utf-8')
 

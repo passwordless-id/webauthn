@@ -1,5 +1,5 @@
 import { AuthenticateOptions, AuthenticationJSON, Base64URLString, CredentialDescriptor, ExtendedAuthenticatorTransport, PublicKeyCredentialHints, RegisterOptions, RegistrationJSON, User, WebAuthnCreateOptions, WebAuthnGetOptions } from './types.js'
-import * as utils from './utils'
+import * as utils from './utils.js'
 
 /**
  * Returns whether passwordless authentication is available on this browser/platform or not.
