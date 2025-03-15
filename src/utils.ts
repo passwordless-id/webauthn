@@ -2,7 +2,7 @@
      Encoding/Decoding Utils
 ********************************/
 
-import { Base64URLString, NamedAlgo } from "./types"
+import { Base64URLString, NamedAlgo } from "./types.js"
 
 
 export function toBuffer(txt :string) :ArrayBuffer {

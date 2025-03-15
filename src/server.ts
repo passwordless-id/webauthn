@@ -1,7 +1,7 @@
-import { parsers } from "./index";
-import { parseAuthenticator, parseClient, toAuthenticationInfo } from "./parsers";
-import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo, AuthenticatorParsed } from "./types";
-import * as utils from './utils'
+import { parsers } from "./index.js";
+import { parseAuthenticator, parseClient, toAuthenticationInfo } from "./parsers.js";
+import { AuthenticationJSON, NamedAlgo, RegistrationJSON, RegistrationInfo, AuthenticationInfo, Base64URLString, CollectedClientData, UserInfo, CredentialInfo, AuthenticatorInfo, AuthenticatorParsed } from "./types.js";
+import * as utils from './utils.js'
 
 
 export function randomChallenge() {
