@@ -1,4 +1,4 @@
-import { authenticatorMetadata } from './authenticatorMetadata'
+import { authenticatorMetadata } from './authenticatorMetadata.js'
 
 
 /**
