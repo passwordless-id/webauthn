@@ -1,6 +1,6 @@
 {
   "name": "@passwordless-id/webauthn",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "A small wrapper around the webauthn protocol to make one's life easier.",
   "type": "module",
   "files": [
@@ -13,8 +13,8 @@
   "scripts": {
     "build": "npm run build-module && npm run build-nodejs && npm run build-browser && npm run build-demos",
     "build-module": "tsc",
-    "build-nodejs":  "esbuild src/index.ts --platform=node    --bundle --banner:js=/*passwordless-id/webauthn@2.2.0*/ --outfile=dist/cjs/webauthn.cjs",
-    "build-browser": "esbuild src/index.ts --platform=browser --bundle --banner:js=/*passwordless-id/webauthn@2.2.0*/ --format=esm --minify --sourcemap --outfile=dist/browser/webauthn.min.js",
+    "build-nodejs":  "esbuild src/index.ts --platform=node    --bundle --banner:js=/*passwordless-id/webauthn@2.3.0*/ --outfile=dist/cjs/webauthn.cjs",
+    "build-browser": "esbuild src/index.ts --platform=browser --bundle --banner:js=/*passwordless-id/webauthn@2.3.0*/ --format=esm --minify --sourcemap --outfile=dist/browser/webauthn.min.js",
     "build-demos": "cp dist/browser/*.js docs/demos/js; cp dist/browser/*.js.map docs/demos/js",
     "test": "jest",
     "test:coverage": "jest --coverage",
