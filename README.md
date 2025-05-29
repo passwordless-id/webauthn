@@ -52,7 +52,7 @@ For **browsers**, it can be imported using a CDN link in the page, or even insid
 
 ```html
 <script type="module">
-  import {client} from src="https://cdn.jsdelivr.net/npm/@passwordless-id/webauthn@2.0.0/dist/webauthn.min.js"
+  import { client } from 'https://cdn.jsdelivr.net/npm/@passwordless-id/webauthn';
 </script>
 ```
 
