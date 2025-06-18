@@ -7,6 +7,7 @@
 [![GitHub Repo stars](https://img.shields.io/github/stars/passwordless-id/webauthn)](https://github.com/passwordless-id/webauthn)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/passwordless-id?style=social&logo=githubsponsors)](https://github.com/sponsors/passwordless-id)
 
+
 ![banner](docs/img/banner-biometric-auth.svg)
 
 
