@@ -78,19 +78,25 @@ The result `registration` object looks like this:
 
 ```json
 {
+  "type": "public-key",
+  "id": "L10e_letUcC5nKayX3rMWN_aBY1pyDQfsPb4Tq_8vIo",
+  "rawId": "L10e_letUcC5nKayX3rMWN_aBY1pyDQfsPb4Tq_8vIo=",
+  "authenticatorAttachment": "cross-platform",
+  "clientExtensionResults": {},
+  "response": {
+    "attestationObject": "o2NmbXRmcGFja2VkZ2F0dFN0bXSjY2FsZyZjc2lnWEYwRAIgWyQipZIS0ocYBL-UX9xGXhI60li5U7wmxlRbDtWFkHsCIDlkKM-_pqOTAWPrJJ0x_Q4eLsYEKneQFIJou6qyaC9eY3g1Y4FZAdgwggHUMIIBeqADAgECAgEBMAoGCCqGSM49BAMCMGAxCzAJBgNVBAYTAlVTMREwDwYDVQQKDAhDaHJvbWl1bTEiMCAGA1UECwwZQXV0aGVudGljYXRvciBBdHRlc3RhdGlvbjEaMBgGA1UEAwwRQmF0Y2ggQ2VydGlmaWNhdGUwHhcNMTcwNzE0MDI0MDAwWhcNNDUwNjIwMDgzOTEyWjBgMQswCQYDVQQGEwJVUzERMA8GA1UECgwIQ2hyb21pdW0xIjAgBgNVBAsMGUF1dGhlbnRpY2F0b3IgQXR0ZXN0YXRpb24xGjAYBgNVBAMMEUJhdGNoIENlcnRpZmljYXRlMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjWF-ZclQjmS8xWc6yCpnmdo8FEZoLCWMRj__31jf0vo-bDeLU9eVxKTf-0GZ7deGLyOrrwIDtLiRG6BWmZThAaMlMCMwDAYDVR0TAQH_BAIwADATBgsrBgEEAYLlHAIBAQQEAwIFIDAKBggqhkjOPQQDAgNIADBFAiEAwxO40zwx1TBr4V05D_cHqdaCrThO-ZyyIzkgH9QcBpICICrerGEd6cX8PY0ipJPOkjkEWR8SwbxQjjm57cVsVT5uaGF1dGhEYXRhWKRPsghW8kpq59r8J4EJCshHeubivQcmYCNsxhTG-3wuoEUAAAABAQIDBAUGBwgBAgMEBQYHCAAgL10e_letUcC5nKayX3rMWN_aBY1pyDQfsPb4Tq_8vIqlAQIDJiABIVggxZ3bQ9Xa4kbrskcobWw8Drr4Facf074_o9GbN_g56L8iWCAV2IOeHxBrcNS35XQFD1VoGWiO0Aqx3QnmVst3aCz6rg==",
+    "authenticatorData": "T7IIVvJKaufa_CeBCQrIR3rm4r0HJmAjbMYUxvt8LqBFAAAAAQECAwQFBgcIAQIDBAUGBwgAIC9dHv5XrVHAuZymsl96zFjf2gWNacg0H7D2-E6v_LyKpQECAyYgASFYIMWd20PV2uJG67JHKG1sPA66-BWnH9O-P6PRmzf4Oei_IlggFdiDnh8Qa3DUt-V0BQ9VaBlojtAKsd0J5lbLd2gs-q4=",
+    "clientDataJSON": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoibHpwQnRUaFFyQUttckxOYWFidHRZbGpaIiwib3JpZ2luIjoiaHR0cHM6Ly93ZWJhdXRobi5wYXNzd29yZGxlc3MuaWQiLCJjcm9zc09yaWdpbiI6ZmFsc2V9",
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAExZ3bQ9Xa4kbrskcobWw8Drr4Facf074_o9GbN_g56L8V2IOeHxBrcNS35XQFD1VoGWiO0Aqx3QnmVst3aCz6rg==",
+    "publicKeyAlgorithm": -7,
+    "transports": [
+      "usb"
+    ]
+  },
   "user": {
-    "id": "7f26f9ab-4fbc-4103-807f-ed145acb7ecc",
     "name": "Arnaud",
-    "displayName": "Arnaud"
-  },
-  "credential": {
-    "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
-    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
-    "algorithm": "ES256",
-    "transports": ["internal", "hybrid"]
-  },
-  "authenticatorData": "SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFAAAAAAiYcFjK3EuBtuEw3lDcvpYAIN_duB4SXSTMv7L51KME_HqF6zjjujSz_EivOatkT8XVpQECAyYgASFYIIMmKkJlAJg5_Se3UecZfh5cgANEdl1ebIEEZ0hl2y7fIlgg8QqxHQ9SFb75Mk5kQ9esvadwtjuD02dDhf2WA9iYE1Q=",
-  "clientData": "eyJ0eXBlIjoid2ViYXV0aG4uY3JlYXRlIiwiY2hhbGxlbmdlIjoiYTdjNjFlZjktZGMyMy00ODA2LWI0ODYtMjQyODkzOGE1NDdlIiwib3JpZ2luIjoiaHR0cDovL2xvY2FsaG9zdDo4MDgwIiwiY3Jvc3NPcmlnaW4iOmZhbHNlfQ=="
+    "id": "4aa4df5f-1666-4400-aca5-3b627cc9008a"
+  }
 }
 ```
 
@@ -128,25 +134,27 @@ Example result:
 
 ```json
 {
-  "user": {
-    "id": "7f26f9ab-4fbc-4103-807f-ed145acb7ecc",
-    "name": "Arnaud",
-    "displayName": "Arnaud"
+  "authenticator": {
+    "aaguid": "01020304-0506-0708-0102-030405060708",
+    "counter": 1,
+    "icon_light": "https://webauthn.passwordless.id/authenticators/01020304-0506-0708-0102-030405060708-light.png",
+    "icon_dark": "https://webauthn.passwordless.id/authenticators/01020304-0506-0708-0102-030405060708-dark.png",
+    "name": "Chromium Virtual Authenticator (browser dev tools)"
   },
   "credential": {
-    "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
-    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
+    "id": "L10e_letUcC5nKayX3rMWN_aBY1pyDQfsPb4Tq_8vIo",
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAExZ3bQ9Xa4kbrskcobWw8Drr4Facf074_o9GbN_g56L8V2IOeHxBrcNS35XQFD1VoGWiO0Aqx3QnmVst3aCz6rg==",
     "algorithm": "ES256",
-    "transports": ["internal", "hybrid"]
+    "transports": [
+      "usb"
+    ]
   },
-  "authenticator": {
-    ...
-    "name": "Windows Hello",
-    "icon_dark": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-dark.png",
-    "icon_light": "https://webauthn.passwordless.id/authenticators/08987058-cadc-4b81-b6e1-30de50dcbe96-light.png"
+  "synced": false,
+  "user": {
+    "name": "Arnaud",
+    "id": "4aa4df5f-1666-4400-aca5-3b627cc9008a"
   },
-  synced: true,
-  ...
+  "userVerified": true
 }
 ```
 
@@ -162,11 +170,13 @@ The credential containing the public key is the most important part. It should b
 
 ```json
 "credential": {
-  "id": "3924HhJdJMy_svnUowT8eoXrOOO6NLP8SK85q2RPxdU",
-  "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgyYqQmUAmDn9J7dR5xl-HlyAA0R2XV5sgQRnSGXbLt_xCrEdD1IVvvkyTmRD16y9p3C2O4PTZ0OF_ZYD2JgTVA==",
-  "algorithm": "ES256",
-  "transports": ["internal", "hybrid"]
-},
+    "id": "L10e_letUcC5nKayX3rMWN_aBY1pyDQfsPb4Tq_8vIo",
+    "publicKey": "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAExZ3bQ9Xa4kbrskcobWw8Drr4Facf074_o9GbN_g56L8V2IOeHxBrcNS35XQFD1VoGWiO0Aqx3QnmVst3aCz6rg==",
+    "algorithm": "ES256",
+    "transports": [
+      "usb"
+    ]
+  }
 ```
 
 *Please note that unlike traditional systems, you might allow a user to have multiple credential keys.
