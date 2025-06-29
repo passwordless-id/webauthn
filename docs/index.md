@@ -20,6 +20,8 @@
 > This library is provided by [Passwordless.ID](https://passwordless.id), a free public identity provider.
 
 
+
+
 👀 Demos
 ---------
 
@@ -27,7 +29,8 @@
 - [Autocomplete with conditional mediation](/demos/conditional-ui.html)
 - [Testing Playground](/demos/playground.html)
 - [Authenticators list](/demos/authenticators.html)
-  
+
+
 These demos are plain HTML/JS, not minimized. Just open the sources in your browser if you are curious.
 
 
@@ -140,3 +143,28 @@ Some core changes are:
 - Transports as part of `allowCredentials`
 
 The docs for the legacy version 1.x are found [here](/version-1)
+
+
+
+✅ Supported Platforms
+-----------------------
+
+Client side:
+
+- ✅ Chrome
+- ✅ Edge
+- ✅ Firefox
+- ✅ Safari
+- ✅ Opera
+- ❌ Internet Explorer 11
+
+Server side:
+
+- ✅ NodeJS 19+
+- ✅ Cloudflare Workers
+- ✅ All other JS platforms that support WebCrypto API
+
+It is also compatible with most other server side libraries of other programming languages, as long as they use the default payload used by the native API.
+
+> Note: apparently, native iOS / macOS clients written in Switft are not compatible with the *server-side* part of this library, as they do not provide the `publicKey` and `publicKeyAlgorithm` properties during registration.
+
