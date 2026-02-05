@@ -5,6 +5,7 @@ import * as utils from './utils.js';
 import { authenticatorMetadata } from './authenticatorMetadata.js'
 
 export { client, server, parsers, utils, authenticatorMetadata }
+export type * from './types.js'
 
 const webauthn = { client, server, parsers, utils, authenticatorMetadata }
 export default webauthn
