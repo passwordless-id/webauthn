@@ -49,11 +49,11 @@ let ongoingAuth: AbortController | null = null;
  * @param {number} [timeout=60000] Number of milliseconds the user has to respond to the biometric/PIN check.
  * @param {'required'|'preferred'|'discouraged'} [userVerification='required'] Whether to prompt for biometric/PIN check or not.
  * @param {PublicKeyCredentialHints[]} [hints]: Can contain a list of "client-device", "hybrid" or "security-key"
- * @param {boolean} [attestation=false] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data. Note that this is not available on some platforms.
+ * @param {boolean} [attestation=true] If enabled, the device attestation and clientData will be provided as Base64url encoded binary data. Note that this is not available on some platforms.
  * @param {'discouraged'|'preferred'|'required'} [discoverable] A "discoverable" credential can be selected using `authenticate(...)` without providing credential IDs.
  *              Instead, a native pop-up will appear for user selection.
  *              This may have an impact on the "passkeys" user experience and syncing behavior of the key.
- * @param {Record<string, any>} [options.customProperties] - **Advanced usage**: An object of additional
+ * @param {Record<string, any>} [customProperties] - **Advanced usage**: An object of additional
  *     properties that will be merged into the WebAuthn create options. This can be used to 
  *     explicitly set fields such as `excludeCredentials`.
  * 
@@ -106,7 +106,7 @@ export async function register(options: RegisterOptions): Promise<RegistrationJS
             residentKey: options.discoverable ?? 'preferred', // see https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions#residentkey
             requireResidentKey: (options.discoverable === 'required') // mainly for backwards compatibility, see https://www.w3.org/TR/webauthn/#dictionary-authenticatorSelection
         },
-        attestation: "direct",
+        attestation: (options.attestation ?? true) ? "direct" : "none",
         ...options.customProperties,
     }
 
