@@ -29,7 +29,10 @@ async function isNotValid(validator :any, value :any) :Promise<boolean> {
 
 interface RegistrationChecks {
     challenge: string | Function,
-    origin: string | Function
+    origin: string | Function,
+    userVerified?: boolean,
+    domain?: string, // Same as `rp.id` 
+    verbose?: boolean
 }
 
 
@@ -39,6 +42,19 @@ export async function verifyRegistration(registrationJson: RegistrationJSON, exp
     const authenticator = parseAuthenticator(registrationJson.response.authenticatorData);
     const aaguid = authenticator.aaguid;
 
+    if(expected.verbose) {
+        console.debug(client)
+        console.debug(authenticator)
+    }
+
+    if(expected.userVerified && !authenticator.flags.userVerified)
+        throw new Error("User verification required but not satisfied.")
+
+    const rpId = expected.domain ?? new URL(client.origin).hostname
+    const expectedRpIdHash = utils.toBase64url(await utils.sha256(utils.toBuffer(rpId)))
+    if (authenticator.rpIdHash !== expectedRpIdHash)
+        throw new Error(`Unexpected RpIdHash: ${authenticator.rpIdHash} vs ${expectedRpIdHash}`)
+    
     if(!aaguid) // should never happen, worst case should be a fallback to "zeroed" aaguid
         throw new Error("Unexpected error, no AAGUID.")
 
