@@ -33,7 +33,8 @@ const app = new Vue({
                 userVerification: 'preferred',
                 discoverable: 'preferred',
                 timeout: 60000,
-                attestation: true
+                attestation: true,
+                verbose: true
             },
             json: null,
             result: null
@@ -46,7 +47,8 @@ const app = new Vue({
                 authenticatorType: 'auto',
                 userVerification: 'required',
                 timeout: 60000,
-                allowCredentials: []
+                allowCredentials: [],
+                verbose: true
             },
             json: null,
             result: null
