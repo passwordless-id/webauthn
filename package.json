@@ -10,6 +10,7 @@
   "types": "dist/esm/index.d.ts",
   "main": "dist/cjs/webauthn.cjs",
   "browser": "dist/browser/webauthn.min.js",
+  "unpkg": "dist/browser/webauthn.min.js",
   "scripts": {
     "build": "npm run build-module && npm run build-nodejs && npm run build-browser && npm run build-demos",
     "build-module": "tsc",
