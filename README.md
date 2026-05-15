@@ -12,11 +12,9 @@
 
 
 > This library greatly simplifies the usage of **passkeys** by invoking the [WebAuthn protocol](https://w3c.github.io/webauthn/) more conveniently. It is [open source](https://github.com/passwordless-id/webauthn), opinionated, dependency-free and minimalistic.
->
-> This library is provided by [Passwordless.ID](https://passwordless.id), a free public identity provider.
 
 
-
+> *Note:* in the latest version 2.4+, the `browser` field was removed in `package.json` due to issues how various tooling interpret it. Check out [#108](https://github.com/passwordless-id/webauthn/issues/108) for more details.
 
 
 
