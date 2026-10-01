@@ -14,10 +14,6 @@ if (typeof globalThis.crypto === "undefined") {
 }
 
 if (typeof window !== "undefined" && typeof document !== "undefined") {
-  if (!crypto.randomUUID) {
-    crypto.randomUUID = () => "mock-uuid-1234";
-  }
-
   // Mock the PublicKeyCredential and its static methods:
   const mockIsUserVerifyingPlatformAuthenticatorAvailable = jest.fn();
   const mockIsConditionalMediationAvailable = jest.fn();
