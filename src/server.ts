@@ -228,6 +228,7 @@ export async function verifySignature({ algorithm, publicKey, authenticatorData,
 
 function convertASN1toRaw(signatureBuffer :ArrayBuffer) {
     // Convert signature from ASN.1 sequence to "raw" format
+    // See https://www.mixoftix.net/tutorials/cryptography_ecdsa_raw_der.asp
     // DER layout: 0x30 <length> 0x02 <rLength> <r> 0x02 <sLength> <s>
     // r and s are minimal-length positive integers: shorter than 32 bytes when their leading byte is zero, 0x00-prefixed when their high bit is set
     const signature = new Uint8Array(signatureBuffer);

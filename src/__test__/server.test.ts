@@ -254,6 +254,43 @@ describe("server.ts tests", () => {
       }
     );
 
+    async function signWithNewKey() {
+      const { publicKey, privateKey } = await crypto.subtle.generateKey(
+        { name: "ECDSA", namedCurve: "P-256" },
+        true,
+        ["sign", "verify"]
+      );
+      const clientHash = await utils.sha256(utils.parseBase64url(params.clientData));
+      const data = utils.concatenateBuffers(utils.parseBase64url(params.authenticatorData), clientHash);
+      const raw = new Uint8Array(await crypto.subtle.sign({ name: "ECDSA", hash: "SHA-256" }, privateKey, data));
+
+      const toDERInteger = (bytes: Uint8Array) => {
+        let start = 0;
+        while (start < bytes.length - 1 && bytes[start] === 0) start++;
+        const trimmed = bytes.slice(start);
+        const integer = trimmed[0] & 0x80 ? [0, ...trimmed] : [...trimmed];
+        return [0x02, integer.length, ...integer];
+      };
+      const sequence = [...toDERInteger(raw.slice(0, 32)), ...toDERInteger(raw.slice(32))];
+      return {
+        signature: utils.toBase64url(new Uint8Array([0x30, sequence.length, ...sequence]).buffer),
+        publicKey: utils.toBase64url(await crypto.subtle.exportKey("spki", publicKey)),
+      };
+    }
+
+    test("accepts a freshly generated ES256 signature with the matching key", async () => {
+      const { signature, publicKey } = await signWithNewKey();
+
+      expect(await server.verifySignature({ ...params, publicKey, signature })).toBe(true);
+    });
+
+    test("rejects a valid ES256 signature checked against the wrong key", async () => {
+      const { signature } = await signWithNewKey();
+
+      // params.publicKey did not create this signature
+      expect(await server.verifySignature({ ...params, signature })).toBe(false);
+    });
+
     test("rejects a tampered ES256 signature", async () => {
       const signature = modifyBytes(signatures["32 byte r, 32 byte s"], (bytes) => {
         bytes[bytes.length - 1] ^= 0x01;
@@ -266,6 +303,12 @@ describe("server.ts tests", () => {
       const signature = modifyBytes(signatures["32 byte r, 32 byte s"], (bytes) => {
         bytes[0] = 0x31;
       });
+
+      expect(await server.verifySignature({ ...params, signature })).toBe(false);
+    });
+
+    test("rejects an all-zero ES256 signature", async () => {
+      const signature = utils.toBase64url(new Uint8Array(64).buffer);
 
       expect(await server.verifySignature({ ...params, signature })).toBe(false);
     });
