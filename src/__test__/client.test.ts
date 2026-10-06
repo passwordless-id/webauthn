@@ -192,13 +192,20 @@ describe("client.ts tests", () => {
         },
       });
 
+      const randomUUIDSpy = jest
+        .spyOn(crypto, "randomUUID")
+        .mockReturnValue("00000000-0000-4000-8000-000000000000");
+
       const result = await client.register({
         challenge: validChallenge,
         user: { name: "Paul" },
       });
 
       // Because user.id was missing, we use crypto.randomUUID():
-      expect(result.user?.id).toBe("mock-uuid-1234");
+      expect(result.user?.id).toBe("00000000-0000-4000-8000-000000000000");
+
+      // Clean up
+      randomUUIDSpy.mockRestore();
     });
 
     test("cancels ongoingAuth if set", async () => {

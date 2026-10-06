@@ -12,7 +12,7 @@ jest.mock("../parsers", () => ({
     // Return minimal valid "authenticator" data
     return {
       aaguid: "test_aaguid",
-      rpIdHash: "FAKE_RP_ID_HASH", // Must match what's expected in test if you check it
+      rpIdHash: "o3mm9u6vuaVeN4wRgDTidR5oL6ufLTCrE9ISVYbOGUc=", // SHA-256 of "example.com", the hostname of the default origin
       flags: {
         userPresent: true,
         userVerified: true,
@@ -84,10 +84,40 @@ describe("server.ts tests", () => {
       challenge: "test_challenge",
     };
 
+    test("throws error if user verification is required but missing", async () => {
+      // Override parseAuthenticator mock for this test
+      const parsers = require("../parsers");
+      parsers.parseAuthenticator.mockReturnValueOnce({
+        rpIdHash: "o3mm9u6vuaVeN4wRgDTidR5oL6ufLTCrE9ISVYbOGUc=",
+        aaguid: "test_aaguid",
+        flags: { userPresent: true, userVerified: false },
+      });
+
+      await expect(
+        server.verifyRegistration(registrationJson as any, { ...expected, userVerified: true })
+      ).rejects.toThrow("User verification required but not satisfied.");
+    });
+
+    test("throws error if RpIdHash does not match", async () => {
+      // Override parseAuthenticator mock for this test
+      const parsers = require("../parsers");
+      parsers.parseAuthenticator.mockReturnValueOnce({
+        rpIdHash: "wrong hash",
+        aaguid: "test_aaguid",
+      });
+
+      await expect(
+        server.verifyRegistration(registrationJson as any, expected)
+      ).rejects.toThrow(
+        "Unexpected RpIdHash: wrong hash vs o3mm9u6vuaVeN4wRgDTidR5oL6ufLTCrE9ISVYbOGUc="
+      );
+    });
+
     test("throws error if aaguid is missing", async () => {
       // Override parseAuthenticator mock for this test
       const parsers = require("../parsers");
       parsers.parseAuthenticator.mockReturnValueOnce({
+        rpIdHash: "o3mm9u6vuaVeN4wRgDTidR5oL6ufLTCrE9ISVYbOGUc=",
         aaguid: null, // Force it to be missing
       });
 
@@ -101,6 +131,7 @@ describe("server.ts tests", () => {
       const parsers = require("../parsers");
       parsers.parseClient.mockReturnValueOnce({
         type: "unknown", // Force it to be missing
+        origin: expected.origin,
       });
 
       await expect(
@@ -116,8 +147,9 @@ describe("server.ts tests", () => {
         origin: "https://wrong.com",
       });
 
+      // The RpIdHash is checked first, so pin the domain to reach the origin check
       await expect(
-        server.verifyRegistration(registrationJson as any, fnExpected)
+        server.verifyRegistration(registrationJson as any, { ...fnExpected, domain: "example.com" })
       ).rejects.toThrow("Unexpected ClientData origin: https://wrong.com");
     });
 
