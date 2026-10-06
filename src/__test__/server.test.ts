@@ -45,6 +45,7 @@ jest.mock("../parsers", () => ({
 
 import * as server from "../server";
 import { NamedAlgo } from "../types";
+import * as utils from "../utils";
 
 const ES256_SPKI_KEY =
   "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEol4zrYnJVbFPkOCqeWV5NCPnmzyfC-l0xsDQDIxBsA0RvfMi_KLqC7ksZyMXHqspq37pGPOxBwmhY3h6DGYrKQ";
@@ -157,6 +158,105 @@ describe("server.ts tests", () => {
       expect(result.type).toBe("public");
       expect(result.algorithm).toBeDefined();
       expect(result.usages).toContain("verify");
+    });
+  });
+
+  describe("verifySignature()", () => {
+    // ES256 signatures are DER encoded, where r and s are minimal-length integers:
+    // 31 bytes (or fewer) when the leading byte is zero, 33 bytes (0x00-prefixed) when the high bit is set.
+    // All signatures below are valid, signed with the same P-256 key over the same data.
+    const params = {
+      algorithm: "ES256" as NamedAlgo,
+      publicKey:
+        "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEikJE02ztBCLY1jQZu1BfvgC3f7ztGdbqqtCgd4cWAsZgiAnimD9Eqvag4IGBS9vKctrisYf__v_RvbMdRZi2IA",
+      authenticatorData: "TLJc9NjRHzDsGc5RtQhaBte1ZRMMAxWWgAKAqY5nYt6-K-_k0Q",
+      clientData:
+        "eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoidGVzdCIsIm9yaWdpbiI6Imh0dHBzOi8vZXhhbXBsZS5jb20ifQ",
+    };
+
+    const signatures = {
+      "32 byte r, 32 byte s":
+        "MEQCIHC9KqOAYzkAs9r0_EWaxMBkKDhEDWSx5dkm6170KQfUAiB2hLzSQSrkDuVdHtXaZYTWwh7OduloIeraLbUOptt_EA",
+      "33 byte r, 32 byte s":
+        "MEUCIQDjv4BelGKGh1LBM5lf6WEir7LLDykiMEtaUs4S0mqFngIgPWTrocZMtE5tAj2o11s-Ku1Xrxr06oUtT_06vVIHwYg",
+      "32 byte r, 33 byte s":
+        "MEUCIDVv7PNxG8lHD5bnxziiwYEkaY_5LIrDGW2HGeMzjDDFAiEAwvtuzOKF5uMszzUnbXHSwGZrkDFFNBcbp-heJ6u-Duc",
+      "31 byte r, 32 byte s":
+        "MEMCHzNibgGGQhgGIAeJOXvhymZ5cO0k919ojSOh-mO3arwCIGK2UDreq0_tTzMLZBrlQ0Vm-BSP-lm8xbfbNdrt5QVe",
+      "32 byte r, 31 byte s":
+        "MEMCIEVk4zw8DYTuiXKFwIL8-94STcU8LZYWWtRG68IlP7CpAh9bI01AODNJe8YW-E6OKTEXejCw0ZYNcaPt6xD0zquc",
+      "31 byte r, 33 byte s":
+        "MEQCH20qCSycXZ9Ykhc4qoNiJVjnistgqOVLrjwL3Itg2RYCIQDjctN_fyHfEkjC6baKXilSgLkjZYRlrhe0Rtwl_9o6eA",
+      "33 byte r, 31 byte s":
+        "MEQCIQCKtRuiHUVWp9CoIRw0f1kTxQ3pNy4uXOQ9wv5RoOLlMAIfL89zz_Imi0J9FKflqx5cu0JMkHXy1j8IwavHXm8Neg",
+    };
+
+    function modifyBytes(signature: string, modify: (bytes: Uint8Array) => void): string {
+      const bytes = new Uint8Array(utils.parseBase64url(signature));
+      modify(bytes);
+      return utils.toBase64url(bytes.buffer);
+    }
+
+    function reencode(signature: string, modify: (r: Uint8Array, s: Uint8Array) => Uint8Array[]): string {
+      const bytes = new Uint8Array(utils.parseBase64url(signature));
+      const rLength = bytes[3];
+      const [r, s] = modify(bytes.slice(4, 4 + rLength), bytes.slice(6 + rLength));
+      const sequence = [0x02, r.length, ...r, 0x02, s.length, ...s];
+      return utils.toBase64url(new Uint8Array([0x30, sequence.length, ...sequence]).buffer);
+    }
+
+    // The same signatures with r or s encoded non-canonically, so they would verify if normalized to raw format
+    const prefixZero = (integer: Uint8Array) => new Uint8Array([0, ...integer]);
+    const nonCanonicalSignatures = {
+      "r missing its 0x00 sign byte": reencode(signatures["33 byte r, 32 byte s"], (r, s) => [r.slice(1), s]),
+      "s missing its 0x00 sign byte": reencode(signatures["32 byte r, 33 byte s"], (r, s) => [r, s.slice(1)]),
+      "a redundant 0x00 before r": reencode(signatures["32 byte r, 32 byte s"], (r, s) => [prefixZero(r), s]),
+      "a redundant 0x00 before s": reencode(signatures["32 byte r, 32 byte s"], (r, s) => [r, prefixZero(s)]),
+      "a redundant 0x00 before a 31 byte r": reencode(signatures["31 byte r, 32 byte s"], (r, s) => [prefixZero(r), s]),
+    };
+
+    test.each(Object.entries(signatures))(
+      "accepts a valid ES256 signature with %s",
+      async (_shape, signature) => {
+        expect(await server.verifySignature({ ...params, signature })).toBe(true);
+      }
+    );
+
+    test("rejects a tampered ES256 signature", async () => {
+      const signature = modifyBytes(signatures["32 byte r, 32 byte s"], (bytes) => {
+        bytes[bytes.length - 1] ^= 0x01;
+      });
+
+      expect(await server.verifySignature({ ...params, signature })).toBe(false);
+    });
+
+    test("rejects an ES256 signature that is not a DER sequence", async () => {
+      const signature = modifyBytes(signatures["32 byte r, 32 byte s"], (bytes) => {
+        bytes[0] = 0x31;
+      });
+
+      expect(await server.verifySignature({ ...params, signature })).toBe(false);
+    });
+
+    test("rejects an ES256 signature with trailing bytes", async () => {
+      const bytes = new Uint8Array([...new Uint8Array(utils.parseBase64url(signatures["32 byte r, 32 byte s"])), 0]);
+      bytes[1] += 1;
+      const signature = utils.toBase64url(bytes.buffer);
+
+      expect(await server.verifySignature({ ...params, signature })).toBe(false);
+    });
+
+    test.each(Object.entries(nonCanonicalSignatures))(
+      "rejects an ES256 signature with %s",
+      async (_shape, signature) => {
+        expect(await server.verifySignature({ ...params, signature })).toBe(false);
+      }
+    );
+
+    test("rejects an ES256 signature with an r longer than 32 bytes", async () => {
+      const signature = reencode(signatures["33 byte r, 32 byte s"], (r, s) => [new Uint8Array([...r, 0]), s]);
+
+      expect(await server.verifySignature({ ...params, signature })).toBe(false);
     });
   });
 

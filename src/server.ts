@@ -228,11 +228,33 @@ export async function verifySignature({ algorithm, publicKey, authenticatorData,
 
 function convertASN1toRaw(signatureBuffer :ArrayBuffer) {
     // Convert signature from ASN.1 sequence to "raw" format
+    // DER layout: 0x30 <length> 0x02 <rLength> <r> 0x02 <sLength> <s>
+    // r and s are minimal-length positive integers: shorter than 32 bytes when their leading byte is zero, 0x00-prefixed when their high bit is set
     const signature = new Uint8Array(signatureBuffer);
-    const rStart = signature[4] === 0 ? 5 : 4;
-    const rEnd = rStart + 32;
-    const sStart = signature[rEnd + 2] === 0 ? rEnd + 3 : rEnd + 2;
-    const r = signature.slice(rStart, rEnd);
-    const s = signature.slice(sStart);
+    const rLength = signature[3];
+    const sLength = signature[5 + rLength];
+    if (signature[0] !== 0x30 || signature[1] !== signature.length - 2 ||
+        signature[2] !== 0x02 || signature[4 + rLength] !== 0x02 ||
+        6 + rLength + sLength !== signature.length)
+        return new Uint8Array(0); // malformed DER, fails verification
+    const r = parseDERInteger(signature.slice(4, 4 + rLength), 32);
+    const s = parseDERInteger(signature.slice(6 + rLength, 6 + rLength + sLength), 32);
+    if (!r || !s)
+        return new Uint8Array(0); // non-canonical DER integer, fails verification
     return new Uint8Array([...r, ...s]);
+}
+
+function parseDERInteger(integer :Uint8Array, length :number) {
+    // Convert a minimal-length positive DER integer to an unsigned integer left-padded to the target length
+    // Returns null for any other encoding, so that every (r, s) pair has exactly one accepted DER signature
+    if (integer.length === 0 || integer[0] & 0x80)
+        return null; // empty or negative
+    if (integer[0] === 0 && integer.length > 1 && !(integer[1] & 0x80))
+        return null; // redundant leading zero
+    const unsigned = integer[0] === 0 ? integer.slice(1) : integer;
+    if (unsigned.length > length)
+        return null; // too large
+    const padded = new Uint8Array(length);
+    padded.set(unsigned, length - unsigned.length);
+    return padded;
 }
